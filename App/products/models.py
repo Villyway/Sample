@@ -14,11 +14,18 @@ class Unit(Base):
 #Product
 class Product(Base):
     code = models.CharField(max_length=20)
-    
     description = models.TextField(blank=True, null=True)
     umo = models.ForeignKey(
         Unit, on_delete=models.CASCADE, related_name='product_unit',)
     specification = models.TextField(blank=True, null=True)
+    stock = models.IntegerField(blank=True, null=True, default=0)
+    minimum_stock_level = models.IntegerField(blank=True, null=True, default=0)
+    rack_no = models.IntegerField(blank=True, null=True, default=0)
+    tray_no = models.IntegerField(blank=True, null=True, default=0)
+    image = models.URLField(max_length=500, blank=True, null=True)
+
+    def __str__(self):
+        return self.code
 
 
 # Model for Attribute
