@@ -1,6 +1,8 @@
 from django.db import models
 
 from base.models import Base
+from vendors.models import Vendor
+from users.models import User
 
 # Create your models here.
 # Unit
@@ -49,4 +51,42 @@ class ProductAttribute(Base):
     def __str__(self):
         return self.attribute.name
 
+
+# Inword
+class InWord(Base):
+    grn_no = models.CharField(max_length=150)
+    bill_no = models.CharField(max_length=150)
+    bill_date = models.DateField()
+    parts = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='parts_inword',)
+    received_qty = models.CharField(max_length=150)
+    uom = models.ForeignKey(
+        Unit, on_delete=models.CASCADE)
+    in_time = models.TimeField()
+    qc_status = models.BooleanField(default=False)
+    purchase_order_no = models.CharField(max_length=150)
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.CASCADE, related_name='vendor',)
+    receive_by = models.CharField(max_length=150)
+    remarks = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.id
+    
+
+#OutWord
+class Outword(Base):
+    out_ward_sr_no = models.CharField(max_length=20, unique=True)
+    parts = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='parts_outword',)
+    issued_qty = models.CharField(max_length=150)
+    uom = models.ForeignKey(
+        Unit, on_delete=models.CASCADE)
+    resived_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, )
+    received_by = models.CharField(max_length=150)
+    remarks = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.out_word_sr_no
     
