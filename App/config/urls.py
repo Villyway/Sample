@@ -27,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', never_cache(Login.as_view()), name="login"),
     path('', include('base.urls', namespace='base')),
-    path('products/',include('products.urls', namespace='products'))
+    # path('products/',include('products.urls', namespace='products'))
 ]
 
 # Static files Setup

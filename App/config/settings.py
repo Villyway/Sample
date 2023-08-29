@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'base.apps.BaseConfig',
     'utils.apps.UtilsConfig',
     'products.apps.ProductsConfig',
+    'vendors.apps.VendorsConfig'
     
 ]
 
@@ -93,7 +94,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB', 'basuri'),
+        'NAME': os.environ.get('DB', 'Enventry'),
         'USER': os.environ.get('DBUSER', 'rupesh'),
         'PASSWORD': os.environ.get('DBPASSWORD', 'Rupesh@123'),
         'HOST': 'localhost',
