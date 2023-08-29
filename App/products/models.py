@@ -57,7 +57,7 @@ class InWord(Base):
     grn_no = models.CharField(max_length=150)
     bill_no = models.CharField(max_length=150)
     bill_date = models.DateField()
-    parts = models.ForeignKey(
+    part = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='parts_inword',)
     received_qty = models.CharField(max_length=150)
     uom = models.ForeignKey(
@@ -82,7 +82,7 @@ class Outword(Base):
     issued_qty = models.CharField(max_length=150)
     uom = models.ForeignKey(
         Unit, on_delete=models.CASCADE)
-    resived_by = models.ForeignKey(
+    issued_by = models.ForeignKey(
         User, on_delete=models.CASCADE, )
     received_by = models.CharField(max_length=150)
     remarks = models.TextField(blank=True, null=True)
