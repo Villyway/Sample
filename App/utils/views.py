@@ -6,6 +6,11 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.core.validators import validate_email, ValidationError
+from django.views.generic import View
+from django.http import JsonResponse
+
+
+from .models import City, State
 
 # Create your views here.
 
@@ -62,3 +67,27 @@ def send_otp(obj, retry=None):
 
 def is_ajax(request):
         return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'        
+
+# City View for json dropdown
+class CityView(View):
+
+    def get(self, request, id):
+        state = State.objects.get_state(id)
+        cities = list(City.objects.filter(state=state).values("id", "name"))
+        data = {
+            "cities": cities
+        }
+        return JsonResponse(data)
+
+
+# State View for State dropdown
+class StateView(View):
+
+    def get(self, request, id):
+        country = Country.objects.get_country(id)
+        states = list(State.objects.filter(
+            country=country).values("id", "name"))
+        data = {
+            "states": states
+        }
+        return JsonResponse(data)
