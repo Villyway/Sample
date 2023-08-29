@@ -4,5 +4,5 @@ from django.contrib import admin
 from .models import Vendor
 
 @admin.register(Vendor)
-class ProductAdmin(admin.ModelAdmin):
+class VendorAdmin(admin.ModelAdmin):
     list_display = ["code","name","email","gst_no"]
