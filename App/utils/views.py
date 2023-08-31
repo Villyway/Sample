@@ -8,9 +8,12 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email, ValidationError
 from django.views.generic import View
 from django.http import JsonResponse
+from django.utils.encoding import force_bytes, force_str #force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 
-from .models import City, State
+
+from .models import City, State, Country
 
 # Create your views here.
 
@@ -52,6 +55,19 @@ def send_email(obj, message, template, request):
         fail_silently=False,
         html_message=email_message
     )
+
+
+# decode data
+def decode_data(input_data):
+    uid = force_str(urlsafe_base64_decode(input_data))
+    return uid
+
+
+# encode data
+def encode_data(input_data):
+    uid = urlsafe_base64_encode(force_bytes(input_data))
+    return uid
+
 
 # Send OTP function
 def send_otp(obj, retry=None):

@@ -24,6 +24,20 @@ def pre_save_slug_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = create_slug(instance)
 
+    
+class VendorManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().order_by("-created_at")
+
+    def active(self):
+        return self.filter(is_active=True)
+
+    def single_vendor(self, id):
+        try:
+            return self.active().get(id=id)
+        except:
+            return None
+
 
 # Create your models here.
 class Vendor(Base):
@@ -35,6 +49,8 @@ class Vendor(Base):
     email = models.EmailField(null=True, blank=True)
     gst_no = models.CharField(max_length=16, unique=True)
     address = models.ManyToManyField(Address, blank=True)
+    
+    objects = VendorManager()
 
     def __str__(self):
         return self.name

@@ -21,19 +21,36 @@ class VendorForm(forms.Form):
                              widget=forms.TextInput(attrs={"class": "form-control"}))
     street2 = forms.CharField(required=False, label="Street 2",
                               widget=forms.TextInput(attrs={"class": "form-control"}))
-    city = forms.ModelChoiceField(queryset=City.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="City", empty_label='--- Select City ---')
-    state = forms.ModelChoiceField(queryset=State.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="State", empty_label='--- Select State ---')
     country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=forms.Select(
         attrs={"class": "form-control"}), required=True, label="Country", empty_label='--- Select Country ---')
+    state = forms.ModelChoiceField(queryset=State.objects.all(), widget=forms.Select(
+        attrs={"class": "form-control"}), required=True, label="State", empty_label='--- Select State ---')
+    
+    city = forms.ModelChoiceField(queryset=City.objects.all(), widget=forms.Select(
+        attrs={"class": "form-control"}), required=True, label="City", empty_label='--- Select City ---')
 
     pincode = forms.IntegerField(required=False, label="Pincode", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
     
     def __init__(self, *args, **kwargs):
         self.user = None
+        self.edit = kwargs.pop("edit", None)
+        self.vendor = kwargs.pop("vendor", None)
+        self.address = self.vendor.address.first()
         super(VendorForm, self).__init__(*args, **kwargs)
+        if self.edit and self.vendor:
+            self.fields["code"].initial = self.vendor.code
+            self.fields['code'].widget.attrs['readonly'] = True
+            self.fields["name"].initial = self.vendor.name
+            self.fields["mobile"].initial = self.vendor.mobile
+            self.fields["email"].initial = self.vendor.email
+            self.fields["gst_no"].initial = self.vendor.gst_no
+            self.fields["street"].initial = self.address.street
+            self.fields["street2"].initial =self.address.street2
+            self.fields["country"].initial =self.address.country
+            self.fields["state"].initial = self.address.state
+            self.fields["city"].initial = self.address.city
+            self.fields["pincode"].initial =self.address.zip
     
     
 
