@@ -1,10 +1,20 @@
 from django.db import models
+from django.core.files.storage import default_storage
 
 from base.models import Base
 from vendors.models import Vendor
 from users.models import User
+from .managers import ProductManager, AttributeManager
 
-# Create your models here.
+
+#upload file
+def upload_file(instance, filename, dir_name):
+    name = filename.name.replace(" ", "_")
+    url = "%s/%d/%s" % (dir_name,int(instance.id), name)
+    file_name = default_storage.save(url, filename)
+    return file_name
+
+
 # Unit
 class Unit(Base):
     name = models.CharField(max_length=50, unique=True)
@@ -26,8 +36,17 @@ class Product(Base):
     tray_no = models.IntegerField(blank=True, null=True, default=0)
     image = models.URLField(max_length=500, blank=True, null=True)
 
+    objects = ProductManager()
+
     def __str__(self):
         return self.code
+    
+    def save_image_url(self, image, file_url):
+        image = upload_file(self, image,"products/"+ self.code)
+        image = file_url + '/media/' + image
+        self.image = image
+        self.save()
+        return True
 
 
 # Model for Attribute
@@ -46,7 +65,7 @@ class ProductAttribute(Base):
         Attribute, on_delete=models.SET_NULL, null=True, related_name='property_attribute')
     value = models.CharField(max_length=150)
 
-    # objects = AttributeManager()
+    objects = AttributeManager()
 
     def __str__(self):
         return self.attribute.name

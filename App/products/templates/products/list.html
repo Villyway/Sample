@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}All Products{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'products:products-list' %}">Products</a> / <b class="text-dark">All<b></li>
+{% endblock %}
+
+{% block head %}
+All Products
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-12">
+      <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
+          style="float: right; ">Add New Product</button></a>
+    </div>
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card">
+        <h5 class="card-header">All Products</h5>
+        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+        <div class="table-responsive text-nowrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Image</th>
+                <th>Code</th>
+                <th>UMO</th>
+                <th>Stock</th>
+                <th>Minimum Stock Level</th>
+                <th>Rack No</th>
+                <th>Tray No</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                {% for product in products %}
+              <tr>
+                <td> {{forloop.counter}} </td>
+                <td><img src="{{product.image}}" height="100px" width="100px"></td>
+                <td>{{product.code}}</td>
+                <td> {{product.umo}} </td>
+                <td> {{product.stock}} </td>
+                <td> {{product.minimum_stock_level}} </td>
+                <td> {{product.rack_no}} </td>
+                <td> {{product.tray_no}} </td>
+                <td> 
+                    {% if product.is_active %}
+                    <i class="fas fa-check text-success" style="font-size: 15px;"></i>
+                    {% else %}
+                    <i class="fas fa-times text-danger" style="font-size: 15px;"></i>
+                    {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'products:product-property' product.id %}"
+                                class="btn btn-success btn-circle " title="Publish"><i class="fa-solid fa-magnet"></i></i></a>
+                  <a href=""
+                                class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>
+                  <a href="{% url 'products:products-edit' product.id %}" class="btn btn-primary btn-circle "
+                                title="Product Edit"><i class="fas fa-edit" aria-hidden="true"></i></a>
+                  <a href="" class="open-modal btn btn-danger btn-circle " data-toggle="modal"
+                                data-target="" title="Delete"><i class="fa fa-trash"
+                                    aria-hidden="true"></i></a>
+                  
+                </td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#product-menu').addClass('active open');
+  $('#sub-all-product').addClass('active')
+</script>
+{% endblock js %}

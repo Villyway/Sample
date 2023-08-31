@@ -36,9 +36,10 @@ class VendorForm(forms.Form):
         self.user = None
         self.edit = kwargs.pop("edit", None)
         self.vendor = kwargs.pop("vendor", None)
-        self.address = self.vendor.address.first()
+        
         super(VendorForm, self).__init__(*args, **kwargs)
         if self.edit and self.vendor:
+            self.address = self.vendor.address.first()
             self.fields["code"].initial = self.vendor.code
             self.fields['code'].widget.attrs['readonly'] = True
             self.fields["name"].initial = self.vendor.name

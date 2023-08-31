@@ -30,12 +30,12 @@
 
         <ul class="menu-sub">
           <li class="menu-item" id="sub-all-product">
-            <a href="" class="menu-link">
+            <a href="{% url 'products:products-list' %}" class="menu-link">
               <div data-i18n="Without menu">All Products</div>
             </a>
           </li>
           <li class="menu-item" id = "add-product">
-            <a href="" class="menu-link">
+            <a href="{% url 'products:products-create' %}" class="menu-link">
               <div data-i18n="Container">Add Products</div>
             </a>
           </li>
@@ -54,8 +54,8 @@
       </li>
       <li class="menu-item " id = "vendor-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
-          <div data-i18n="Layouts">Vendors</div>
+          <i class="menu-icon tf-icons fa-solid fa-shop"> </i>
+          <div data-i18n="Layouts"> Vendors</div>
         </a>
 
         <ul class="menu-sub">
@@ -67,6 +67,26 @@
           <li class="menu-item" id = "add-vendor">
             <a href="{% url 'vendors:vendor-create' %}" class="menu-link">
               <div data-i18n="Container">Add Vendor</div>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="menu-item " id = "inventory-menu">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-warehouse"></i>
+          <div data-i18n="Layouts">Inventory</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="sub-all-vendor">
+            <a href="{% url 'vendors:vendor-list' %}" class="menu-link">
+              <div data-i18n="Without menu">In-Ward</div><i class=""></i>
+            </a>
+          </li>
+          <li class="menu-item" id = "add-vendor">
+            <a href="{% url 'vendors:vendor-create' %}" class="menu-link">
+              <div data-i18n="Container">Out-Ward</div>
             </a>
           </li>
         </ul>
