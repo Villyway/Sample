@@ -55,9 +55,12 @@ class VendorForm(forms.Form):
             self.fields["pincode"].initial =self.address.zip
     
     def clean_gst_no(self):
-        if Vendor.objects.get(gst_no=self.cleaned_data.get("gst_no")):
-            raise forms.ValidationError(
-                    "This Vendor is Already registerd.")
+        try:
+            if Vendor.objects.get(gst_no=self.cleaned_data.get("gst_no")):
+                raise forms.ValidationError(
+                        "This Vendor is Already registerd.")
+        except:
+            pass
 
     
 
