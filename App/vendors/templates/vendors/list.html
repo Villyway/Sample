@@ -17,6 +17,7 @@ All Vendors
 {% endblock %}
 
 {% block content %}
+
 <div class="container mt-3">
   <div class="row">
     <div class="col-12">
@@ -27,7 +28,8 @@ All Vendors
 
       <!-- Basic Bootstrap Table -->
       <div class="card">
-        <h5 class="card-header">All Products</h5>
+        <h5 class="card-header">All Vendors</h5>
+        
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
         <div class="table-responsive text-nowrap">
           <table class="table">
@@ -60,8 +62,8 @@ All Vendors
                     {% endif %}
                 </td>
                 <td>
-                  <a href=""
-                                class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>
+                  {% comment %} <a href=""
+                                class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a> {% endcomment %}
                   <a href="{% url 'vendors:vendor-edit' vendor.id %}" class="btn btn-primary btn-circle "
                                 title="Product Edit"><i class="fas fa-edit" aria-hidden="true"></i></a>
                   <a href="{% url 'vendors:vendor-delete' vendor.id %}" class="open-modal btn btn-danger btn-circle " data-toggle="modal"
@@ -74,12 +76,18 @@ All Vendors
 
             </tbody>
           </table>
+          
         </div>
+        
       </div>
       <!--/ Basic Bootstrap Table -->
     </div>
   </div>
-
+  <div class="row container-fluid mt-2">
+    {% if vendors.paginator.num_pages > 1 %}
+    {% include 'components/pagination.html' with items=vendors paginator=vendors.paginator %}
+    {% endif %}
+</div>
 </div>
 {% endblock content %}
 

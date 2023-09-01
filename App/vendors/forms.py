@@ -3,19 +3,20 @@ from django.core.validators import validate_email
 from django.core.validators import RegexValidator
 
 from utils.models import Address, State, City, Country
+from .models import Vendor
 
 class VendorForm(forms.Form):
     mobile_regex = RegexValidator(
         regex=r'^[6-9][0-9]{9}', message="Mobile number must be entered with code in the format: 9999999999. It must start with 6, 7, 8, 9")
     # code = forms.CharField(required=True, label="Vendor Code", widget=forms.TextInput(
     #     attrs={"class": "form-control"}))
-    name = forms.CharField(required=False, label="Vendor Name", widget=forms.TextInput(
+    name = forms.CharField(required=True, label="Vendor Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     mobile = forms.CharField(
         required=False, max_length=10, label=" Vendor Mobile", widget=forms.NumberInput(attrs={"class": "form-control", "type": "tel"}), validators=[mobile_regex])
     email = forms.EmailField(label='Vendor Email', widget=forms.EmailInput(
         attrs={'class': 'form-control'}), required=False, validators=[validate_email])
-    gst_no = forms.CharField(required=False, label="GST No.", widget=forms.TextInput(
+    gst_no = forms.CharField(required=True, label="GST No.", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     street = forms.CharField(required=True, label="Street 1",
                              widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -53,6 +54,11 @@ class VendorForm(forms.Form):
             self.fields["city"].initial = self.address.city
             self.fields["pincode"].initial =self.address.zip
     
+    def clean_gst_no(self):
+        if Vendor.objects.get(gst_no=self.cleaned_data.get("gst_no")):
+            raise forms.ValidationError(
+                    "This Vendor is Already registerd.")
+
     
 
 class AddressForm(forms.Form):

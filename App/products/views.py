@@ -32,7 +32,6 @@ class CreateProduct(FormView):
 
     def form_invalid(self, form):
         super(CreateProduct, self).form_invalid(form)
-        print(form.errors)
         messages.error(self.request,form.errors)
         return redirect("products:products-create")
 

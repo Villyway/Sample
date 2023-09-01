@@ -3,6 +3,7 @@ from django.views.generic.edit import FormView
 from django.views.generic import View
 from django.db import transaction
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import VendorForm
 from .models import Vendor
@@ -10,19 +11,35 @@ from utils.models import Address
 from utils.views import decode_data
 
 
+
 class VendorList(View):
     template_name = "vendors/list.html"
 
-    def get(self,request):
-        data = {
-            "vendors" : Vendor.objects.all(),
+    def get(self, request):
+        vendors = Vendor.objects.active()
+        page = request.GET.get('page', 1)
+        paginator = Paginator(vendors, 10)
+        try:
+            vendors = paginator.page(page)
+        except PageNotAnInteger:
+            vendors = paginator.page(1)
+        except EmptyPage:
+            vendors = paginator.page(paginator.num_pages)
+        context = {
+            "vendors": vendors,
+
         }
-        return render(request,self.template_name,context=data)
+        return render(request, self.template_name, context)
 
 # Create your views here.
 class CreateVendor(FormView):
     form_class = VendorForm
     template_name = "vendors/create.html"
+
+    def form_invalid(self, form):
+        super(CreateVendor, self).form_invalid(form)
+        messages.error(self.request,form.errors)
+        return redirect("vendors:vendor-create")
 
     def form_valid(self, form):
         form_data = form.cleaned_data
@@ -47,6 +64,7 @@ class CreateVendor(FormView):
                 address.save()
                 vendor.address.add(address)
                 address.created_by = self.request.user.id
+                messages.success(self.request,"Vendor Successfully created!!")
             return redirect('vendors:vendor-list')
         
         except Exception as e:
@@ -98,6 +116,7 @@ class VendorEditView(FormView):
                     address.zip = form_data["pincode"]
                 address.updated_by = self.request.user.id
                 address.save()
+                messages.success(self.request,"Vendor Successfully Updated!!")
                 return redirect('vendors:vendor-list')
             
         except Exception as e:
