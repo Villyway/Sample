@@ -29,7 +29,7 @@ class CreateVendor(FormView):
         try:
             with transaction.atomic():
                 vendor = Vendor.objects.create(
-                    code = form_data["code"],
+                    #code = form_data["code"],
                     name = form_data["name"],
                     mobile = form_data["mobile"],
                     email = form_data["email"],

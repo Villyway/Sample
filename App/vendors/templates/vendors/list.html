@@ -34,7 +34,7 @@ All Vendors
             <thead>
               <tr>
                 <th>No</th>
-                <th>Code</th>
+                {% comment %} <th>Code</th> {% endcomment %}
                 <th>Name</th>
                 <th>Mobile</th>
                 <th>Email</th>
@@ -47,7 +47,7 @@ All Vendors
                 {% for vendor in vendors %}
               <tr>
                 <td>{{forloop.counter}}</td>
-                <td>{{vendor.code}}</td>
+                {% comment %} <td>{{vendor.code}}</td> {% endcomment %}
                 <td>{{vendor.name}}</td>
                 <td>{{vendor.mobile}}</td>
                 <td>{{vendor.email}}</td>

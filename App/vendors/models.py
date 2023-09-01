@@ -41,7 +41,7 @@ class VendorManager(models.Manager):
 
 # Create your models here.
 class Vendor(Base):
-    code = models.CharField(max_length=30, unique=True)
+    code = models.CharField(max_length=30, unique=True, blank=True, null=True)
     slug = models.SlugField(unique=True, editable=False)
     name = models.CharField(max_length=150, null=True, blank=True)
     mobile = models.CharField(max_length=15, null=True, blank=True)

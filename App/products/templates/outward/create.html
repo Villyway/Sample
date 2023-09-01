@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Product Outward{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://basuriautomotive.com/assets/css/aiz-core.css">
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+        href="{% url 'vendors:vendor-list' %}">Products</a> / <b class="text-dark">Outward<b></li>
+{% endblock %}
+
+{% block head %}
+New Outward
+{% endblock %}
+
+{% block content %}
+<div class="row">
+        <div class="col-md-12 mt-3">
+                <div class="card mb-4">
+                  <h5 class="card-header">New Outward</h5>
+                  <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-12">
+                                        {{form}}
+                                    </div>
+                                </div>
+                                <div classs="row">
+                                    <div class="col-12">
+                                        <button class="btn btn-success mt-5 " type="submit" style="float:right">Add</button>
+                                    </div>
+                                </div>
+                        </form>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#inventory-menu').addClass('active open');
+        $('#sub-all-inward').addClass('active')
+      </script>
+{% endblock %}

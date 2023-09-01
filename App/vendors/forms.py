@@ -7,8 +7,8 @@ from utils.models import Address, State, City, Country
 class VendorForm(forms.Form):
     mobile_regex = RegexValidator(
         regex=r'^[6-9][0-9]{9}', message="Mobile number must be entered with code in the format: 9999999999. It must start with 6, 7, 8, 9")
-    code = forms.CharField(required=True, label="Vendor Code", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+    # code = forms.CharField(required=True, label="Vendor Code", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
     name = forms.CharField(required=False, label="Vendor Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     mobile = forms.CharField(
@@ -40,8 +40,8 @@ class VendorForm(forms.Form):
         super(VendorForm, self).__init__(*args, **kwargs)
         if self.edit and self.vendor:
             self.address = self.vendor.address.first()
-            self.fields["code"].initial = self.vendor.code
-            self.fields['code'].widget.attrs['readonly'] = True
+            # self.fields["code"].initial = self.vendor.code
+            # self.fields['code'].widget.attrs['readonly'] = True
             self.fields["name"].initial = self.vendor.name
             self.fields["mobile"].initial = self.vendor.mobile
             self.fields["email"].initial = self.vendor.email
