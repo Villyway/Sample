@@ -44,7 +44,7 @@ class Vendor(Base):
     code = models.CharField(max_length=30, unique=True, blank=True, null=True)
     slug = models.SlugField(unique=True, editable=False)
     name = models.CharField(max_length=150, null=True, blank=True)
-    mobile = models.CharField(max_length=15, null=True, blank=True)
+    mobile = models.CharField(max_length=50, null=True, blank=True)
     country_code = models.CharField(max_length=4, default="91")
     email = models.EmailField(null=True, blank=True)
     gst_no = models.CharField(max_length=16, unique=True)
