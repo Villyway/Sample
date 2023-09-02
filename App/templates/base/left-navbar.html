@@ -25,10 +25,15 @@
       <li class="menu-item " id = "product-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
-          <div data-i18n="Layouts">Products</div>
+          <div data-i18n="Layouts">Item Master</div>
         </a>
 
         <ul class="menu-sub">
+          <li class="menu-item" id="sub-all-product">
+            <a href="{% url 'products:products-list' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
           <li class="menu-item" id="sub-all-product">
             <a href="{% url 'products:products-list' %}" class="menu-link">
               <div data-i18n="Without menu">All Products</div>
@@ -55,10 +60,15 @@
       <li class="menu-item " id = "vendor-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-shop"> </i>
-          <div data-i18n="Layouts"> Vendors</div>
+          <div data-i18n="Layouts"> Party Master</div>
         </a>
 
         <ul class="menu-sub">
+          <li class="menu-item" id="sub-all-vendor">
+            <a href="{% url 'vendors:vendor-list' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
           <li class="menu-item" id="sub-all-vendor">
             <a href="{% url 'vendors:vendor-list' %}" class="menu-link">
               <div data-i18n="Without menu">All Vendors</div>
@@ -80,12 +90,17 @@
 
         <ul class="menu-sub">
           <li class="menu-item" id="sub-all-inward">
-            <a href="{% url 'products:inward' %}" class="menu-link">
+            <a href="{% url 'inventry:inward' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div><i class=""></i>
+            </a>
+          </li>
+          <li class="menu-item" id="sub-all-inward">
+            <a href="{% url 'inventry:inward' %}" class="menu-link">
               <div data-i18n="Without menu">In-Ward</div><i class=""></i>
             </a>
           </li>
           <li class="menu-item" id = "new-outward">
-            <a href="{% url 'products:outward' %}" class="menu-link">
+            <a href="{% url 'inventry:outward' %}" class="menu-link">
               <div data-i18n="Container">Out-Ward</div>
             </a>
           </li>

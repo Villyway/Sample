@@ -10,6 +10,7 @@ from django.views.generic import View
 from django.http import JsonResponse
 from django.utils.encoding import force_bytes, force_str #force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.files.storage import default_storage
 
 
 
@@ -107,3 +108,11 @@ class StateView(View):
             "states": states
         }
         return JsonResponse(data)
+
+
+#upload file
+def upload_file(instance, filename, dir_name):
+    name = filename.name.replace(" ", "_")
+    url = "%s/%d/%s" % (dir_name,int(instance.id), name)
+    file_name = default_storage.save(url, filename)
+    return file_name

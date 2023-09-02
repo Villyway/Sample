@@ -3,7 +3,7 @@ from django.core.validators import validate_email
 from django.core.validators import RegexValidator
 
 from utils.models import Address, State, City, Country
-from .models import Vendor
+from .models import Vendor, PartyType
 
 class VendorForm(forms.Form):
     # mobile_regex = RegexValidator(
@@ -12,6 +12,8 @@ class VendorForm(forms.Form):
     #     attrs={"class": "form-control"}))
     name = forms.CharField(required=True, label="Vendor Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
+    type = forms.ModelChoiceField(queryset=PartyType.objects.all(), widget=forms.Select(
+        attrs={"class": "form-control"}), required=True, label="Vendor Type", empty_label='--- Select Type ---')
     mobile = forms.CharField(
         required=False, label=" Vendor Mobile", widget=forms.TextInput(attrs={"class": "form-control"}))
     email = forms.EmailField(label='Vendor Email', widget=forms.EmailInput(
@@ -44,6 +46,7 @@ class VendorForm(forms.Form):
             # self.fields["code"].initial = self.vendor.code
             # self.fields['code'].widget.attrs['readonly'] = True
             self.fields["name"].initial = self.vendor.name
+            self.fields['type'].initial = self.vendor.type
             self.fields["mobile"].initial = self.vendor.mobile
             self.fields["email"].initial = self.vendor.email
             self.fields["gst_no"].initial = self.vendor.gst_no

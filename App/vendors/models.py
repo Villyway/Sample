@@ -4,6 +4,7 @@ from django.db.models.signals import pre_save
 
 from base.models import Base
 from utils.models import Address
+from utils.constants.choices import State
 
 # Create slug by this Method
 def create_slug(instance, new_slug=None):
@@ -39,9 +40,19 @@ class VendorManager(models.Manager):
             return None
 
 
+#Party Type
+class PartyType(Base):
+    type = models.CharField(max_length=30, unique=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.type
+
+
 # Create your models here.
 class Vendor(Base):
     code = models.CharField(max_length=30, unique=True, blank=True, null=True)
+    type = models.ForeignKey(
+        PartyType, on_delete=models.CASCADE, related_name='vendor_type', blank=True, null=True)
     slug = models.SlugField(unique=True, editable=False)
     name = models.CharField(max_length=150, null=True, blank=True)
     mobile = models.CharField(max_length=50, null=True, blank=True)
@@ -49,6 +60,9 @@ class Vendor(Base):
     email = models.EmailField(null=True, blank=True)
     gst_no = models.CharField(max_length=16, unique=True)
     address = models.ManyToManyField(Address, blank=True)
+    is_approved = models.BooleanField(default=False)
+    state = models.CharField(
+        max_length=25, choices=State.choices(), default=State.IN_REVIEW.value)
     
     objects = VendorManager()
 

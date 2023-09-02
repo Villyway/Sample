@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Product, Attribute, ProductAttribute, Unit, InWord, Outword
+from .models import Product, Attribute, ProductAttribute, Unit
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -23,12 +23,4 @@ class UnitAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
 
-@admin.register(Outword)
-class OutwordAdmin(admin.ModelAdmin):
-    list_display = ["out_ward_sr_no","parts", "issued_qty", "issued_by", "received_by"]
-
-
-@admin.register(InWord)
-class InWordAdmin(admin.ModelAdmin):
-    list_display = ["grn_no","bill_no","bill_date","part","qc_status"]
 
