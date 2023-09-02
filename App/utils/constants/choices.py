@@ -14,6 +14,7 @@ class Roles(Enum):
     MANAGER = "MANAGER"  # All privileges except delete
     OPERATOR = "OPERATOR"  # Can approve websites
     CUSTOMER = "CUSTOMER" #Customer
+    STORE_EXECUTIVE = "STORE EXECUTIVE"
 
     @classmethod
     def choices(cls):
