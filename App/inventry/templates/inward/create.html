@@ -23,23 +23,120 @@ New Inward
                   <h5 class="card-header">New Inward</h5>
                   <div class="card-body">
                         <form method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-12">
-                                        {{form}}
+                            {% csrf_token %}
+                            <div class="row">
+                                {% comment %} Left Part {% endcomment %}
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-grn_no">{{form.grn_no.label}}</label>
+                                        <span class="text-danger">*</span>
+                                        {{form.grn_no}}
+                                        <span class="text-danger print_error" id="grn_no"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-bill_date">{{form.bill_date.label}}</label>
+                                        <span class="text-danger">*</span>
+                                        {{form.bill_date}}
+                                        <span class="text-danger print_error" id="bill_date"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-purchase_order_no">{{form.purchase_order_no.label}}</label>
+                                        <span class="text-danger">*</span>
+                                        {{form.purchase_order_no}}
+                                        <span class="text-danger print_error" id="purchase_order_no"></span>
+                                    </div>
+                                    
+                                </div>
+                                {% comment %} Right Part {% endcomment %}
+                                <div class="col-6"> 
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-bill_no">{{form.bill_no.label}}</label>
+                                        <span class="text-danger">*</span>
+                                        {{form.bill_no}}
+                                        <span class="text-danger print_error" id="bill_no"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-vendor">{{form.vendor.label}}</label>
+                                        <span class="text-danger">*</span>
+                                        {{form.vendor}}
+                                        <span class="text-danger print_error" id="vendor"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-file_url">{{form.file_url.label}}</label>
+                                        <span class="text-danger"></span>
+                                        {{form.file_url}}
+                                        <span class="text-danger print_error" id="file_url"></span>
                                     </div>
                                 </div>
-                                <div classs="row">
-                                    <div class="col-12">
-                                        <button class="btn btn-success mt-5 " type="submit" style="float:right">Add</button>
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-">{{form.remarks.label}}</label>
+                                        <span class="text-danger"></span>
+                                        {{form.remarks}}
+                                        <span class="text-danger print_error" id="remarks"></span>
                                     </div>
                                 </div>
-                        </form>
+                                
+                            </div>
                       
                     </div>
-                  </div>
                 </div>
-              </div>
+                <div class="card mb-4">
+                    <h5 class="card-header"></h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="mb-3">
+                                    <label class="form-label" for="basic-default-inword-part">{{form.part.label}}</label>
+                                    <span class="text-danger"></span>
+                                    {{form.part}}
+                                    <span class="text-danger print_error" id="part"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-3">
+                                    <label class="form-label" for="basic-default-inword-received_qty">{{form.received_qty.label}}</label>
+                                    <span class="text-danger"></span>
+                                    {{form.received_qty}}
+                                    <span class="text-danger print_error" id="received_qty"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                              <div class="mb-3">
+                                <table class="table mt-3">
+                                    <tr>
+                                        <th><label class="form-label" for="basic-default-inword-received_qty">{{form.qc_status.label}}</label></th>
+                                        <td>{{form.qc_status}}</td>
+                                        <td><button type="submit" class="btn btn-success btn-circle" title="Publish"><i class="fa-solid fa-plus"></i></button></td>
+                                        <td><button type="submit" class="btn btn-primary btn-circle" title="Publish">Finish</i></button></td>
+                                    </tr>
+                                </table>
+                                    </form>
+                                    
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                            <table class="table">
+                                <tr>
+                                    <th>Part No</th>
+                                    <th>Part QTY</th>
+                                    <th>Qc Status</th>
+                                </tr>
+                                <tr>
+                                    
+                                </tr>
+                                
+                            </table>
+                        </div>
+                                  
+                        
+                        
+                    </div>
+                </div>
+        </div>
+                
+    </div>
 </div>
 {% endblock %}
 

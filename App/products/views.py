@@ -41,6 +41,7 @@ class CreateProduct(FormView):
             with transaction.atomic():
                 product = Product()
                 product.code = form_data['code']
+                product.name = form_data['name']
                 product.description = form_data['description']
                 product.umo = form_data['umo']
                 product.specification = form_data['specification']

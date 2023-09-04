@@ -40,7 +40,7 @@ class InwardCreateView(FormView):
         inword.qc_status = form_data['qc_status']
         inword.purchase_order_no = form_data['purchase_order_no']
         inword.vendor = form_data['vendor']
-        inword.receive_by = form_data['receive_by']
+        inword.receive_by = self.request.user
         inword.remarks = form_data['remarks']
         inword.created_by = self.request.user.id
         inword.old_stock = form_data['part'].stock

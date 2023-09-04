@@ -13,22 +13,22 @@ class InWardForm(forms.Form):
     bill_date = forms.CharField(required=True, label="Bill Date", widget=forms.DateInput(
         attrs={"class": "form-control","type":"date"}))
     part = forms.ModelChoiceField(queryset=Product.objects.active(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="Item", empty_label='--- Select Product ---')    
+        attrs={"class": "form-control form-select"}), required=True, label="Item", empty_label='--- Select Product ---')    
     received_qty = forms.CharField(required=True, label="Received Qty", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
-    in_time = forms.CharField(required=True, label="In Time", widget=forms.TimeInput(
-        attrs={"class": "form-control", "type":"time"}))
+    # in_time = forms.CharField(required=True, label="In Time", widget=forms.TimeInput(
+    #     attrs={"class": "form-control", "type":"time"}))
     
     purchase_order_no = forms.CharField(required=True, label="Purchase Order No", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.active(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="Vendor", empty_label='--- Select Vendor ---')    
+        attrs={"class": "form-control form-select"}), required=True, label="Vendor", empty_label='--- Select Vendor ---')    
     receive_by = forms.CharField(required=True, label="Receive By", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     remarks = forms.CharField(required=False, label="Remarks", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
     file_url = forms.FileField(required=False, label="Bill PDF", widget=forms.FileInput(attrs={'class': "form-control", 'accept': "PDF"}), help_text="Please upload only .PDF file")
-    qc_status = forms.BooleanField(required=False, label="QC", widget=forms.CheckboxInput(attrs={'style': 'width:15px;height:15px;'}))
+    qc_status = forms.BooleanField(required=False, label="QC By Approved", widget=forms.CheckboxInput(attrs={'style': 'width:30px;height:30px;'}))
 
     def __init__(self, *args, **kwargs):
         self.user = None

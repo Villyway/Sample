@@ -24,7 +24,8 @@ class InWord(Base):
     purchase_order_no = models.CharField(max_length=150)
     vendor = models.ForeignKey(
         Vendor, on_delete=models.CASCADE, related_name='vendor',)
-    receive_by = models.CharField(max_length=150)
+    receive_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, )
     remarks = models.TextField(blank=True, null=True)
     file_url = models.URLField(max_length=500, null=True, blank=True)
     old_stock = models.IntegerField(blank=True, null=True)

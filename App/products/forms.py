@@ -9,6 +9,8 @@ from vendors.models import Vendor
 class ProductForm(forms.Form):
     code = forms.CharField(required=True, label="Item Code", widget=forms.TextInput(
         attrs={"class": "form-control"}))    
+    name = forms.CharField(required=True, label="Item Name", widget=forms.TextInput(
+        attrs={"class": "form-control"}))    
     umo = forms.ModelChoiceField(queryset=Unit.objects.all(), widget=forms.Select(
         attrs={"class": "form-control"}), required=True, label="Unit", empty_label='--- Select Unit ---')    
     stock = forms.CharField(required=False, label="Stock", widget=forms.TextInput(
@@ -33,6 +35,7 @@ class ProductForm(forms.Form):
         super(ProductForm, self).__init__(*args, **kwargs)
         if self.edit and self.product:
             self.fields["code"].initial = self.product.code
+            self.fields["name"].initial = self.product.name
             self.fields['code'].widget.attrs['readonly'] = True
             self.fields["description"].initial = self.product.description
             self.fields["umo"].initial = self.product.umo

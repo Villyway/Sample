@@ -19,6 +19,7 @@ class Unit(Base):
 #Product
 class Product(Base):
     code = models.CharField(max_length=20)
+    name = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     umo = models.ForeignKey(
         Unit, on_delete=models.CASCADE, related_name='product_unit',)
