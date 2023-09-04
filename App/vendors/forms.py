@@ -13,7 +13,7 @@ class VendorForm(forms.Form):
     name = forms.CharField(required=True, label="Vendor Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     type = forms.ModelChoiceField(queryset=PartyType.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="Vendor Type", empty_label='--- Select Type ---')
+        attrs={"class": "form-control"}), required=False, label="Vendor Type", empty_label='--- Select Type ---')
     mobile = forms.CharField(
         required=False, label=" Vendor Mobile", widget=forms.TextInput(attrs={"class": "form-control"}))
     email = forms.EmailField(label='Vendor Email', widget=forms.EmailInput(
