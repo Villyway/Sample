@@ -2,64 +2,36 @@
 {% load static %}
 
 {% block title %}
-Product Properties
+Product Categories
 {% endblock %}
 
 {% block css %}
 {% endblock %}
 
 {% block head %}
-Product Properties
+Product Categories
 {% endblock %}
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted" aria-current="page"><a href="{% url 'products:products-list' %}">Products</a></li>
-<li class="breadcrumb-item text-muted active" aria-current="page">Properties</li>
+<li class="breadcrumb-item text-muted active" aria-current="page">Categories</li>
 {% endblock %}
 
 {% block content %}
-<div class="row mt-3">
-    <div class="col-md-4 ">
+<div class="row">
+    
+    <div class="col-md-12 ">
         <div class="card mb-4">
-            <h5 class="card-header">Product Image</h5>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <img src="{{product.image}}" alt="product.name" width="300px">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <div class="col-md-8 ">
-        <div class="col-md-8 card ">
-            <h5 class="card-header">Product Properties</h5>
+            <h5 class="card-header">Categories</h5>
+            
             <div class="card-body">
                 <form id="id_property_form">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-5">
                             <div class="form-group">
-                                <label for="id_attribute" class="text-dark"><b>Property
-                                        Name</b></label>
-
-                                <input type="text" id="id_attribute" name="attribute" class="form-control dropdown"
-                                    list="attribut_list" required>
-                                <div>
-                                    <datalist id="attribut_list">
-                                        {% for i in attribute %}
-                                        <option value="{{i.name}}"></option>
-                                        {% endfor %}
-                                    </datalist>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="col-5">
-                            <div class="form-group">
-                                <label for="id_value" class="text-dark"><b>Property Value</b></label>
-                                <input type="text" id="id_value" name="value" class="form-control" required>
+                                <label for="id_value" class="text-dark"><b>Category Name</b></label>
+                                <input type="text" id="id_value" name="category" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-2">
@@ -76,31 +48,27 @@ Product Properties
                 <hr>
                 <div class="row">
 
-                    <h4 class="text-dark mt-3">Product Properties</h4>
+                    <h4 class="text-dark mt-3">Product Categories</h4>
                     <div class="table-responsive" id="id_attribute_data" style="height: 200px;overflow: scroll;">
-                        {% if properties %}
+                        {% if categories %}
                         <table class="table table-striped table-bordered display no-wrap">
                             <thead class="text-white bg-primary">
                                 <tr>
-                                    <th>Property</th>
-                                    <th>Value</th>
+                                    <th>Categories</th>
                                     <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody class="text-dark">
-                                {% for property in properties %}
+                                {% for category in categories %}
                                 <tr>
                                     <td>
-                                        {{ property.attribute.name|title }}
-                                    </td>
-                                    <td>
-                                        {{ property.value }}
+                                        {{ category.name|title }}
                                     </td>
                                     <td>
                                         <center>
                                             <a href="javascript:void(0)"
                                                 class="remove_attribute btn btn-danger btn-sm bg-gradient-danger"
-                                                data-id="{{ property.id }}" id="id_remove_attribute"
+                                                data-id="{{ category.id }}" id="id_remove_attribute"
                                                 onclick="deleteAttribute(this);"><span class="fa fa-trash"></span></a>
                                         </center>
                                     </td>
@@ -110,7 +78,7 @@ Product Properties
                         </table>
                         {%else%}
                         <center>
-                            No Properties
+                            No Categories
                         </center>
                         {% endif %}
                     </div>
@@ -118,11 +86,6 @@ Product Properties
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <a href="{{previous_url}}" class="btn btn-success" style="float: right;">Finish</a>
     </div>
 </div>
 {% endblock %}
@@ -140,20 +103,17 @@ Product Properties
     });
 
     function create_attribute() {
-        var attribute = $('input[name=attribute]').val();
-        var value = $('input[name=value]').val();
+        var category = $('input[name=category]').val();
         var data = {};
-        data["attribute"] = attribute;
-        data["value"] = value;
+        data["category"] = category;
 
         $.ajax({
-            url: '{% url "products:product-property" product.id %}',
+            url: '{% url "products:product-category" %}',
             type: "POST",
             data: { "data": JSON.stringify(data), 'csrfmiddlewaretoken': '{{csrf_token}}' },
             success: function (html) {
                 $('#id_attribute_data').html(html.data);
-                $('input[name=attribute]').val('');
-                $('input[name=value]').val('');
+                $('input[name=category]').val('');
             },
             error: function () {
                 alert('Error');
@@ -164,7 +124,7 @@ Product Properties
     function deleteAttribute(e) {
         var id = jQuery(e).data("id");
         $.ajax({
-            url: '{% url "products:remove-property" %}',
+            url: '{% url "products:remove-category" %}',
             type: 'POST',
             data: { 'id': id, 'csrfmiddlewaretoken': '{{csrf_token}}' },
             success: function (html) {

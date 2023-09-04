@@ -33,7 +33,7 @@ class Categories(Base):
     slug = models.SlugField()
 
     def __str__(self):
-        return self.slug
+        return self.name.capitalize()
 
 
 # Unit

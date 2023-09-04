@@ -11,10 +11,10 @@ class ProductForm(forms.Form):
         attrs={"class": "form-control"}))    
     name = forms.CharField(required=True, label="Item Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
-    category = forms.ModelChoiceField(queryset=Categories.objects.all(), widget=forms.Select(
+    category = forms.ModelChoiceField(queryset=Categories.objects.filter(is_active=True), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="Category", empty_label='--- Select Category ---')
     umo = forms.ModelChoiceField(queryset=Unit.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="Unit", empty_label='--- Select Unit ---')    
+        attrs={"class": "form-control form-select"}), required=True, label="Unit", empty_label='--- Select Unit ---')    
     stock = forms.CharField(required=False, label="Stock", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     minimum_stock_level = forms.CharField(required=False, label="Minimum Stock Level", widget=forms.TextInput(
@@ -48,5 +48,14 @@ class ProductForm(forms.Form):
             self.fields["rack_no"].initial = self.product.rack_no
             self.fields["tray_no"].initial = self.product.tray_no
             self.fields["image"].initial = self.product.image
+
+    
+    def clean_code(self):
+        code = self.cleaned_data.get("code")
+        if Product.objects.filter(code=code):
+            raise forms.ValidationError(
+                "This item code is already registered, please use a different one.")
+                
+        return code
             
 

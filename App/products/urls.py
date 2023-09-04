@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 
 from .views import (ProductList, CreateProduct, 
                     ProductEditView, ProductProperty, 
-                    RemoveProductProperty, Dashboard
+                    RemoveProductProperty, Dashboard,
+                    RemoveProductCategory, CreateCategories
                     )
 
 app_name = "products"
@@ -17,6 +18,10 @@ urlpatterns = [
          login_required(ProductProperty.as_view()), name="product-property"),
     path("remove-property/", login_required(RemoveProductProperty.as_view()),
          name="remove-property"),
+    path("product-category",
+         login_required(CreateCategories.as_view()), name="product-category"),
+    path("remove-category/", login_required(RemoveProductCategory.as_view()),
+         name="remove-category"),
     
 
 ]

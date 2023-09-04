@@ -10,9 +10,9 @@ from django.http import HttpResponse, JsonResponse, Http404
 from django.template.loader import render_to_string
 from django.core.files.storage import default_storage
 
-from .models import Product, Attribute, ProductAttribute
+from .models import Product, Attribute, ProductAttribute, Categories
 from .forms import ProductForm
-from utils.views import get_secured_url
+from utils.views import get_secured_url, is_ajax
 
 
 # Product Dashboard
@@ -38,37 +38,52 @@ class ProductList(View):
 class CreateProduct(FormView):
     form_class = ProductForm
     template_name = "products/create.html"
+    success_url = "/products/list/"
 
     def form_invalid(self, form):
-        super(CreateProduct, self).form_invalid(form)
-        messages.error(self.request,form.errors)
-        return redirect("products:products-create")
+        response = super(CreateProduct, self).form_invalid(form)
+        if is_ajax(self.request):
+            data = form.errors
+            return JsonResponse(data, status=400)
+        else:
+            return response
 
     def form_valid(self, form):
-        form_data = form.cleaned_data
+        response = super(CreateProduct, self).form_valid(form)        
         try:
-            with transaction.atomic():
-                product = Product()
-                product.code = form_data['code']
-                product.name = form_data['name']
-                product.description = form_data['description']
-                product.umo = form_data['umo']
-                product.specification = form_data['specification']
-                product.stock = form_data['stock']
-                product.minimum_stock_level  = form_data['minimum_stock_level']
-                product.rack_no = form_data['rack_no']
-                product.tray_no = form_data['tray_no']
-                product.created_by = self.request.user.id
-                product.save()
-                if form_data['image']:
-                    product.save_image_url(form_data["image"], get_secured_url(
-                            self.request) + self.request.META["HTTP_HOST"])
-            return redirect(get_secured_url(
-                            self.request) + self.request.META["HTTP_HOST"] + '/products/' + str(product.id) + '/product-property/')
+            if is_ajax(self.request):
+                form_data = form.cleaned_data
+                with transaction.atomic():
+                    product = Product()
+                    product.code = form_data['code']
+                    product.name = form_data['name']
+                    product.category = form_data["category"]
+                    product.description = form_data['description']
+                    product.umo = form_data['umo']
+                    product.specification = form_data['specification']
+                    product.stock = form_data['stock']
+                    product.minimum_stock_level  = form_data['minimum_stock_level']
+                    product.rack_no = form_data['rack_no']
+                    product.tray_no = form_data['tray_no']
+                    product.created_by = self.request.user.id
+                    product.save()
+                    if form_data['image']:
+                        product.save_image_url(form_data["image"], get_secured_url(
+                                self.request) + self.request.META["HTTP_HOST"])
+                    messages.success(
+                        self.request, "Product added successfully.")
+                data = {
+                        'message': "Product added successfully.",
+                        'url': get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + '/products/' + str(product.id) + '/product-property/'
+                    }
+                return JsonResponse(data)
+            else:
+                return response
         
         except Exception as e:
-            messages.error(self.request, str(e))
-            return redirect("products:products-create")
+            data = {"error": str(e), "status": 403}
+            return JsonResponse(data)
 
 
 #Product Edit
@@ -223,3 +238,77 @@ class RemoveProductProperty(View):
             }
             return JsonResponse(data)
        
+
+#Category
+class CreateCategories(View):
+    template_name = "products/category.html"
+    
+    def get(self, request):
+        categories = Categories.objects.filter(is_active=True)
+        previous_url = request.META.get('HTTP_REFERER')
+        context = {
+            "categories": categories,
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        try:
+            data = json.loads(request.POST.get("data"))
+            print(data)
+            if data["category"] != '':
+                category = data["category"]
+                obj, created = Categories.objects.get_or_create(
+                    name__iexact=category,
+                    defaults={
+                        'name': category
+                    },
+                    is_active =True
+                )
+                
+            
+            categories = Categories.objects.filter(is_active=True)
+            html = render_to_string(
+                template_name="components/categories_table.html",
+                context={"categories": categories}
+            )
+
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
+
+        except Exception as e:
+            print(str(e))
+            data = {
+                "error": str(e),
+                "status": 500
+            }
+            return JsonResponse(data)
+
+
+class RemoveProductCategory(View):
+
+    def post(self, request):
+        try:
+            category_id = request.POST.get("id")
+            category_obj = Categories.objects.get(id=category_id)
+            category_obj.is_active = False
+            category_obj.save()
+            categories = Categories.objects.filter(is_active=True)
+            html = render_to_string(
+                template_name="components/categories_table.html",
+                context={"categories": categories}
+            )
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
+
+        except Exception as e:
+            print(str(e))
+            data = {
+                "error": str(e),
+                "status": 500
+            }
+            return JsonResponse(data)
