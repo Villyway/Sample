@@ -28,7 +28,7 @@ class ProductForm(forms.Form):
     specification = forms.CharField(required=False, label="Specification", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))    
     image = forms.ImageField(required=False, label="Thumbnail Image(300x 300)",
-                                    widget=forms.FileInput(attrs={'class': "form-control", 'accept': "image/jpeg image/png image/jpg"}), help_text="Please upload only .jpg, .jpeg,.png file")
+                                    widget=forms.FileInput(attrs={'class': "form-control", 'accept': "image/jpeg image/png image/jpg",'id':'imgInp'}), help_text="Please upload only .jpg, .jpeg,.png file")
 
     def __init__(self, *args, **kwargs):
         self.user = None

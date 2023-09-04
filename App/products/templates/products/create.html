@@ -95,6 +95,9 @@ New Product
                                             {{form.specification}}
                                             <span class="text-danger print_error" id="specification"></span>
                                         </div>
+                                        <div class="mb-3">
+                                            <img id="blah" src="#" alt="your image" width="100px" height="100px" />
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -113,6 +116,14 @@ New Product
 
 {% block js %}
 <script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+    imgInp.onchange = evt => {
+        const [file] = imgInp.files
+        if (file) {
+          blah.src = URL.createObjectURL(file)
+        }
+      }
+</script>
 
 <script>
     $(document).ready(function () {
