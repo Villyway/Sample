@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% comment %} {% load product_extras %} {% endcomment %}
 
 {% block title %}All Products{% endblock %}
 
@@ -9,7 +10,7 @@
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted active" aria-current="page"><a
-    href="{% url 'products:products-list' %}">Products</a> / <b class="text-dark">All<b></li>
+  href="{% url 'products:products-list' %}">Products</a> / <b class="text-dark">All<b></li>
 {% endblock %}
 
 {% block head %}
@@ -17,38 +18,45 @@ All Products
 {% endblock %}
 
 {% block content %}
-<div class="container mt-3">
+
+<div class="container mt-3 mb-5">
   <div class="row">
     <div class="col-12">
       <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
-          style="float: right; ">Add New Product</button></a>
+        style="float: right; ">Add New Product</button></a>
     </div>
     <div class="col-12">
 
       <!-- Basic Bootstrap Table -->
       <div class="card">
-        <h5 class="card-header">All Products</h5>
+        <h5 class="card-header">All Vendors</h5>
+        
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
         <div class="table-responsive text-nowrap">
           <table class="table">
             <thead>
               <tr>
                 <th>No</th>
-                <th>Image</th>
-                <th>Code</th>
-                <th>UMO</th>
-                <th>Stock</th>
-                <th>Minimum Stock Level</th>
-                <th>Rack No</th>
-                <th>Tray No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>GST No</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                {% for product in products %}
+              {% for product in products %}
               <tr>
-                <td> {{forloop.counter}} </td>
+                <td> 
+                  {% comment %} {% if is_paginated %}
+                  {{ forloop.counter|adjust_for_pagination:page }}
+                  {% else %}
+                  
+                  {% endif %} {% endcomment %}
+                  {{ forloop.counter }}
+             </td>
                 <td><img src="{{product.image}}" height="100px" width="100px"></td>
                 <td>{{product.code}}</td>
                 <td> {{product.umo}} </td>
@@ -79,13 +87,21 @@ All Products
 
             </tbody>
           </table>
+          
         </div>
+        
       </div>
       <!--/ Basic Bootstrap Table -->
     </div>
   </div>
-
+  <div class="row container-fluid mt-2">
+    {% if products.paginator.num_pages > 1 %}
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
 </div>
+</div>
+<div class="mt-5"></div>
+
 {% endblock content %}
 
 {% block js %}

@@ -16,13 +16,13 @@ class ProductForm(forms.Form):
     umo = forms.ModelChoiceField(queryset=Unit.objects.all(), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="Unit", empty_label='--- Select Unit ---')    
     stock = forms.CharField(required=False, label="Stock", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control"}), initial=0)
     minimum_stock_level = forms.CharField(required=False, label="Minimum Stock Level", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control"}), initial=0)
     rack_no = forms.CharField(required=False, label="Rack No", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control"}), initial=0)
     tray_no = forms.CharField(required=False, label="Tray No", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control"}),initial=0)
     description = forms.CharField(required=False, label="Description", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
     specification = forms.CharField(required=False, label="Specification", widget=forms.Textarea(
@@ -47,15 +47,16 @@ class ProductForm(forms.Form):
             self.fields["minimum_stock_level"].initial = self.product.minimum_stock_level
             self.fields["rack_no"].initial = self.product.rack_no
             self.fields["tray_no"].initial = self.product.tray_no
-            self.fields["image"].initial = self.product.image
+            self.fields["image"].initial = None
 
     
     def clean_code(self):
         code = self.cleaned_data.get("code")
-        if Product.objects.filter(code=code):
-            raise forms.ValidationError(
-                "This item code is already registered, please use a different one.")
-                
+        if self.edit == None:
+            if Product.objects.filter(code=code):
+                raise forms.ValidationError(
+                    "This item code is already registered, please use a different one.")
+
         return code
             
 

@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.template.loader import render_to_string
 from django.core.files.storage import default_storage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Product, Attribute, ProductAttribute, Categories
 from .forms import ProductForm
@@ -28,10 +29,22 @@ class ProductList(View):
     template_name = "products/list.html"
 
     def get(self,request):
-        data = {
-            "products" : Product.objects.all(),
+        products = Product.objects.active()
+        
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 10)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context = {
+            "products": products,
+
         }
-        return render(request,self.template_name,context=data)
+        return render(request, self.template_name, context)
+
     
 
 # Product Create.
@@ -77,12 +90,14 @@ class CreateProduct(FormView):
                         'url': get_secured_url(
                             self.request) + self.request.META["HTTP_HOST"] + '/products/' + str(product.id) + '/product-property/'
                     }
+                print(data)
                 return JsonResponse(data)
             else:
                 return response
         
         except Exception as e:
             data = {"error": str(e), "status": 403}
+            print(data)
             return JsonResponse(data)
 
 
@@ -113,39 +128,43 @@ class ProductEditView(FormView):
     
     def form_valid(self, form):
         form_data = form.cleaned_data
-        try:
-            with transaction.atomic():
-                product = Product.objects.single_product(id = self.kwargs['id'])
-                if product.code != form_data['code']:
-                    product.code = form_data['code']
-                if product.description != form_data['description']:
-                    product.description = form_data['description']
-                if product.umo != form_data['umo']:
-                    product.umo = form_data['umo']
-                if product.specification != form_data['specification']:
-                    product.specification = form_data['specification']
-                if product.stock != form_data['stock']:
-                    product.stock = form_data['stock']
-                if product.minimum_stock_level != form_data['minimum_stock_level']:
-                    product.minimum_stock_level = form_data['minimum_stock_level']
-                if product.rack_no != form_data['rack_no']:
-                    product.rack_no = form_data['rack_no']
-                if product.tray_no != form_data['tray_no']:
-                    product.tray_no = form_data['tray_no']
-                product.updated_by = self.request.user.id
-                product.save()
-                if form_data['image']:
-                    old_image = '/'.join(product.image.split('/')[4:])
-                    if default_storage.exists(old_image):
-                        default_storage.delete(old_image)
-
-                    product.save_image_url(form_data["image"], get_secured_url(
-                            self.request) + self.request.META["HTTP_HOST"])
-                return redirect('products:products-list')
+        # try:
+        with transaction.atomic():
+            product = Product.objects.single_product(id = self.kwargs['id'])
+            if product.code != form_data['code']:
+                product.code = form_data['code']
+            if product.name != form_data['name']:
+                product.name = form_data['name']
+            if product.category != form_data['category']:
+                product.category = form_data['category']
+            if product.description != form_data['description']:
+                product.description = form_data['description']
+            if product.umo != form_data['umo']:
+                product.umo = form_data['umo']
+            if product.specification != form_data['specification']:
+                product.specification = form_data['specification']
+            if product.stock != form_data['stock']:
+                product.stock = form_data['stock']
+            if product.minimum_stock_level != form_data['minimum_stock_level']:
+                product.minimum_stock_level = form_data['minimum_stock_level']
+            if product.rack_no != form_data['rack_no']:
+                product.rack_no = form_data['rack_no']
+            if product.tray_no != form_data['tray_no']:
+                product.tray_no = form_data['tray_no']
+            product.updated_by = self.request.user.id
+            product.save()
+            print(form_data['image'])
+            if form_data['image']:
+                old_image = '/'.join(product.image.split('/')[4:])
+                if default_storage.exists(old_image):
+                    default_storage.delete(old_image)
+                product.save_image_url(form_data["image"], get_secured_url(
+                        self.request) + self.request.META["HTTP_HOST"])
+            return redirect('products:products-list')
             
-        except Exception as e:
-            messages.error(self.request, str(e))
-            return redirect(self.request.META['HTTP_REFERER'])
+        # except Exception as e:
+            # messages.error(self.request, str(e))
+            # return redirect(self.request.META['HTTP_REFERER'])
 
 
 class ProductProperty(View):
