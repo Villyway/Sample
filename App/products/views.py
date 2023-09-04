@@ -14,6 +14,15 @@ from .models import Product, Attribute, ProductAttribute
 from .forms import ProductForm
 from utils.views import get_secured_url
 
+
+# Product Dashboard
+class Dashboard(View):
+    template_name = "products/dashboard.html"
+
+    def get(self, request):
+        return render(request,self.template_name)
+
+
 # Product List
 class ProductList(View):
     template_name = "products/list.html"

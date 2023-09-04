@@ -14,6 +14,15 @@ from utils.views import get_secured_url
 
 # Create your views here.
 
+# Dashboard
+class Dashboard(View):
+    template_name = "inventry/dashboard.html"
+
+    def get(self, request):
+        return render(request,self.template_name)
+
+
+
 # inward
 class InwardCreateView(FormView):
     form_class = InWardForm

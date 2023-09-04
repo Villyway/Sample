@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Products{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'products:products-dashboard' %}">Products</a> / 
+{% endblock %}
+
+{% block head %}
+Products
+{% endblock %}
+
+{% block content %}
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#product-menu').addClass('active open');
+  $('#product-dashboard').addClass('active')
+</script>
+{% endblock js %}

@@ -3,13 +3,14 @@ from django.contrib.auth.decorators import login_required
 
 from .views import (ProductList, CreateProduct, 
                     ProductEditView, ProductProperty, 
-                    RemoveProductProperty, 
+                    RemoveProductProperty, Dashboard
                     )
 
 app_name = "products"
 
 urlpatterns = [
     path("list",login_required(ProductList.as_view()), name="products-list"),
+    path("dashboard",login_required(Dashboard.as_view()), name="products-dashboard"),
     path("create",login_required(CreateProduct.as_view()), name="products-create"),
     path("<slug:id>/edit",login_required(ProductEditView.as_view()), name="products-edit"),
     path("<int:id>/product-property/",

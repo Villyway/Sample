@@ -11,6 +11,13 @@ from utils.models import Address
 from utils.views import decode_data
 
 
+# Product Dashboard
+class Dashboard(View):
+    template_name = "vendors/dashboard.html"
+
+    def get(self, request):
+        return render(request,self.template_name)
+
 
 class VendorList(View):
     template_name = "vendors/list.html"

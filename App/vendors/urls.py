@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 
-from .views import (CreateVendor, VendorList, VendorEditView, VendorDelete)
+from .views import (CreateVendor, VendorList, VendorEditView, VendorDelete, Dashboard)
 
 app_name = "vendors"
 
@@ -14,4 +14,5 @@ urlpatterns = [
          name="vendor-edit"),
     path("<slug:id>/delete/", login_required(VendorDelete.as_view()),
          name="vendor-delete"),
+    path("dashboard",login_required(Dashboard.as_view()), name="vendor-dashboard"),
 ]
