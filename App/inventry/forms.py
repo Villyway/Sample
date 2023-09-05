@@ -23,8 +23,8 @@ class InWardForm(forms.Form):
         attrs={"class": "form-control"}))
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.active(), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="Vendor", empty_label='--- Select Vendor ---')    
-    receive_by = forms.CharField(required=True, label="Receive By", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+    # receive_by = forms.CharField(required=True, label="Receive By", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
     remarks = forms.CharField(required=False, label="Remarks", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
     file_url = forms.FileField(required=False, label="Bill PDF", widget=forms.FileInput(attrs={'class': "form-control", 'accept': "PDF"}), help_text="Please upload only .PDF file")

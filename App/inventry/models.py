@@ -5,6 +5,7 @@ from products.models import Product, Unit
 from vendors.models import Vendor
 from utils.views import upload_file
 from users.models import User
+from .managers import InWordManager
 
 
 # Create your models here.
@@ -29,6 +30,8 @@ class InWord(Base):
     remarks = models.TextField(blank=True, null=True)
     file_url = models.URLField(max_length=500, null=True, blank=True)
     old_stock = models.IntegerField(blank=True, null=True)
+
+    objects = InWordManager()
 
     def __str__(self):
         return self.grn_no

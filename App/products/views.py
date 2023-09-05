@@ -90,7 +90,6 @@ class CreateProduct(FormView):
                         'url': get_secured_url(
                             self.request) + self.request.META["HTTP_HOST"] + '/products/' + str(product.id) + '/product-property/'
                     }
-                print(data)
                 return JsonResponse(data)
             else:
                 return response

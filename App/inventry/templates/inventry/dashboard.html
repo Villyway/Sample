@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Inventry{% endblock %}
+{% block title %}Inventory{% endblock %}
 
 {% block css %}
 
@@ -9,11 +9,11 @@
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted active" aria-current="page"><a
-    href="{% url 'inventry:inventry-dashboard' %}">Inventry</a> / 
+    href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / 
 {% endblock %}
 
 {% block head %}
-Inventry
+Inventory
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@ Inventry
 
 {% block js %}
 <script>
-  $('#product-menu').addClass('active open');
-  $('#product-dashboard').addClass('active')
+  $('#inventory-menu').addClass('active open');
+  $('#inventry-dashboard').addClass('active')
 </script>
 {% endblock js %}

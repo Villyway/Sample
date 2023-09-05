@@ -38,6 +38,7 @@ All Products
               <tr>
                 <th>No</th>
                 {% comment %} <th>Code</th> {% endcomment %}
+                <th>Image</th>
                 <th>Code</th>
                 <th>UOM</th>
                 <th>Stock</th>
@@ -60,7 +61,7 @@ All Products
                   {{ forloop.counter }}
              </td>
                 <td><img src="{{product.image}}" height="100px" width="100px"></td>
-                <td>{{product.code}}</td>
+                <td>{{product.code}}<br>-{{product.name}}</td>
                 <td> {{product.umo}} </td>
                 <td> {{product.stock}} </td>
                 <td> {{product.minimum_stock_level}} </td>
