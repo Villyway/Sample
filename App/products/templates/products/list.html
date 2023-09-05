@@ -40,6 +40,7 @@ All Products
                 {% comment %} <th>Code</th> {% endcomment %}
                 <th>Image</th>
                 <th>Code</th>
+                <th>Name</th>
                 <th>UOM</th>
                 <th>Stock</th>
                 <th>Minimum Stock Level</th>
@@ -51,7 +52,7 @@ All Products
             </thead>
             <tbody class="table-border-bottom-0">
               {% for product in products %}
-              <tr>
+              <tr >
                 <td> 
                   {% comment %} {% if is_paginated %}
                   {{ forloop.counter|adjust_for_pagination:page }}
@@ -61,10 +62,17 @@ All Products
                   {{ forloop.counter }}
              </td>
                 <td><img src="{{product.image}}" height="100px" width="100px"></td>
-                <td>{{product.code}}<br>-{{product.name}}</td>
+                <td>{{product.code}}</td>
+                <td>{{product.name}}</td>
                 <td> {{product.umo}} </td>
-                <td> {{product.stock}} </td>
-                <td> {{product.minimum_stock_level}} </td>
+                {% if product.stock < product.minimum_stock_level %}
+                <td class="bg-danger"> 
+                  {% else %}
+                  <td> 
+                {% endif %}
+                {{product.stock}} </td>
+                
+                <td>{{product.minimum_stock_level}} </td>
                 <td> {{product.rack_no}} </td>
                 <td> {{product.tray_no}} </td>
                 <td> 
