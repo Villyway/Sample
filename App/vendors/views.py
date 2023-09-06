@@ -37,6 +37,16 @@ class VendorList(View):
 
         }
         return render(request, self.template_name, context)
+    
+    def post(self,request):
+        gst_no = Vendor.objects.filter(gst_no=request.POST.get('gst_no'))
+        if gst_no:
+            vendor = Vendor.objects.get(gst_no=request.POST.get('gst_no'))
+            print(vendor.id)
+            return redirect("vendors:vendor-edit",vendor.id)
+        else:
+            messages.error(self.request,"This Vendor is not found, Please add the vendor.")
+            return redirect("vendors:vendor-list")
 
 # Create your views here.
 class CreateVendor(FormView):

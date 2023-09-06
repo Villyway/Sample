@@ -117,7 +117,7 @@ New Inward
                             </div>
                           </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="inward_data">
                             <table class="table">
                                 <tr>
                                     <th>Part No</th>
@@ -125,7 +125,7 @@ New Inward
                                     <th>Qc Status</th>
                                 </tr>
                                 <tr>
-                                    {{inwords}}
+                                    
                                 </tr>
                             </table>
                         </div>
@@ -164,6 +164,9 @@ New Inward
                     }
                     else {
                         console.log(data)
+                        $('#inward_data').html(data.data);
+                        $('input[name=part]').val('');
+                        $('input[name=received_qty]').val('');
                     }
                 },
                 error: function (data) {

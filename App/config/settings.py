@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # External Library
+    # 'rest_framework',
+
     # Project applications
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',

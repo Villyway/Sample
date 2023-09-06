@@ -109,7 +109,7 @@ class ProductEditView(FormView):
         product = Product.objects.single_product(
             id= self.kwargs["id"])
         kwargs = super(ProductEditView, self).get_form_kwargs()
-        kwargs.update({"product": product, "edit": True, "user":self.request.user})
+        kwargs.update({"product": product, "edit": True})
         return kwargs
     
     def get_context_data(self, **kwargs):

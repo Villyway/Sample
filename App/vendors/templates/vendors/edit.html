@@ -9,7 +9,7 @@
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted active" aria-current="page"><a
-        href="{% url 'vendors:vendor-list' %}">Vendors</a> / <b class="text-dark">Add<b></li>
+        href="{% url 'vendors:vendor-list' %}">Vendors</a> / <b class="text-dark">Edit<b></li>
 {% endblock %}
 
 {% block head %}
@@ -20,12 +20,12 @@ New Vendor
 <div class="row">
         <div class="col-md-12 mt-3">
                 <div class="card mb-4">
-                  <h5 class="card-header">New Vendor</h5>
+                  <h5 class="card-header">Edit Vendor</h5>
                   <div class="card-body">
                         <form method="post">
                                 {% csrf_token %}
                                 {{form}}
-                                <button class="btn btn-success mt-3" type="submit">Add</button>
+                                <button class="btn btn-success mt-3" type="submit">Edit</button>
                         </form>
                       
                     </div>

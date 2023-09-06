@@ -9,6 +9,7 @@ from django.db import transaction
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.core import serializers
+from django.template.loader import render_to_string
 
 from .forms import InWardForm, OutWardForm
 from .models import InWord, Outword
@@ -72,13 +73,18 @@ class InwardCreateView(FormView):
                     product.save()
                 messages.success(
                         self.request, "Inword added successfully.")
-                inwords = InWord.objects.inword_selected_fields(["part","received_qty"],InWord.objects.filter(bill_no=inword.bill_no))
-                print(inwords)
-            data = {
-                    'message': "Inword added successfully.",
-                    'inwords':inwords
-                    }
-            return JsonResponse(data)
+                
+                inwords = serializers.serialize("json", 
+                             InWord.objects.filter(bill_no=inword.bill_no), 
+                             fields=('part__code','received_qty'))
+            html = render_to_string(
+                template_name="inward/inword_create_component.html",
+                context={"inwords": inwords}
+            )
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
         else:
             return response
         
