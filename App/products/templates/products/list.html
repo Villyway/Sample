@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% comment %} {% load product_extras %} {% endcomment %}
+{% load product_extras %}
 
 {% block title %}All Products{% endblock %}
 
@@ -29,7 +29,7 @@ All Products
 
       <!-- Basic Bootstrap Table -->
       <div class="card">
-        <h5 class="card-header">All Vendors</h5>
+        <h5 class="card-header">All Products</h5>
         
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
         <div class="table-responsive text-nowrap">
@@ -59,7 +59,8 @@ All Products
                   {% else %}
                   
                   {% endif %} {% endcomment %}
-                  {{ forloop.counter }}
+                   {{ forloop.counter }}
+                  
              </td>
                 <td><img src="{{product.image}}" height="100px" width="100px"></td>
                 <td>{{product.code}}</td>

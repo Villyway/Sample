@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'utils.apps.UtilsConfig',
     'products.apps.ProductsConfig',
     'vendors.apps.VendorsConfig',
-    'inventry.apps.InventryConfig'
+    'inventry.apps.InventryConfig',
+    'orders.apps.OrdersConfig',
+    'customer.apps.ustomerConfig',
     
 ]
 
