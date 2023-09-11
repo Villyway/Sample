@@ -1,14 +1,21 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from django.views.generic import View
 from django.db import transaction
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.core import serializers
+from django.template.loader import render_to_string
 
 from .forms import VendorForm
-from .models import Vendor
+from .models import Vendor, PartyType
 from utils.models import Address
 from utils.views import decode_data
+from .serializers import VendorDetailSerializer
+
 
 
 # Product Dashboard
@@ -149,3 +156,89 @@ class VendorDelete(View):
         vendor.updated_by = self.request.user.id
         vendor.save()
         return redirect("vendors:vendor-list")
+
+
+class GetVenderName(View):
+    def get(self, request,id):
+        vendor = VendorDetailSerializer(Vendor.objects.single_vendor(id = id)).data
+        # vendor = serializers.serialize("json",Vendor.objects.single_vendor(id = id))
+        data = {
+            "vendor": vendor
+        }
+        return JsonResponse(data)
+    
+
+#Category
+class CreateCategories(View):
+    template_name = "vendors/category.html"
+    
+    def get(self, request):
+        categories = PartyType.objects.filter(is_active=True)
+        previous_url = request.META.get('HTTP_REFERER')
+        context = {
+            "categories": categories,
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        try:
+            data = json.loads(request.POST.get("data"))
+            print(data)
+            if data["category"] != '':
+                category = data["category"]
+                obj, created = PartyType.objects.get_or_create(
+                    type__iexact=category,
+                    defaults={
+                        'type': category
+                    },
+                    is_active =True,
+                    created_by = self.request.user.id
+                )
+                
+            
+            categories = PartyType.objects.filter(is_active=True)
+            html = render_to_string(
+                template_name="components/categories_table.html",
+                context={"categories": categories}
+            )
+
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
+
+        except Exception as e:
+            print(str(e))
+            data = {
+                "error": str(e),
+                "status": 500
+            }
+            return JsonResponse(data)
+
+
+class RemoveVendorCategory(View):
+
+    def post(self, request):
+        try:
+            category_id = request.POST.get("id")
+            category_obj = PartyType.objects.get(id=category_id)
+            category_obj.is_active = False
+            category_obj.save()
+            categories = PartyType.objects.filter(is_active=True)
+            html = render_to_string(
+                template_name="components/categories_table.html",
+                context={"categories": categories}
+            )
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
+
+        except Exception as e:
+            print(str(e))
+            data = {
+                "error": str(e),
+                "status": 500
+            }
+            return JsonResponse(data)

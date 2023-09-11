@@ -14,6 +14,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Product, Attribute, ProductAttribute, Categories
 from .forms import ProductForm
 from utils.views import get_secured_url, is_ajax
+from .serializers import InwordOfProductSerializer
 
 
 # Product Dashboard
@@ -330,3 +331,13 @@ class RemoveProductCategory(View):
                 "status": 500
             }
             return JsonResponse(data)
+
+
+class GetProductName(View):
+
+    def get(self, request,id):
+        product = InwordOfProductSerializer(Product.objects.single_product(id = id)).data
+        data = {
+            "product": product
+        }
+        return JsonResponse(data)

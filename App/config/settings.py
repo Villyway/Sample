@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # External Library
-    # 'rest_framework',
+    'rest_framework',
 
     # Project applications
     'users.apps.UsersConfig',

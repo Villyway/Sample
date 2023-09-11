@@ -18,7 +18,7 @@ New Inward
 
 {% block content %}
 <div class="row">
-        <div class="col-md-12 mt-3">
+        <div class="col-md-8 mt-3">
                 <div class="card mb-4">
                   <h5 class="card-header">New Inward</h5>
                   <div class="card-body">
@@ -69,7 +69,8 @@ New Inward
                                         <span class="text-danger print_error" id="file_url"></span>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                
+                                <div class="col-8">
                                     <div class="mb-3">
                                         <label class="form-label" for="basic-default-inword-">{{form.remarks.label}}</label>
                                         <span class="text-danger"></span>
@@ -106,9 +107,10 @@ New Inward
                               <div class="mb-3">
                                 <table class="table mt-3">
                                     <tr>
-                                        <th><label class="form-label" for="basic-default-inword-received_qty">{{form.qc_status.label}}</label></th>
-                                        <td>{{form.qc_status}}</td>
+                                        {% comment %} <th><label class="form-label" for="basic-default-inword-received_qty">{{form.qc_status.label}}</label></th>
+                                        <td>{{form.qc_status}}</td> {% endcomment %}
                                         <td><button type="submit" class="btn btn-success btn-circle" title="Publish"><i class="fa-solid fa-plus"></i></button></td>
+                                        <td> <a class='btn btn-primary' href="">Finished</a> </td>
                                         {% comment %} <td><button  class="btn btn-primary btn-circle" title="Publish">Finish</i></button></td> {% endcomment %}
                                     </tr>
                                 </table>
@@ -117,24 +119,30 @@ New Inward
                             </div>
                           </div>
                         </div>
-                        <div class="row" id="inward_data">
-                            <table class="table">
-                                <tr>
-                                    <th>Part No</th>
-                                    <th>Part QTY</th>
-                                    <th>Qc Status</th>
-                                </tr>
-                                <tr>
-                                    
-                                </tr>
-                            </table>
-                        </div>
+                        
                     </div>
                 </div>
         </div>
-                
+        <div class="col-md-4 mt-3">
+            <div class="row">
+                <div class="col-12 card">
+                    <div class="row" id="inward_data">
+                        <table class="table" id="inword-data">
+                            <tr>
+                                <th>Part No</th>
+                                <th>Part Name</th>
+                                <th>Part QTY</th>
+                                <th>Qc Status</th>
+                            </tr>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>            
     </div>
-</div>
+    
 {% endblock %}
 
 {% block js %}
@@ -164,7 +172,8 @@ New Inward
                     }
                     else {
                         console.log(data)
-                        $('#inward_data').html(data.data);
+                        creatretable(data)
+                        
                         $('input[name=part]').val('');
                         $('input[name=received_qty]').val('');
                     }
@@ -181,8 +190,84 @@ New Inward
         })
     })
 </script>
-    <script>
-        $('#inventory-menu').addClass('active open');
-        $('#sub-all-inward').addClass('active')
-    </script>
+<script>
+    $('#inventory-menu').addClass('active open');
+    $('#sub-all-inward').addClass('active')
+</script>
+<script>
+    $(document).ready(function () {
+        $("#id_vendor").change(function () {
+            var id = $(this).find(":selected").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'vendors:vendor-get-name' 1  %}".replace("1", id),
+                success: function (response) {
+                    console.log(response.vendor.name)
+                    $('#vendor').text("Name:- " + response.vendor.name + " |  GST-No:-" + response.vendor.gst_no)
+                    
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        })
+
+        $("#id_part").change(function () {
+            var id = $(this).find(":selected").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'products:products-name' 1  %}".replace("1", id),
+                success: function (response) {
+                    console.log(response.product)
+                    $('#part').text("Code:- " + response.product.code + " |  Name:-" + response.product.name)
+                    
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        })
+
+        $("#id_bill_no").change(function () {
+            var id = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'inventry:bill-inword' 1  %}".replace("1", id),
+                success: function (response) {
+                    console.log(response.data.product)
+                    
+                    // $('#inward_data').html(response.data.product);
+                    
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        })
+        
+    });
+
+    function creatretable(data) {
+        $("#inword-data").find("tr").remove().end();
+                    $("#inword-data").append(
+                        $('<tr></tr>').append(
+                                $('<th></th>').text("Part No"),
+                                $('<th></th>').text("Part Name"),
+                                $('<th></th>').text("Part QTY"),
+                                $('<th></th>').text("Qc Status")
+                            )
+                    )
+                    var table = $('#inword-data');
+                    $.each(data.data.product, function(){
+                        table.append(
+                            $('<tr></tr>').append(
+                                $('<td></td>').text(this.code),
+                                $('<td></td>').text(this.name),
+                                $('<td></td>').text(this.received_qty),
+                                $('<td></td>').text(this.qc),
+                            )
+                        );
+                    });
+      }
+</script>
 {% endblock %}

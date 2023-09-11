@@ -14,6 +14,7 @@ from django.template.loader import render_to_string
 from .forms import InWardForm, OutWardForm
 from .models import InWord, Outword
 from utils.views import get_secured_url, is_ajax
+from .serializers import InwordOfBillWiseProductSerializer
 
 # Create your views here.
 
@@ -74,15 +75,14 @@ class InwardCreateView(FormView):
                 messages.success(
                         self.request, "Inword added successfully.")
                 
-                inwords = serializers.serialize("json", 
-                             InWord.objects.filter(bill_no=inword.bill_no), 
-                             fields=('part__code','received_qty'))
-            html = render_to_string(
-                template_name="inward/inword_create_component.html",
-                context={"inwords": inwords}
-            )
+                # inwords = serializers.serialize("json", 
+                #              InWord.objects.filter(bill_no=inword.bill_no), 
+                #              fields=('part__code','received_qty'))
+                print(InWord.objects.filter(bill_no=inword.bill_no))
+                inwords = InwordOfBillWiseProductSerializer(InWord.objects.filter(bill_no=inword.bill_no)).data
+            
             data_dict = {
-                "data": html
+                "data": inwords
             }
             return JsonResponse(data=data_dict, safe=False)
         else:
@@ -122,3 +122,19 @@ class OutwardCreateView(FormView):
         product.stock = product.stock - int(out_ward.issued_qty)
         product.save()
         return redirect("products:products-list")
+    
+
+#Bill no wise inword data
+class GetBillNoByInword(View):
+
+    def get(self, request,id):
+        inwords = InwordOfBillWiseProductSerializer(InWord.objects.filter(bill_no=id)).data
+        # vendor = serializers.serialize("json",Vendor.objects.single_vendor(id = id))
+        # html = render_to_string(
+        #         template_name="inward/inword_create_component.html",
+        #         context={"inwords": inwords}
+        # )
+        data_dict = {
+            "data": inwords
+        }
+        return JsonResponse(data=data_dict, safe=False)
