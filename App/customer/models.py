@@ -14,7 +14,7 @@ class Customer(Base):
     email = models.EmailField(null=True, blank=True)
     gst_no = models.CharField(max_length=16, blank=True, null=True)
     type = models.CharField(
-        max_length=25, choices=CustomerType.choices(), default=CustomerType.value)
+        max_length=25, choices=CustomerType.choices(), default=CustomerType.CONSUMER.value)
     address = models.ManyToManyField(Address, blank=True)
     is_user = models.BooleanField(default=False)
     

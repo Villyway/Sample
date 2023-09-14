@@ -6,6 +6,7 @@ from vendors.models import Vendor
 from utils.views import upload_file
 from users.models import User
 from .managers import InWordManager
+from utils.constants.choices import State
 
 
 # Create your models here.
@@ -30,6 +31,8 @@ class InWord(Base):
     remarks = models.TextField(blank=True, null=True)
     file_url = models.URLField(max_length=500, null=True, blank=True)
     old_stock = models.IntegerField(blank=True, null=True)
+    qc_state = models.CharField(
+        max_length=25, choices=State.choices(), default=State.IN_REVIEW.value)
 
     objects = InWordManager()
 
@@ -65,4 +68,19 @@ class Outword(Base):
         self.out_ward_sr_no = "BA0000" + str(self.id)
         self.save()
         return True
+    
+
+class StoreStock(Base):
+    parts = models.ForeignKey(
+        Product, on_delete=models.CASCADE)
+    current_stock = models.IntegerField(blank=True, null=True, default=0)
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.CASCADE)
+    stock_version = models.CharField(max_length=20)
+    arrival_stock = models.IntegerField(blank=True, null=True, default=0)
+    inword = models.ForeignKey(
+        InWord, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.parts.code) + self.vendor.name
     

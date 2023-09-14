@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.core import serializers
 from django.template.loader import render_to_string
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import InWardForm, OutWardForm
 from .models import InWord, Outword
@@ -56,7 +57,7 @@ class InwardCreateView(FormView):
                 inword.received_qty = form_data['received_qty']
                 inword.uom = form_data['part'].umo
                 inword.in_time = datetime.now()
-                inword.qc_status = form_data['qc_status']
+                inword.qc_status = False
                 inword.purchase_order_no = form_data['purchase_order_no']
                 inword.vendor = form_data['vendor']
                 inword.receive_by = self.request.user
@@ -78,7 +79,7 @@ class InwardCreateView(FormView):
                 # inwords = serializers.serialize("json", 
                 #              InWord.objects.filter(bill_no=inword.bill_no), 
                 #              fields=('part__code','received_qty'))
-                print(InWord.objects.filter(bill_no=inword.bill_no))
+                # print(InWord.objects.filter(bill_no=inword.bill_no))
                 inwords = InwordOfBillWiseProductSerializer(InWord.objects.filter(bill_no=inword.bill_no)).data
             
             data_dict = {
@@ -138,3 +139,26 @@ class GetBillNoByInword(View):
             "data": inwords
         }
         return JsonResponse(data=data_dict, safe=False)
+    
+
+#QC Process 
+class QCView(View):
+    template_name = "inward/qc_list.html"
+
+    def get(self, request):
+        list_qc = InWord.objects.qc_list()
+
+        page = request.GET.get('page',1)
+        paginator = Paginator(list_qc,10)
+        try:
+            list_qc = paginator.page(page)
+        except PageNotAnInteger:
+            list_qc = page.page(1)
+        except EmptyPage:
+            list_qc = paginator.page(paginator.num_pages)
+        
+        context = {
+            "qc_list" : list_qc,
+        }
+
+        return render(request,self.template_name, context)

@@ -6,6 +6,8 @@ from django.db import models
 from django.db.models import Q
 from django.db.models import Sum
 
+from utils.constants.choices import State
+
 
 
 class InWordManager(models.Manager):
@@ -30,3 +32,12 @@ class InWordManager(models.Manager):
                 return self.active().values(*fields)
         except:
             return None
+        
+    def qc_list(self):
+        return self.filter(qc_status=False)
+    
+    def qc_rejected(self):
+        return self.filter(qc_state = State.REJECTED.value)
+    
+    def qc_approved(self):
+        return self.filter(qc_state = State.REJECTED.value)

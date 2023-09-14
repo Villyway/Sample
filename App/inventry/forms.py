@@ -16,9 +16,6 @@ class InWardForm(forms.Form):
         attrs={"class": "form-control form-select"}), required=True, label="Item", empty_label='--- Select Product ---')    
     received_qty = forms.CharField(required=True, label="Received Qty", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
-    # in_time = forms.CharField(required=True, label="In Time", widget=forms.TimeInput(
-    #     attrs={"class": "form-control", "type":"time"}))
-    
     purchase_order_no = forms.CharField(required=True, label="Purchase Order No", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.active(), widget=forms.Select(
@@ -28,7 +25,7 @@ class InWardForm(forms.Form):
     remarks = forms.CharField(required=False, label="Remarks", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
     file_url = forms.FileField(required=False, label="Bill PDF", widget=forms.FileInput(attrs={'class': "form-control", 'accept': "PDF"}), help_text="Please upload only .PDF file")
-    qc_status = forms.BooleanField(required=False, label="QC By Approved", widget=forms.CheckboxInput(attrs={'style': 'width:30px;height:30px;'}))
+    
 
     def __init__(self, *args, **kwargs):
         self.user = None
@@ -46,7 +43,7 @@ class InWardForm(forms.Form):
 #Outword Form
 class OutWardForm(forms.Form):
     parts = forms.ModelChoiceField(queryset=Product.objects.active(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="Item", empty_label='--- Select Product ---')    
+        attrs={"class": "form-control form-select","autofocus":True}), required=True, label="Item", empty_label='--- Select Product ---')    
     issued_qty = forms.CharField(required=True, label="Issued Qty", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
     receive_by = forms.CharField(required=True, label="Receive By", widget=forms.TextInput(
@@ -54,6 +51,14 @@ class OutWardForm(forms.Form):
     remarks = forms.CharField(required=False, label="Remarks", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
     
+    def __init__(self, *args, **kwargs):
+        self.user = None
+        super(OutWardForm, self).__init__(*args, **kwargs)
+
+    def clean_issued_qty(self):
+        part = self.cleaned_data.get("parts")
+        qty = self.cleaned_data.get("issued_qty")
+        return qty
 
 
 

@@ -18,7 +18,64 @@ New Outward
 
 {% block content %}
 <div class="row">
-        <div class="col-md-12 mt-3">
+    <div class="col-md-6 col-lg-4 mt-3">
+        <div class="card">
+            <div class="card-header">Inword</div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12">
+                            {{form}}
+                        </div>
+                    </div>
+                    <div classs="row">
+                        <div class="col-12">
+                            <button class="btn btn-success mt-5 " type="submit" style="float:right">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+          </div>
+    </div>
+    <div class="col-md-6 col-lg-8 mt-3">
+        <div class="card">
+            <div class="card-header">OutWord Items</div>
+            <div class="card-body">
+                <div class="col-md mb-4 mb-md-0">
+                    
+                    <div class="accordion mt-3" id="accordionExample">
+                      <div class="card accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                          <button type="button" class="accordion-button collapsed bg-primary text-white" data-bs-toggle="collapse" data-bs-target="#accordionOne" aria-expanded="false" aria-controls="accordionOne">
+                            Accordion Item 1
+                          </button>
+                        </h2>
+                        <div id="accordionOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample" style="">
+                          <div class="accordion-body">
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>              
+            </div>
+          </div>
+    </div>
+    
+    
+        {% comment %} <div class="col-md-4 mt-3">
+                <div class="card mb-4">
+                  <h5 class="card-header">New Outward</h5>
+                  <div class="card-body">
+                        
+                      
+                    </div>
+                  </div>
+                </div>
+                </div></div>
+              <div class="col-md-8 mt-3">
                 <div class="card mb-4">
                   <h5 class="card-header">New Outward</h5>
                   <div class="card-body">
@@ -39,8 +96,8 @@ New Outward
                     </div>
                   </div>
                 </div>
-              </div>
-</div>
+              </div>{% endcomment %}
+</div> 
 {% endblock %}
 
 {% block js %}
