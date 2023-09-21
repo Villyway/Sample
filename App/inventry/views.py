@@ -16,6 +16,8 @@ from .forms import InWardForm, OutWardForm
 from .models import InWord, Outword
 from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfBillWiseProductSerializer
+from products.models import Product
+
 
 # Create your views here.
 
@@ -24,7 +26,11 @@ class Dashboard(View):
     template_name = "inventry/dashboard.html"
 
     def get(self, request):
-        return render(request,self.template_name)
+        total_products = Product.objects.filter(is_active=True).count()
+        context = {
+            "total_product":total_products
+        }
+        return render(request,self.template_name, context)
 
 
 
@@ -75,11 +81,6 @@ class InwardCreateView(FormView):
                     product.save()
                 messages.success(
                         self.request, "Inword added successfully.")
-                
-                # inwords = serializers.serialize("json", 
-                #              InWord.objects.filter(bill_no=inword.bill_no), 
-                #              fields=('part__code','received_qty'))
-                # print(InWord.objects.filter(bill_no=inword.bill_no))
                 inwords = InwordOfBillWiseProductSerializer(InWord.objects.filter(bill_no=inword.bill_no)).data
             
             data_dict = {
@@ -160,5 +161,9 @@ class QCView(View):
         context = {
             "qc_list" : list_qc,
         }
-
         return render(request,self.template_name, context)
+    
+    def post(self, request):
+        return redirect("inventry:qc-list")
+    
+    

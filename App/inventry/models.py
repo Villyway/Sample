@@ -71,8 +71,6 @@ class Outword(Base):
     
 
 class StoreStock(Base):
-    parts = models.ForeignKey(
-        Product, on_delete=models.CASCADE)
     current_stock = models.IntegerField(blank=True, null=True, default=0)
     vendor = models.ForeignKey(
         Vendor, on_delete=models.CASCADE)

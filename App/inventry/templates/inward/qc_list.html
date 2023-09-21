@@ -47,8 +47,8 @@ Inword QC List
                 <th>Vendor</th>
                 <th>Received <br> By</th>
                 <th>Purchase <br> Order <br> No</th>
-                <th>In Time</th>
-                <th>QC Status</th>
+                <th>In<br> Time</th>
+                <th>QC<br> Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -75,7 +75,13 @@ Inword QC List
                 <td>{{inword.receive_by}}</td>
                 <td>{{inword.purchase_order_no}}</td>
                 <td>{{inword.in_time}}</td>
-                <td>{{inword.qc_status}}</td>
+                <td>
+                {% if inword.qc_status %}
+                <i class="fas fa-check text-success" style="font-size: 15px;"></i>
+                {% else %}
+                <i class="fas fa-times text-danger" style="font-size: 15px;"></i>
+                {% endif %}
+                </td>
                 <td>
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         Action
@@ -86,7 +92,6 @@ Inword QC List
                         <li><a class="dropdown-item bg-danger text-white" href="javascript:void(0);">REJECTED</a></li>
                         
                         <li><a class="dropdown-item bg-primary text-white" href="javascript:void(0);">IN REVIEW</a></li>
-                        
                       </ul>
                 </td>
               </tr>
