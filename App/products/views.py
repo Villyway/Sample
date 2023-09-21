@@ -22,7 +22,18 @@ class Dashboard(View):
     template_name = "products/dashboard.html"
 
     def get(self, request):
-        return render(request,self.template_name)
+        total_categories = Categories.objects.all()
+        total_product = Product.objects.active().count()
+        __item = {}
+        for i in total_categories:
+           __item[i.name] = Product.objects.category_by_count(i)
+        context = {
+            "total":total_product,
+            "category_by":__item,
+            "categories":total_categories
+        }
+        
+        return render(request,self.template_name, context)
 
 
 # Product List
