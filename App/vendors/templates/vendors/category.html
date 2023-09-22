@@ -20,9 +20,9 @@ Vendor Categories
 {% block content %}
 <div class="row">
     
-    <div class="col-md-12 ">
+    <div class="col-md-12 mt-3 ">
         <div class="card mb-4">
-            <h5 class="card-header">Categories</h5>
+            <h5 class="card-header">Vendors Type</h5>
             
             <div class="card-body">
                 <form id="id_property_form">
@@ -30,7 +30,7 @@ Vendor Categories
                     <div class="row">
                         <div class="col-5">
                             <div class="form-group">
-                                <label for="id_value" class="text-dark"><b>Category Name</b></label>
+                                <label for="id_value" class="text-dark"><b>Type Name</b></label>
                                 <input type="text" id="id_value" name="category" class="form-control" required>
                             </div>
                         </div>
@@ -48,13 +48,13 @@ Vendor Categories
                 <hr>
                 <div class="row">
 
-                    <h4 class="text-dark mt-3">Vendors Categories</h4>
+                    <h4 class="text-dark mt-3">Vendor Types</h4>
                     <div class="table-responsive" id="id_attribute_data" style="height: 200px;overflow: scroll;">
                         {% if categories %}
                         <table class="table table-striped table-bordered display no-wrap">
                             <thead class="text-white bg-primary">
                                 <tr>
-                                    <th>Categories</th>
+                                    <th>Type</th>
                                     <th>Delete</th>
                                 </tr>
                             </thead>
@@ -62,7 +62,7 @@ Vendor Categories
                                 {% for category in categories %}
                                 <tr>
                                     <td>
-                                        {{ category.name|title }}
+                                        {{ category.type|title }}
                                     </td>
                                     <td>
                                         <center>
@@ -87,8 +87,7 @@ Vendor Categories
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+</div>{% endblock %}
 
 {% block js %}
 {% comment %} {% include 'components/active/products-js.html' %} {% endcomment %}
