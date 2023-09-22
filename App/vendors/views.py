@@ -75,6 +75,7 @@ class CreateVendor(FormView):
                     mobile = form_data["mobile"],
                     email = form_data["email"],
                     gst_no = form_data["gst_no"],
+                    type =  form_data["type"],
                     created_by = self.request.user.id
 
                 )
@@ -122,6 +123,10 @@ class VendorEditView(FormView):
 
                 if vendor.gst_no != form_data['gst_no']:
                     vendor.gst_no = form_data['gst_no']
+
+                if vendor.type != form_data['type']:
+                    vendor.type = form_data["type"]
+
                 vendor.updated_by = self.request.user.id
                 vendor.save()
 

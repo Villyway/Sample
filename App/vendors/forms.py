@@ -13,7 +13,7 @@ class VendorForm(forms.Form):
     name = forms.CharField(required=True, label="Vendor Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     type = forms.ModelChoiceField(queryset=PartyType.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=False, label="Vendor Type", empty_label='--- Select Type ---')
+        attrs={"class": "form-control form-select"}), required=False, label="Vendor Type", empty_label='--- Select Type ---')
     mobile = forms.CharField(
         required=False, label=" Vendor Mobile", widget=forms.TextInput(attrs={"class": "form-control"}))
     email = forms.EmailField(label='Vendor Email', widget=forms.EmailInput(
@@ -25,12 +25,12 @@ class VendorForm(forms.Form):
     street2 = forms.CharField(required=False, label="Street 2",
                               widget=forms.TextInput(attrs={"class": "form-control"}))
     country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="Country", empty_label='--- Select Country ---')
+        attrs={"class": "form-control form-select"}), required=True, label="Country", empty_label='--- Select Country ---')
     state = forms.ModelChoiceField(queryset=State.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="State", empty_label='--- Select State ---')
+        attrs={"class": "form-control form-select"}), required=True, label="State", empty_label='--- Select State ---')
     
     city = forms.ModelChoiceField(queryset=City.objects.all(), widget=forms.Select(
-        attrs={"class": "form-control"}), required=True, label="City", empty_label='--- Select City ---')
+        attrs={"class": "form-control form-select"}), required=True, label="City", empty_label='--- Select City ---')
 
     pincode = forms.IntegerField(required=False, label="Pincode", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
