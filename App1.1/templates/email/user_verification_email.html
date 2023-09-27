@@ -1,0 +1,22 @@
+{% extends 'email/base_email.html' %}
+
+{% block title %}
+User Verification
+{% endblock %}
+
+{% block sub-titel %}{% endblock %}
+
+{% block message %}
+Hello {{name}},<br><br>
+
+We're happy you signed up for BasuriAutomotive. To start experiencing with musical Horn. Please confirm your email address by entering
+below OTP.<br><br>
+<center>
+    <h1>{{otp}}</h1>
+</center><br>
+
+
+Welcome to BasuriAutomotive!<br>
+The BasuriAutomotive Team.<br><br>
+
+{% endblock %}

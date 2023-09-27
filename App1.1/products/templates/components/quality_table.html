@@ -1,0 +1,34 @@
+{% if categories %}
+<div class="table-responsive">
+    <table class="table table-striped table-bordered display no-wrap">
+        <thead class="text-white bg-primary">
+            {% if error %}
+            <tr>
+                <p class="text-danger">*{{error}}</p>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Quality Types</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>
+                    {{ category.type|title }}
+                </td>
+                
+                <td>
+                    <center>
+                        <a href="javascript:void(0)" class="remove_attribute btn btn-danger btn-sm bg-gradient-danger"
+                            data-id="{{ category.id }}" id="id_remove_attribute" onclick="deleteAttribute(this);"><span
+                                class="fa fa-trash"></span></a>
+                    </center>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}

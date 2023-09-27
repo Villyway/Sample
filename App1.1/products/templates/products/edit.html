@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://basuriautomotive.com/assets/css/aiz-core.css">
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+        href="{% url 'vendors:vendor-list' %}">Product</a> / <b class="text-dark"> {{product.code}} <b></li>
+{% endblock %}
+
+{% block head %}
+Edit Product
+{% endblock %}
+
+{% block content %}
+<div class="row">
+        <div class="col-md-12 mt-3">
+                <div class="card mb-4">
+                  <h5 class="card-header">Edit Product</h5>
+                  <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                {{form}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <img src="{{product.image}}" width="100" height="100">
+                                
+                            </div>
+                            <div class="col-3">
+                                <label>Your image</label>
+                                <img id="blah" src="#" alt="" width="100px" height="100px" />
+                            </div>
+                        </div>
+                        <div classs="row">
+                            <div class="col-12">
+                                <button class="btn btn-success mt-5 " type="submit" style="float:right">Edit</button>
+                            </div>
+                        </div>
+                    </form>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#product-menu').addClass('active open');
+      </script>
+      <script>
+        imgInp.onchange = evt => {
+            const [file] = imgInp.files
+            if (file) {
+              blah.src = URL.createObjectURL(file)
+            }
+          }
+      </script>
+{% endblock %}

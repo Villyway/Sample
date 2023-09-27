@@ -1,0 +1,29 @@
+{% extends 'email/base_email.html' %}
+
+{% block title %}
+New Inquiry
+{% endblock %}
+
+{% block sub-titel %}{% endblock %}
+
+{% block message %}
+<table>
+    <tr>
+        <th>Name</th>
+        <td>{{name}}</td>
+    </tr>
+    <tr>
+        <th>Mobile no</th>
+        <td>{{mobile}}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{email}}</td>
+    </tr>
+    <tr>
+        <th>Message</th>
+        <td>{{message}}</td>
+    </tr>
+</table>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Vendors{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'vendors:vendor-dashboard' %}">Vendors</a> / 
+{% endblock %}
+
+{% block head %}
+Vendors
+{% endblock %}
+
+{% block content %}
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#vendor-menu').addClass('active open');
+  $('#vendor-dashboard').addClass('active')
+</script>
+{% endblock js %}
