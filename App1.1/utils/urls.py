@@ -17,5 +17,4 @@ urlpatterns = [
     # path("country/", CountryAPIView.as_view(), name="country-list"),
     # path("state/<int:pk>/", StateAPIView.as_view(), name="state-list"),
     # path("city/<int:pk>/", CityAPIView.as_view(), name="city-list"),
-
 ]

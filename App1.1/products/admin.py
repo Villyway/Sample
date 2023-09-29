@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export.admin import ExportActionMixin
 
 # Register your models here.
-from .models import Product, Attribute, ProductAttribute, Unit
+from .models import Product, Attribute, ProductAttribute, Unit, PartQuality
 
 @admin.register(Product)
 class ProductAdmin(ExportActionMixin, admin.ModelAdmin):
@@ -24,4 +24,6 @@ class UnitAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
 
-
+@admin.register(PartQuality)
+class PartQualityAdmin(admin.ModelAdmin):
+    list_display= ["code","name"]

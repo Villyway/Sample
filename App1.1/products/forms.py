@@ -2,12 +2,12 @@ from datetime import date, datetime
 
 from django import forms
 
-from .models import (Unit, Product, Attribute,
-                     ProductAttribute, Categories )
+from .models import (Unit, Product,
+                      Categories, PartQuality  )
 from vendors.models import Vendor
 
 class ProductForm(forms.Form):
-    code = forms.CharField(required=True, label="Item Code", widget=forms.TextInput(
+    code = forms.CharField(label="Item Code", widget=forms.TextInput(
         attrs={"class": "form-control"}))    
     name = forms.CharField(required=True, label="Item Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
@@ -26,7 +26,11 @@ class ProductForm(forms.Form):
     description = forms.CharField(required=False, label="Description", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
     specification = forms.CharField(required=False, label="Specification", widget=forms.Textarea(
-        attrs={"class": "form-control aiz-text-editor", "rows": "5"}))    
+        attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
+    part_quality = forms.ModelChoiceField(queryset=PartQuality.objects.filter(is_active=True), widget=forms.Select(
+        attrs={"class": "form-control form-select"}), required=True, label="Quality", empty_label='--- Select Quality ---')
+    part_version = forms.CharField(required=True, label="Item Version", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
     image = forms.ImageField(required=False, label="Thumbnail Image(300x 300)",
                                     widget=forms.FileInput(attrs={'class': "form-control", 'accept': "image/jpeg image/png image/jpg",'id':'imgInp'}), help_text="Please upload only .jpg, .jpeg,.png file")
 

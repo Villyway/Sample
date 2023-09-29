@@ -1,3 +1,8 @@
+import code128
+import io
+from PIL import Image, ImageDraw, ImageFont
+
+
 from random import randint, choices
 
 from django.utils import timezone
@@ -116,3 +121,50 @@ def upload_file(instance, filename, dir_name):
     url = "%s/%d/%s" % (dir_name,int(instance.id), name)
     file_name = default_storage.save(url, filename)
     return file_name
+
+
+# Barcode generater
+class BarCode:
+
+    def generate(self,barcode_param, barcode_text):
+        # original image
+        barcode_image = code128.image(barcode_param, height=100)
+
+        # empty image for code and text - it needs margins for text
+        w, h = barcode_image.size
+        margin = 30
+        new_h = h +(2*margin) 
+
+        new_image = Image.new( 'RGB', (w, new_h), (255, 255, 255))
+
+        # put barcode on new image
+        new_image.paste(barcode_image, (0, margin))
+
+        # object to draw text
+        draw = ImageDraw.Draw(new_image)
+
+        # draw text
+        fnt = ImageFont.truetype("static/fonts/arial/arial.ttf", 15)
+        draw.text( (10, new_h - 20), barcode_text, fill=(0, 0, 0), font=fnt)  # 
+
+        # save in file 
+        new_image.save('barcode_image.png', 'PNG')
+
+        barcode_bytes = io.BytesIO()
+        new_image.save(barcode_bytes, "PNG")
+        barcode_bytes.seek(0)
+        data = barcode_bytes.getvalue()
+        return True
+
+
+def generate_part_code(id,version,quality,compny_name="KI"):
+    
+    if len(id) == 1:
+        id = "000" + str(id)
+    elif len(id) == 2:
+        id = "00" + str(id)
+    elif len(id) == 3:
+        id = "0" + str(id)
+    else:
+        id = id
+    return compny_name + version + quality + id
