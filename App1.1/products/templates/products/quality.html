@@ -33,6 +33,10 @@ Product Quality
                                 <label for="id_value" class="text-dark"><b>Quality Type</b></label>
                                 <input type="text" id="id_value" name="category" class="form-control" required>
                             </div>
+                            <div class="form-group">
+                                <label for="id_value" class="text-dark"><b>Code</b></label>
+                                <input type="text" id="id_code" name="code" class="form-control" required>
+                            </div>
                         </div>
                         <div class="col-2">
                             <div class="form-group">
@@ -104,8 +108,10 @@ Product Quality
 
     function create_attribute() {
         var category = $('input[name=category]').val();
+        var code = $('input[name=code]').val();
         var data = {};
         data["category"] = category;
+        data["code"] = code;
 
         $.ajax({
             url: '{% url "products:product-quality" %}',

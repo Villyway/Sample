@@ -371,12 +371,14 @@ class CreateQuality(View):
         try:
             data = json.loads(request.POST.get("data"))
             print(data)
-            if data["category"] != '':
+            if data["category"] != '' and data["code"] != '':
                 category = data["category"]
+                code = data["code"]
                 obj, created = PartQuality.objects.get_or_create(
                     name__iexact=category,
                     defaults={
-                        'name': category
+                        'name': category,
+                        'code': code
                     },
                     is_active =True
                 )
