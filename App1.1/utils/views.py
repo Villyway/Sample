@@ -1,7 +1,8 @@
+import os
+
 import code128
 import io
 from PIL import Image, ImageDraw, ImageFont
-
 
 from random import randint, choices
 
@@ -126,7 +127,13 @@ def upload_file(instance, filename, dir_name):
 # Barcode generater
 class BarCode:
 
-    def generate(self,barcode_param, barcode_text):
+    def generate(self,barcode_param, barcode_text, path, file_name):
+        path = os.path.join(settings.MEDIA_ROOT,path)
+        print("hi")
+        if not os.path.exists(path):
+                print("hi")
+                os.makedirs(path, exist_ok=True)
+        path = path + file_name
         # original image
         barcode_image = code128.image(barcode_param, height=100)
 
@@ -148,7 +155,7 @@ class BarCode:
         draw.text( (10, new_h - 20), barcode_text, fill=(0, 0, 0), font=fnt)  # 
 
         # save in file 
-        new_image.save('barcode_image.png', 'PNG')
+        new_image.save(path, 'PNG')
 
         barcode_bytes = io.BytesIO()
         new_image.save(barcode_bytes, "PNG")
@@ -158,7 +165,7 @@ class BarCode:
 
 
 def generate_part_code(id,version,quality,compny_name="KI"):
-    
+    id = str(id)
     if len(id) == 1:
         id = "000" + str(id)
     elif len(id) == 2:

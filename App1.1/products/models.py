@@ -72,9 +72,10 @@ class Product(Base):
         max_length=25, choices=State.choices(), default=State.IN_REVIEW.value)
     version = models.CharField(max_length=20, default="1")
     part_no = models.CharField(max_length=20, null=True, blank=True)
-    part_files_pdf = models.URLField(max_length=500, blank=True, null=True)
+    drowing_file = models.URLField(max_length=500, blank=True, null=True)
     quality_type = models.ForeignKey(
         PartQuality, on_delete=models.SET_NULL, null=True, related_name='quality')
+    barcode_image = models.URLField(max_length=500, blank=True, null=True)
 
     objects = ProductManager()
 
@@ -82,11 +83,26 @@ class Product(Base):
         return self.code
     
     def save_image_url(self, image, file_url):
-        image = upload_file(self, image,"products/"+ self.code)
+        image = upload_file(self, image,"products/"+ self.part_no + "/images/")
         image = file_url + '/media/' + image
         self.image = image
         self.save()
         return True
+    
+    def get_bom(self):
+        # Query the BOMItems related to this product
+        bom_items = BOMItem.objects.filter(product=self)
+
+        # Create a dictionary to store the components and their quantities
+        bom = {}
+        
+        # Populate the BOM dictionary
+        for bom_item in bom_items:
+            component_name = bom_item.component.name
+            quantity = bom_item.quantity
+            bom[component_name] = quantity
+
+        return bom
 
 
 # Model for Attribute
@@ -109,6 +125,14 @@ class ProductAttribute(Base):
 
     def __str__(self):
         return self.attribute.name
+    
 
+class BOMItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='bom_items')
+    component = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='used_in_bom')
+    quantity = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.quantity} {self.component.name} for {self.product.name}"
 
 pre_save.connect(pre_save_slug_receiver, sender=Categories)

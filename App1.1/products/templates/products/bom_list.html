@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}List of BOM{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'products:products-list' %}">Products</a> / <b class="text-dark">Bill Of Matrials<b></li>
+{% endblock %}
+
+{% block head %}
+List of BOM
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3 mb-5">
+  <div class="row">
+    <div class="col-12">
+      <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
+        style="float: right; ">Add New Bill Of Materials </button></a>
+    </div>
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card">
+        <h5 class="card-header">Bill Of Materials</h5>
+        
+        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+        <div class="table-responsive text-nowrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Image</th>
+                <th>Code</th>
+                <th>Name</th>                
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% for product in products %}
+              <tr >
+                <td> 
+                  {% comment %} {% if is_paginated %}
+                  {{ forloop.counter|adjust_for_pagination:page }}
+                  {% else %}
+                  
+                  {% endif %} {% endcomment %}
+                   {{ forloop.counter }}
+             </td>
+                <td><img src="{{product.image}}" height="50px" width="50px"></td>
+                <td>{{product.code}}</td>
+                <td>{{product.name}}</td>
+                <td> 
+                    {% if product.is_active %}
+                    <i class="fas fa-check text-success" style="font-size: 15px;"></i>
+                    {% else %}
+                    <i class="fas fa-times text-danger" style="font-size: 15px;"></i>
+                    {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'products:product-property' product.id %}"
+                                class="btn btn-success btn-circle " title="Bill Of Matrials"><i class="fa-solid fa-magnet"></i></i></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          
+        </div>
+        
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+  <div class="row container-fluid mt-2">
+    {% if products.paginator.num_pages > 1 %}
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
+</div>
+</div>
+<div class="mt-5"></div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#product-menu').addClass('active open');
+  $('#product-bom').addClass('active')
+</script>
+{% endblock js %}

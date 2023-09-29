@@ -11,10 +11,12 @@ from django.template.loader import render_to_string
 from django.core.files.storage import default_storage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 from .models import Product, Attribute, ProductAttribute, Categories, PartQuality
 from .forms import ProductForm
 from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfProductSerializer
+from utils.views import generate_part_code, BarCode
 
 
 # Product Dashboard
@@ -32,7 +34,13 @@ class Dashboard(View):
             "category_by":__item,
             "categories":total_categories
         }
-        
+
+        # product_a = Product.objects.get(code="FLBGC01")
+        # bom = product_a.get_bom()
+        # Print the BOM
+        # for component, quantity in bom.items():
+        #     print(f"Component: {component}, Quantity: {quantity}")
+
         return render(request,self.template_name, context)
 
 
@@ -91,10 +99,25 @@ class CreateProduct(FormView):
                     product.rack_no = form_data['rack_no']
                     product.tray_no = form_data['tray_no']
                     product.created_by = self.request.user.id
+                    product.quality_type = form_data['part_quality']
+                    product.version = form_data['part_version']                    
                     product.save()
+
+                    product.part_no = generate_part_code(product.id, product.version, product.quality_type.code)
+                    product.save()
+
                     if form_data['image']:
                         product.save_image_url(form_data["image"], get_secured_url(
                                 self.request) + self.request.META["HTTP_HOST"])
+                        
+                    gen_barcode = BarCode()
+                    path = "products/"+ product.part_no + "/barcodes/"
+                    status = gen_barcode.generate(product.part_no,product.part_no,path, product.name + ".png")
+                    product.barcode_image = get_secured_url(self.request) + self.request.META["HTTP_HOST"] +"/media/" + path + product.name + ".png"
+                    product.save()
+                        
+                    
+                    
                     messages.success(
                         self.request, "Product added successfully.")
                 data = {
@@ -402,3 +425,25 @@ class CreateQuality(View):
                 "status": 500
             }
             return JsonResponse(data)
+
+
+#Bom List
+class BomItemList(View):
+    template_name = "products/bom_list.html"
+
+    def get(self,request):
+        products = Product.objects.active().filter(category=Categories.objects.get(id=1))
+
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 10)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context = {
+            "products": products,
+
+        }
+        return render(request, self.template_name, context)

@@ -5,7 +5,7 @@ from .views import (ProductList, CreateProduct,
                     ProductEditView, ProductProperty, 
                     RemoveProductProperty, Dashboard,
                     RemoveProductCategory, CreateCategories,
-                    GetProductName, CreateQuality
+                    GetProductName, CreateQuality, BomItemList
                     )
 
 app_name = "products"
@@ -26,6 +26,7 @@ urlpatterns = [
          name="remove-category"),
     path("product-quality/", login_required(CreateQuality.as_view()),
          name="product-quality"),
-    
+    path("bom-list/", login_required(BomItemList.as_view()),
+         name="bom-list"),
 
 ]
