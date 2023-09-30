@@ -92,17 +92,26 @@ class Product(Base):
     def get_bom(self):
         # Query the BOMItems related to this product
         bom_items = BOMItem.objects.filter(product=self)
-
+        components = []
         # Create a dictionary to store the components and their quantities
-        bom = {}
+        
         
         # Populate the BOM dictionary
         for bom_item in bom_items:
+            bom = {}
+            component_image = bom_item.component.image 
             component_name = bom_item.component.name
+            component_code = bom_item.component.code
+            component_part_no = bom_item.component.part_no
             quantity = bom_item.quantity
-            bom[component_name] = quantity
+            bom['image'] = component_image
+            bom['name'] = component_name
+            bom['qty'] = quantity
+            bom['part_no'] = component_part_no
+            bom['code'] = component_code
+            components.append(bom)
 
-        return bom
+        return components
 
 
 # Model for Attribute

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}BOM OF {% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'products:products-list' %}">Products</a> / <b class="text-dark">BOM OF {{name}}</b></li>
+{% endblock %}
+
+{% block head %}
+BOM OF {{name}}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3 mb-5">
+  <div class="row">
+        <div class="col-12">
+          {% comment %} <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
+            style="float: right; ">Add New Product</button></a> {% endcomment %}
+        </div>
+        <div class="col-12">
+          <!-- Basic Bootstrap Table -->
+          <div class="card">
+            <h5 class="card-header">BOM OF</h5>
+            <table class="table mt-3 mb-3">
+                <tr>
+                    <th><img src="{{image}}" width="100px" height="100px"></th>
+                    <th>Name: &nbsp <b>{{name}}</b>,</br>Code: &nbsp <b>{{code}}</th>
+                </tr>
+                <tr>
+                    <th class="text-center bg-primary text-white" colspan=3>components</th>
+                </tr>
+                <tr class="bg-warning ">
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>QTY</th>
+                </tr>
+                {%for i in components %}
+                <tr>
+                    <th><img src="{{i.image}}" width="100px" height="100px"></th>
+                    <th>{{i.name}}</th>
+                    <th>{{i.qty}}</th>
+                </tr>
+                {% endfor %}
+              </table>
+          </div>
+          
+        </div>
+  </div>
+  
+</div>
+<div class="mt-5"></div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#product-menu').addClass('active open');
+  $('#sub-all-product').addClass('active')
+</script>
+{% endblock js %}

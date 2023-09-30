@@ -27,6 +27,12 @@ class ProductManager(models.Manager):
             return self.active().filter(category=category).count()
         except:
             return None
+        
+    def category_wise(self,category):
+        try:
+            return self.active().filter(category=category)
+        except:
+            return None
 
 
 class AttributeManager(models.Manager):

@@ -447,3 +447,41 @@ class BomItemList(View):
 
         }
         return render(request, self.template_name, context)
+    
+
+#Get Bom of Singel Finished Product
+class SingelBom(View):
+    template_name = "products/singel_bom.html"
+
+    def get(self,request, id):
+        product_a = Product.objects.single_product(id)
+        bom = product_a.get_bom()
+        context={
+            "name": product_a.name,
+            "code":product_a.code,
+            "image":product_a.image,
+            "components" : bom
+        }
+        
+        return render(request, self.template_name,context)
+    
+class CategoryWiseList(View):
+    template_name = "products/category_wise.html"
+
+    def get(self,request, id):
+        category = Categories.objects.get(id=id)
+        products = Product.objects.category_wise(category)
+
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 10)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context = {
+            "products": products,
+            "category" : category.name
+        }
+        return render(request, self.template_name, context)
