@@ -173,5 +173,5 @@ def generate_part_code(id,version,quality,compny_name="KI"):
     elif len(id) == 3:
         id = "0" + str(id)
     else:
-        id = id
-    return compny_name + version + quality + id
+        id = str(id)
+    return compny_name + str(version) + quality + str(id)

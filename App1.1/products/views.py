@@ -17,6 +17,7 @@ from .forms import ProductForm
 from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfProductSerializer
 from utils.views import generate_part_code, BarCode
+from .resources import ProductResource
 
 
 # Product Dashboard
@@ -52,7 +53,7 @@ class ProductList(View):
         products = Product.objects.active()
 
         page = request.GET.get('page', 1)
-        paginator = Paginator(products, 10)
+        paginator = Paginator(products, 7)
         try:
             products = paginator.page(page)
         except PageNotAnInteger:
@@ -397,11 +398,13 @@ class CreateQuality(View):
             if data["category"] != '' and data["code"] != '':
                 category = data["category"]
                 code = data["code"]
+                description = data["description"]
                 obj, created = PartQuality.objects.get_or_create(
                     name__iexact=category,
                     defaults={
                         'name': category,
-                        'code': code
+                        'code': code,
+                        'description':description
                     },
                     is_active =True
                 )
@@ -473,7 +476,7 @@ class CategoryWiseList(View):
         products = Product.objects.category_wise(category)
 
         page = request.GET.get('page', 1)
-        paginator = Paginator(products, 10)
+        paginator = Paginator(products, 7)
         try:
             products = paginator.page(page)
         except PageNotAnInteger:
@@ -485,3 +488,16 @@ class CategoryWiseList(View):
             "category" : category.name
         }
         return render(request, self.template_name, context)
+
+
+class ExportData(View):
+    
+    def get(self, request):
+        product_resourse = ProductResource()
+        queryset = Product.objects.all().order_by('id')
+        dataset = product_resourse.export(queryset)
+        response = HttpResponse(dataset.csv,content_type="text/csv")
+        response['Content-Disposition'] = 'attachment; filename="product.csv"'
+        return response
+    
+    

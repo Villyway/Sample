@@ -39,15 +39,27 @@ All Products
                 <th>No</th>
                 {% comment %} <th>Code</th> {% endcomment %}
                 <th>Image</th>
-                <th>Code</th>
+                <th>Part<br> No</th>
                 <th>Name</th>
                 <th>UOM</th>
                 <th>Stock</th>
                 <th>Minimum<br> Stock<br> Level</th>
-                <th>Rack No</th>
-                <th>Tray No</th>
+                
                 <th>Status</th>
                 <th>Action</th>
+              </tr>
+              <tr>
+                
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th colspan=2 class="text-dark"><b>Search</b>  </th>
+                <th><input type="text" name="part_no" id="part_no" placeholder="Part Number"></th>
+                <th><input type="text" name="name" id="name" placeholder="Product Name"></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -63,7 +75,7 @@ All Products
                   
              </td>
                 <td><img src="{{product.image}}" height="50px" width="50px"></td>
-                <td>{{product.code}}</td>
+                <td>{{product.part_no}}</td>
                 <td>{{product.name}}</td>
                 <td> {{product.umo}} </td>
                 {% if product.stock < product.minimum_stock_level %}
@@ -74,8 +86,7 @@ All Products
                 {{product.stock}} </td>
                 
                 <td>{{product.minimum_stock_level}} </td>
-                <td> {{product.rack_no}} </td>
-                <td> {{product.tray_no}} </td>
+                
                 <td> 
                     {% if product.is_active %}
                     <i class="fas fa-check text-success" style="font-size: 15px;"></i>

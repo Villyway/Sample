@@ -41,6 +41,8 @@ class ProductForm(forms.Form):
         super(ProductForm, self).__init__(*args, **kwargs)
         if self.edit and self.product:
             self.fields["code"].initial = self.product.code
+            self.fields["part_quality"].initial = self.product.quality_type
+            self.fields["part_version"].initial = self.product.version
             self.fields["name"].initial = self.product.name
             self.fields["category"].initial = self.product.category
             self.fields['code'].widget.attrs['readonly'] = True

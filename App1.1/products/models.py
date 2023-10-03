@@ -38,7 +38,8 @@ class Categories(Base):
 
 # Like Export, Asia, Domestic, Comman
 class PartQuality(Base):
-    name = models.CharField(max_length=30, null=True, blank=True)    
+    name = models.CharField(max_length=30, null=True, blank=True)
+    description = models.CharField(max_length=80, null=True, blank=True)
     code = models.CharField(max_length=5, null=True, blank=True)
 
     def __str__(self):
@@ -55,13 +56,13 @@ class Unit(Base):
 
 #Product
 class Product(Base):
-    code = models.CharField(max_length=20) # Price List Code
+    code = models.CharField(max_length=20, null=True, blank=True) # Price List Code
     name = models.CharField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(
         Categories, on_delete=models.SET_NULL, null=True, related_name='product_category')
     description = models.TextField(blank=True, null=True)
     umo = models.ForeignKey(
-        Unit, on_delete=models.CASCADE, related_name='product_unit',)
+        Unit, on_delete=models.CASCADE, related_name='product_unit',blank=True, null=True)
     specification = models.TextField(blank=True, null=True)
     stock = models.IntegerField(blank=True, null=True, default=0)
     minimum_stock_level = models.IntegerField(blank=True, null=True, default=0)

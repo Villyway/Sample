@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # External Library
     'rest_framework',
+    'import_export',
 
     # Project applications
     'users.apps.UsersConfig',
@@ -97,7 +98,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         # 'NAME': os.environ.get('DB', 'Enventry'),
-        'NAME': os.environ.get('DB', 'inventory'),
+        # 'NAME': os.environ.get('DB', 'inventory'),
+        'NAME': os.environ.get('DB', 'teste'),
         'USER': os.environ.get('DBUSER', 'rupesh'),
         'PASSWORD': os.environ.get('DBPASSWORD', 'Rupesh@123'),
         'HOST': 'localhost',
@@ -184,3 +186,5 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 
 }
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

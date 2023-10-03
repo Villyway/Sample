@@ -6,7 +6,7 @@ from .views import (ProductList, CreateProduct,
                     RemoveProductProperty, Dashboard,
                     RemoveProductCategory, CreateCategories,
                     GetProductName, CreateQuality, BomItemList,
-                    SingelBom, CategoryWiseList
+                    SingelBom, CategoryWiseList, ExportData
                     )
 
 app_name = "products"
@@ -33,6 +33,7 @@ urlpatterns = [
          name="product-bom"),
     path("<slug:id>/list-product", login_required(CategoryWiseList.as_view()),
          name="category-product"),
+    path("product-export",login_required(ExportData.as_view()), name="product-export"),
 
 
 ]
