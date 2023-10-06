@@ -38,13 +38,13 @@ BOM OF {{name}}
                     <th class="text-center bg-primary text-white" colspan=3>components</th>
                 </tr>
                 <tr class="bg-warning ">
-                    <th>Image</th>
+                    {% comment %} <th>Image</th> {% endcomment %}
                     <th>Name</th>
                     <th>QTY</th>
                 </tr>
                 {%for i in components %}
                 <tr>
-                    <th><img src="{{i.image}}" width="100px" height="100px"></th>
+                    {% comment %} <th><img src="{{i.image}}" width="100px" height="100px"></th> {% endcomment %}
                     <th>{{i.name}}</th>
                     <th>{{i.qty}}</th>
                 </tr>

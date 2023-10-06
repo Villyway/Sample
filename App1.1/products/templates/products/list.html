@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block head %}
-All Products
+All Products    
 {% endblock %}
 
 {% block content %}
@@ -65,13 +65,13 @@ All Products
             <tbody class="table-border-bottom-0">
               {% for product in products %}
               <tr >
-                <td> 
-                  {% comment %} {% if is_paginated %}
-                  {{ forloop.counter|adjust_for_pagination:page }}
-                  {% else %}
-                  
-                  {% endif %} {% endcomment %}
-                   {{ forloop.counter }}
+                {% comment %} <td> 
+                  {% with forloop.counter as counter %}
+                    {{ counter|adjust_for_pagination:page:results_per_page }}
+                  {% endwith %} {% endcomment %}
+                  {{ forloop.counter|adjust_for_pagination:page:results_per_page }}
+                  {% comment %} {{ forloop.counter|adjust_for_pagination:page:results_per_page }} {% endcomment %}
+                   {% comment %} {{ forloop.counter }} {% endcomment %}
                   
              </td>
                 <td><img src="{{product.image}}" height="50px" width="50px"></td>
@@ -118,7 +118,8 @@ All Products
     </div>
   </div>
   <div class="row container-fluid mt-2">
-    {% if products.paginator.num_pages > 1 %}
+ 
+    {% if products.paginator.num_pages > 1 %}    
     {% include 'components/pagination.html' with items=products paginator=products.paginator %}
     {% endif %}
 </div>

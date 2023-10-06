@@ -94,6 +94,7 @@ class Product(Base):
         # Query the BOMItems related to this product
         bom_items = BOMItem.objects.filter(product=self)
         components = []
+        a = 0
         # Create a dictionary to store the components and their quantities
         
         
@@ -111,6 +112,16 @@ class Product(Base):
             bom['part_no'] = component_part_no
             bom['code'] = component_code
             components.append(bom)
+            a = a + quantity
+        components.append(
+            {
+                'image' : "",
+                'name' :"Total",
+                'qty' : a,
+                'part_no': "",
+                'code' : "",
+            }
+        )
 
         return components
 
@@ -141,6 +152,7 @@ class BOMItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='bom_items')
     component = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='used_in_bom')
     quantity = models.PositiveIntegerField(default=0)
+    category = models.CharField(max_length=150, blank=True, null=True)
 
     def __str__(self):
         return f"{self.quantity} {self.component.name} for {self.product.name}"

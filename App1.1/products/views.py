@@ -51,9 +51,9 @@ class ProductList(View):
 
     def get(self,request):
         products = Product.objects.active()
-
+        results_per_page = 7
         page = request.GET.get('page', 1)
-        paginator = Paginator(products, 7)
+        paginator = Paginator(products, results_per_page)
         try:
             products = paginator.page(page)
         except PageNotAnInteger:
@@ -62,6 +62,8 @@ class ProductList(View):
             products = paginator.page(paginator.num_pages)
         context = {
             "products": products,
+            "page" : page,
+            "results_per_page": results_per_page,
 
         }
         return render(request, self.template_name, context)

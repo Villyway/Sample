@@ -7,6 +7,7 @@ from .models import Product, Attribute, ProductAttribute, Unit, PartQuality, BOM
 @admin.register(Product)
 class ProductAdmin(ExportActionMixin, admin.ModelAdmin):
     list_display = ["code","umo","stock","minimum_stock_level", "rack_no","tray_no" ]
+    search_fields = ['part_no','name','code']
 
 
 @admin.register(Attribute)
