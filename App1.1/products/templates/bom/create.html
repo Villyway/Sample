@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add New B.O.M{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://basuriautomotive.com/assets/css/aiz-core.css">
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+        href="{% url 'products:bom-list' %}">BOM</a> / <b class="text-dark">Add<b></li>
+{% endblock %}
+
+{% block head %}
+New BOM
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid ">
+    <div class="row">
+        <div class="col-md-4 mt-3">
+            <div class="card mb-4">
+              <div class="card-body">
+                <form class="mt-3 " method="post" enctype="multipart/form-data" action='.'
+                data-url='{{ request.build_absolute_uri|safe }}' id="create-product">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-bill_no">{{form.product.label}}</label>
+                                        <span class="text-danger"></span>
+                                        <input type="text" class="form-control" id="main_part">
+                                        {{form.product}}
+                                        <span class="text-danger print_error" id="code"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-bill_no">{{form.child.label}}</label>
+                                        <span class="text-danger">*</span>
+                                        <input type="text" class="form-control" id="child_part">
+                                        {{form.child}}
+                                        <span class="text-danger print_error" id="code"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="basic-default-inword-bill_no">{{form.qty.label}}</label>
+                                        <span class="text-danger">*</span>
+                                        {{form.qty}}
+                                        <span class="text-danger print_error" id="category"></span>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                            <div classs="row">
+                                <div class="col-12">
+                                    <button class="btn btn-success mt-5 " type="submit" style="float:right">Add</button>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $('#bom').addClass('active open');
+  $('#add-bom').addClass('active')
+</script>
+{% endblock %}

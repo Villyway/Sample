@@ -52,8 +52,9 @@ List of BOM
                   {{ forloop.counter|adjust_for_pagination:data }}
                 </td>
                 <td><img src="{{product.image}}" height="50px" width="50px"></td>
-                <td>{{product.code}}</td>
-                <td>{{product.name}}</td>
+                <td>{{product.1}}</td>
+                <td>{{product.0}}</td>
+                <td>{{product.2}}</td>
                 <td> 
                     {% if product.is_active %}
                     <i class="fas fa-check text-success" style="font-size: 15px;"></i>
@@ -62,7 +63,7 @@ List of BOM
                     {% endif %}
                 </td>
                 <td>
-                  <a href="{% url 'products:product-bom' product.id %}"
+                  <a href="{% url 'products:product-bom' product.1 %}"
                                 class="btn btn-success btn-circle " title="Bill Of Matrials"><i class="fa-solid fa-magnet"></i></i></a>
                 </td>
               </tr>
@@ -88,7 +89,7 @@ List of BOM
 
 {% block js %}
 <script>
-  $('#product-menu').addClass('active open');
+  $('#bom').addClass('active open');
   $('#product-bom').addClass('active')
 </script>
 {% endblock js %}

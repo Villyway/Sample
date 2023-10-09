@@ -155,6 +155,7 @@ class BOMItem(models.Model):
     category = models.CharField(max_length=150, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.quantity} {self.component.name} for {self.product.name}"
+        return str(self.id)
+        # return f"{self.quantity} {self.component.name} for {self.product.name}"
 
 pre_save.connect(pre_save_slug_receiver, sender=Categories)

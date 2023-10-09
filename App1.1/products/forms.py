@@ -3,7 +3,7 @@ from datetime import date, datetime
 from django import forms
 
 from .models import (Unit, Product,
-                      Categories, PartQuality  )
+                      Categories, PartQuality, BOMItem  )
 from vendors.models import Vendor
 
 class ProductForm(forms.Form):
@@ -66,3 +66,11 @@ class ProductForm(forms.Form):
         return code
             
 
+class BomForm(forms.Form):
+    product = forms.ModelChoiceField(queryset=Product.objects.filter(is_active=True), widget=forms.Select(
+        attrs={"class": "form-control form-select"}), required=True, label="Main Product", empty_label='--- Select Category ---')
+
+    child = forms.ModelChoiceField(queryset=Product.objects.filter(is_active=True), widget=forms.Select(
+        attrs={"class": "form-control form-select"}), required=True, label="Child Product", empty_label='--- Select Category ---')
+    qty = forms.CharField(label="Quantity", widget=forms.TextInput(
+        attrs={"class": "form-control"}))

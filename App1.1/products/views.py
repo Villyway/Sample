@@ -12,10 +12,12 @@ from django.core.files.storage import default_storage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-from .models import Product, Attribute, ProductAttribute, Categories, PartQuality
-from .forms import ProductForm
+from .models import (Product, Attribute, ProductAttribute,
+                      Categories, PartQuality, BOMItem
+                    )
+from .forms import ProductForm, BomForm
 from utils.views import get_secured_url, is_ajax
-from .serializers import InwordOfProductSerializer
+from .serializers import InwordOfProductSerializer, ProductSerializer
 from utils.views import generate_part_code, BarCode
 from .resources import ProductResource
 
@@ -433,10 +435,11 @@ class CreateQuality(View):
 
 #Bom List
 class BomItemList(View):
-    template_name = "products/bom_list.html"
+    template_name = "bom/bom_list.html"
 
     def get(self,request):
-        products = Product.objects.active().filter(category=Categories.objects.get(id=1))
+        products = BOMItem.objects.values_list('product__name','product__code', 'product__id','product__part_no').distinct()
+        # products = Product.objects.active().filter(category=Categories.objects.get(id=1))
         results_per_page = 10
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)
@@ -456,10 +459,10 @@ class BomItemList(View):
 
 #Get Bom of Singel Finished Product
 class SingelBom(View):
-    template_name = "products/singel_bom.html"
+    template_name = "bom/singel_bom.html"
 
     def get(self,request, id):
-        product_a = Product.objects.single_product(id)
+        product_a = Product.objects.by_code(id)
         bom = product_a.get_bom()
         context={
             "name": product_a.name,
@@ -502,4 +505,27 @@ class ExportData(View):
         response['Content-Disposition'] = 'attachment; filename="product.csv"'
         return response
     
+
+# Create Bom 
+class CreatBOM(View):
+    template_name = "bom/create.html"
+    form_name = BomForm()
+    
+    def get(self,request):
+        
+        return render(request,self.template_name,{"form":self.form_name})
+    
+    def post(self,request):
+        
+        return render(request,self.template_name,{"form":self.form_name})
+    
+
+# Singel Product return
+class Single_product(View):
+    
+    def get(self, request, id):
+        product = ProductSerializer(Product.objects.single_product(id)).data
+        data = {"product":product}
+        return product
+        
     

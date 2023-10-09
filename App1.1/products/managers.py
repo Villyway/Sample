@@ -33,6 +33,12 @@ class ProductManager(models.Manager):
             return self.active().filter(category=category)
         except:
             return None
+    
+    def by_code(self,code):
+        try:
+            return self.active().get(code=code)
+        except:
+            return None
 
 
 class AttributeManager(models.Manager):

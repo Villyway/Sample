@@ -54,6 +54,26 @@
               <div data-i18n="Container">Quality</div>
             </a>
           </li>
+        </ul>
+      </li>
+      <li class="menu-item " id = "bom">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
+          <div data-i18n="Layouts">Bill of Materials</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="bom-dashboard">
+            <a href="{% url 'products:products-dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
+          
+          <li class="menu-item" id = "add-bom">
+            <a href="{% url 'products:bom-create' %}" class="menu-link">
+              <div data-i18n="Container">Add BOM</div>
+            </a>
+          </li>
           <li class="menu-item" id = "product-bom">
             <a href="{% url 'products:bom-list' %}" class="menu-link">
               <div data-i18n="Container">Bill of Materials</div>

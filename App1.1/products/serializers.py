@@ -8,4 +8,9 @@ class InwordOfProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ["code","name"]
 
+class ProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ["code", "part_no", "name", "image","category","description"]
     

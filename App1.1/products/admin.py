@@ -32,4 +32,5 @@ class PartQualityAdmin(admin.ModelAdmin):
 
 @admin.register(BOMItem)
 class BOMItemAdmin(admin.ModelAdmin):
-    list = ["product","component","quantity"]
+    list = ["product__name"]
+    search_fields = ['product__code']
