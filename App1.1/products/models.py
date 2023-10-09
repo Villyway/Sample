@@ -81,7 +81,7 @@ class Product(Base):
     objects = ProductManager()
 
     def __str__(self):
-        return self.code
+        return self.name
     
     def save_image_url(self, image, file_url):
         image = upload_file(self, image,"products/"+ self.part_no + "/images/")

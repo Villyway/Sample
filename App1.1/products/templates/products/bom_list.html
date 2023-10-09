@@ -49,13 +49,8 @@ List of BOM
               {% for product in products %}
               <tr >
                 <td> 
-                  {% comment %} {% if is_paginated %}
-                  {{ forloop.counter|adjust_for_pagination:page }}
-                  {% else %}
-                  
-                  {% endif %} {% endcomment %}
-                   {{ forloop.counter }}
-             </td>
+                  {{ forloop.counter|adjust_for_pagination:data }}
+                </td>
                 <td><img src="{{product.image}}" height="50px" width="50px"></td>
                 <td>{{product.code}}</td>
                 <td>{{product.name}}</td>
