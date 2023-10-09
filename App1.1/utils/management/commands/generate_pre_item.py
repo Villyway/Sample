@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def add_item(self):
 
-        excel_data_df = pd.read_excel('static/record2.xlsx', engine='openpyxl')
+        excel_data_df = pd.read_excel('static/pre_data.xlsx', engine='openpyxl')
         json_data = excel_data_df.to_json(orient='records')
 
         item_data = json.loads(json_data)
@@ -27,12 +27,16 @@ class Command(BaseCommand):
                 },
                 is_active =True
             )
+            if i['quality'].strip() == "C-COMMAN":
+                i['quality'] = "C-COMMON"
+            if i['quality'].strip() == "L-COMMAN":
+                i['quality'] = "L-COMMON"
             item_obj, created = Product.objects.get_or_create(
                 code = i['item_code'],
                 name = i['item_name'],
                 category = category_obj,
                 version = i['item_version'],
-                quality_type = PartQuality.objects.get(code = i['quality_code']),
+                quality_type = PartQuality.objects.get(name = i['quality'].strip()),
                 is_active = True
             )
             item_obj.part_no = generate_part_code(item_obj.id,item_obj.version, item_obj.quality_type.code)
@@ -75,5 +79,5 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **kwargs):
-        # self.add_item()
-        self.add_bom()
+        self.add_item()
+        # self.add_bom()
