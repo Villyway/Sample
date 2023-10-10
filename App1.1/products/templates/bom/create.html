@@ -30,34 +30,29 @@ New BOM
                                     <div class="mb-3">
                                         <label class="form-label" for="basic-default-inword-bill_no">{{form.product.label}}</label>
                                         <span class="text-danger"></span>
-                                        <input type="text" class="form-control" id="main_part">
+                                        <input type="text" class="form-control mt-2 mb-2" id="main_part" placeholder = "Product Code">
                                         {{form.product}}
                                         <span class="text-danger print_error" id="code"></span>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label" for="basic-default-inword-bill_no">{{form.child.label}}</label>
                                         <span class="text-danger">*</span>
-                                        <input type="text" class="form-control" id="child_part">
+                                        <input type="text" class="form-control mt-2 mb-2" id="child_part" placeholder = "Part No.">
                                         {{form.child}}
                                         <span class="text-danger print_error" id="code"></span>
                                     </div>
-                                    <div class="mb-3">
+                                    <div class="">
                                         <label class="form-label" for="basic-default-inword-bill_no">{{form.qty.label}}</label>
                                         <span class="text-danger">*</span>
                                         {{form.qty}}
                                         <span class="text-danger print_error" id="category"></span>
                                     </div>
-                                    
-                                    
+                                    <div class="">
+                                        <button class="btn btn-success mt-2 " type="submit" style="float:right">Add</button>    
+                                    </div>
                                 </div>
-                                
                             </div>
                             
-                            <div classs="row">
-                                <div class="col-12">
-                                    <button class="btn btn-success mt-5 " type="submit" style="float:right">Add</button>
-                                </div>
-                            </div>
                     </form>
                 </div>
               </div>

@@ -438,8 +438,8 @@ class BomItemList(View):
     template_name = "bom/bom_list.html"
 
     def get(self,request):
-        products = BOMItem.objects.values_list('product__name','product__code', 'product__id','product__part_no').distinct()
-        # products = Product.objects.active().filter(category=Categories.objects.get(id=1))
+        # products = BOMItem.objects.values_list('product__name','product__code', 'product__id','product__part_no').distinct()
+        products = Product.objects.active().filter(category=Categories.objects.get(id=1))
         results_per_page = 10
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)

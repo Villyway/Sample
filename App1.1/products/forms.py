@@ -62,15 +62,13 @@ class ProductForm(forms.Form):
             if Product.objects.filter(code=code):
                 raise forms.ValidationError(
                     "This item code is already registered, please use a different one.")
-
         return code
-            
+
 
 class BomForm(forms.Form):
-    product = forms.ModelChoiceField(queryset=Product.objects.filter(is_active=True), widget=forms.Select(
+    product = forms.ModelChoiceField(queryset=Product.objects.filter(is_active=True, category__name = "Finish Goods"), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="Main Product", empty_label='--- Select Category ---')
-
     child = forms.ModelChoiceField(queryset=Product.objects.filter(is_active=True), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="Child Product", empty_label='--- Select Category ---')
     qty = forms.CharField(label="Quantity", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control","type":"number","value":"0"}))
