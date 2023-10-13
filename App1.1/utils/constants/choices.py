@@ -98,3 +98,12 @@ class CustomerType(Enum):
     @classmethod
     def choices(cls):
         return tuple((i.name, i.value) for i in cls)
+
+
+class StockTransection(Enum):
+    CR = "CR"
+    DR = "DR"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)

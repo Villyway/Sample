@@ -64,7 +64,7 @@ class Product(Base):
     umo = models.ForeignKey(
         Unit, on_delete=models.CASCADE, related_name='product_unit',blank=True, null=True)
     specification = models.TextField(blank=True, null=True)
-    stock = models.IntegerField(blank=True, null=True, default=0)
+    stock = models.PositiveIntegerField(default=0)
     minimum_stock_level = models.IntegerField(blank=True, null=True, default=0)
     rack_no = models.IntegerField(blank=True, null=True, default=0)
     tray_no = models.IntegerField(blank=True, null=True, default=0)
@@ -81,7 +81,7 @@ class Product(Base):
     objects = ProductManager()
 
     def __str__(self):
-        return "(" + str(self.code) +")-"+ self.name
+        return self.part_no +" - " +self.name
     
     def save_image_url(self, image, file_url):
         image = upload_file(self, image,"products/"+ self.part_no + "/images/")

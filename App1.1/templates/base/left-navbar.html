@@ -81,6 +81,40 @@
           </li>
         </ul>
       </li>
+      <li class="menu-item " id = "inventory-menu">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-warehouse"></i>
+          <div data-i18n="Layouts">Inventory</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="inventry-dashboard">
+            <a href="{% url 'inventry:inventry-dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div><i class=""></i>
+            </a>
+          </li>
+          <li class="menu-item" id="add-stock">
+            <a href="{% url 'inventry:add-stock' %}" class="menu-link">
+              <div data-i18n="Without menu">Stock</div><i class=""></i>
+            </a>
+          </li>
+          {% comment %} <li class="menu-item" id="sub-all-inward">
+            <a href="{% url 'inventry:inward' %}" class="menu-link">
+              <div data-i18n="Without menu">In-Ward</div><i class=""></i>
+            </a>
+          </li> {% endcomment %}
+          {% comment %} <li class="menu-item" id = "inventory-outward">
+            <a href="{% url 'inventry:outward' %}" class="menu-link">
+              <div data-i18n="Container">Out-Ward</div>
+            </a>
+          </li> {% endcomment %}
+          {% comment %} <li class="menu-item" id = "inventory-qc">
+            <a href="{% url 'inventry:qc-list' %}" class="menu-link">
+              <div data-i18n="Container">In-Ward-QC</div>
+            </a>
+          </li> {% endcomment %}
+        </ul>
+      </li>
       <li class="menu-item " id = "vendor-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-shop"> </i>

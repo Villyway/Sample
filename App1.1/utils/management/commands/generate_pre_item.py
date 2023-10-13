@@ -14,12 +14,11 @@ class Command(BaseCommand):
 
     def add_item(self):
 
-        excel_data_df = pd.read_excel('static/pre_data.xlsx', engine='openpyxl')
+        excel_data_df = pd.read_excel('static/item_data.xlsx', engine='openpyxl')
         json_data = excel_data_df.to_json(orient='records')
 
         item_data = json.loads(json_data)
         for i in item_data:
-            print(i)
             category_obj, created = Categories.objects.get_or_create(
                 name__iexact= i['category'],
                 defaults={
@@ -59,13 +58,14 @@ class Command(BaseCommand):
         for i in item_data:
             
             if i['QTY'] == None:
-                print(i)
                 BOMItem.objects.get_or_create(
                     product = Product.objects.get(code = i['MAIN PART']),
                     component = Product.objects.get(part_no = i['CHILD PART']),
                     quantity = 1,
                     category = i['CATAGORIES']
                 )
+                
+
             else:
                 print(i)
                 BOMItem.objects.get_or_create(
@@ -74,10 +74,65 @@ class Command(BaseCommand):
                     quantity = i['QTY'],
                     category = i['CATAGORIES']
                 )
+    
+    def create_product(self, i, quality_obj, category_obj):
+        if i['item_code']:
+            i['item_code'] = i['item_code'].strip()
+        item_obj, created = Product.objects.get_or_create(
+                code = i['item_code'],
+                name = i['item_name'].strip(),
+                category = category_obj,
+                version = str(int(i['item_version'])).strip(),
+                quality_type = quality_obj,
+                is_active = True
+                )
+        item_obj.part_no = generate_part_code(item_obj.id,item_obj.version, item_obj.quality_type.code)
+        item_obj.save()
+        return item_obj
                 
-            
+    def add_pre_item(self):
 
+        excel_data_df = pd.read_excel('static/item_data.xlsx', engine='openpyxl')
+        json_data = excel_data_df.to_json(orient='records')
+
+        item_data = json.loads(json_data)
+        for i in item_data:
+            print(i)
+            # Create Category:
+            category_obj, created = Categories.objects.get_or_create(
+                name__iexact= i['category'],
+                defaults={
+                    'name': i['category'],                    
+                },
+                is_active =True
+            )
+
+            # create Part Quality
+            quality_obj, created = PartQuality.objects.get_or_create(
+                    name = i['quality'].strip(),
+                    code = i['quality'].split("-")[0]
+                )
+            
+            if i['item_code']:
+                # Create Main Part
+                product = self.create_product(i, quality_obj, category_obj)
+            
+            else:
+                # Get Main Part
+                main_product = Product.objects.by_code(i['main'].strip())
+
+                # Create child Part
+                product = self.create_product(i, quality_obj, category_obj)
+
+                # Create Bom
+                BOMItem.objects.get_or_create(
+                    product = main_product,
+                    component = product,
+                    quantity = int(i['bom_qty']),
+                    category = i['bom_category']
+                )
 
     def handle(self, *args, **kwargs):
-        self.add_item()
+        self.add_pre_item()
+        # self.add_item()
         # self.add_bom()
