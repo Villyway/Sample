@@ -5,7 +5,7 @@ from products.models import Product, Unit
 from vendors.models import Vendor
 from utils.views import upload_file
 from users.models import User
-from .managers import InWordManager
+from .managers import InWordManager, SimpleStockUpdteManager
 from utils.constants.choices import State, StockTransection
 
 
@@ -92,7 +92,10 @@ class SimpleStockUpdte(Base):
     transection_type = models.CharField(
         max_length=25, choices=StockTransection.choices(), default=StockTransection.CR.value)
     received_by = models.CharField(max_length=150)
+    
+    objects = SimpleStockUpdteManager()
+
     def __str__(self):
-        return self.product.name + str(self.quantity_on_hand)
+        return self.part.name + str(self.quantity_on_hand)
 
     

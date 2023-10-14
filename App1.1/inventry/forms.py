@@ -64,10 +64,10 @@ class OutWardForm(forms.Form):
 
 # Stock
 class StockForm(forms.Form):
-    part_no = forms.CharField(required=True, label="Part No.", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+    part_no = forms.CharField(required="False", label="Part No.", widget=forms.TextInput(
+        attrs={"class": "form-control","id":"part-no"}))
     parts = forms.ModelChoiceField(queryset=Product.objects.active(), widget=forms.Select(
-        attrs={"class": "form-control form-select","autofocus":True}), required=True, label="Item", empty_label='--- Select Product ---')
+        attrs={"class": "form-control form-select","autofocus":True, "id":"parts"}), required=True, label="Part No.", empty_label='--- Select Product ---')
     transection_type = forms.ChoiceField(required=True, label="Transection Type", choices=StockTransection.choices(
     ), widget=forms.Select(attrs={"class": "form-control form-select"}))
     receive_by = forms.CharField(required=True, label="Receive By", widget=forms.TextInput(

@@ -13,10 +13,11 @@ from django.template.loader import render_to_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import InWardForm, OutWardForm, StockForm
-from .models import InWord, Outword
+from .models import InWord, Outword, SimpleStockUpdte
 from utils.views import get_secured_url, is_ajax
-from .serializers import InwordOfBillWiseProductSerializer
+from .serializers import InwordOfBillWiseProductSerializer, StockHistorySerializer
 from products.models import Product
+from utils.constants import StockTransection
 
 
 # Create your views here.
@@ -172,7 +173,7 @@ class SimpleAddStock(FormView):
 
     template_name = "inward/add_stock.html"
     form_class = StockForm
-    success_url = ""
+    success_url = "/inventry/dashboard"
 
     def form_invalid(self, form):
         response = super(SimpleAddStock, self).form_invalid(form)
@@ -186,4 +187,54 @@ class SimpleAddStock(FormView):
         response = super(SimpleAddStock, self).form_valid(form)     
         if is_ajax(self.request):
             form_data = form.cleaned_data
-            return redirect("inventry:inventry-dashboard")
+            print(form_data)
+            with transaction.atomic():
+                part = Product.objects.by_part_no(form_data['part_no'])
+                stock = SimpleStockUpdte()
+                stock.part = part
+                stock.old_stock = part.stock
+                stock.received_by = form_data['receive_by']
+                stock.received_qty = form_data['qty']
+                if form_data['transection_type'] == StockTransection.DR.value:
+                    stock.transection_type = StockTransection.DR.value
+                    stock.quantity_on_hand = part.stock - int(form_data['qty'])
+                else:
+                    stock.transection_type = StockTransection.CR.value
+                    stock.quantity_on_hand = part.stock + int(form_data['qty'])
+
+                
+                stock.save()
+                part.stock = stock.quantity_on_hand
+                part.save()             
+                
+            data = {
+                        'message': "Product added successfully.",
+                        'url': get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + 'inventry/add-stock/'
+                    }
+            return JsonResponse(data, status = 200)
+
+
+# This is by get stock transection
+class StockHistoryInJson(View):
+    
+    def get(self,request, id):
+        try:
+            
+            histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(id))
+            print(histories)
+            if histories:
+                data = {
+                    "histories":StockHistorySerializer(histories).data
+                }
+                return JsonResponse(data,status = 200)
+            else:
+                return JsonResponse("Not Availabel",status = 200)
+        except Exception as e:
+            data = {"error": str(e), "status": 403}
+            print(data)
+            return JsonResponse(data)
+
+
+
+        

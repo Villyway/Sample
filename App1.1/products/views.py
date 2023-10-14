@@ -17,7 +17,7 @@ from .models import (Product, Attribute, ProductAttribute,
                     )
 from .forms import ProductForm, BomForm
 from utils.views import get_secured_url, is_ajax
-from .serializers import InwordOfProductSerializer, ProductSerializer
+from .serializers import InwordOfProductSerializer, ProductSerializer, ProductSerializerWithId
 from utils.views import generate_part_code, BarCode
 from .resources import ProductResource
 
@@ -520,12 +520,29 @@ class CreatBOM(View):
         return render(request,self.template_name,{"form":self.form_name})
     
 
+# Row data by Json response
 # Singel Product return
-class Single_product(View):
+class SingleProduct(View):
     
     def get(self, request, id):
         product = ProductSerializer(Product.objects.single_product(id)).data
         data = {"product":product}
-        return product
+        return JsonResponse(data, status=200)
+
+
+class SingleProductByPartNo(View):
+    
+    def get(self, request, id):
+        product = Product.objects.by_part_no(id)
+        if product:
+            product = ProductSerializerWithId(product).data
+            data = {"product":product}
+            return JsonResponse(data, status=200)
+        else:
+            data = {"product":"NOT FOUND"}
+            return JsonResponse(data, status=400)
+            
         
+        
+
     

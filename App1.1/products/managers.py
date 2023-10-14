@@ -39,6 +39,12 @@ class ProductManager(models.Manager):
             return self.active().get(code=code)
         except:
             return None
+        
+    def by_part_no(self,part_no):
+        try:
+            return self.active().get(part_no=part_no)
+        except:
+            return None
 
 
 class AttributeManager(models.Manager):

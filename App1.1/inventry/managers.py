@@ -41,3 +41,20 @@ class InWordManager(models.Manager):
     
     def qc_approved(self):
         return self.filter(qc_state = State.REJECTED.value)
+
+
+# SimpleStockUpdte Manager
+class SimpleStockUpdteManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().order_by("-created_at")
+    
+    def active(self):
+        return self.filter(is_active=True)
+    
+    def single_itme_of_history(self, part_no):
+        try:
+            return self.filter(part = part_no)
+        except:
+            return False
+    
