@@ -16,7 +16,7 @@ from .forms import InWardForm, OutWardForm, StockForm
 from .models import InWord, Outword, SimpleStockUpdte
 from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfBillWiseProductSerializer, StockHistorySerializer
-from products.models import Product
+from products.models import Product, Categories
 from utils.constants import StockTransection
 
 
@@ -27,9 +27,12 @@ class Dashboard(View):
     template_name = "inventry/dashboard.html"
 
     def get(self, request):
-        total_products = Product.objects.filter(is_active=True).count()
+        
+        category = Categories.objects.get(name="Finish Goods")
+        finished_product = Product.objects.category_wise(category)[:10]
+
         context = {
-            "total_product":total_products
+            "finished_item": finished_product
         }
         return render(request,self.template_name, context)
 
@@ -222,7 +225,6 @@ class StockHistoryInJson(View):
         try:
             
             histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(id))
-            print(histories)
             if histories:
                 data = {
                     "histories":StockHistorySerializer(histories).data
@@ -234,6 +236,31 @@ class StockHistoryInJson(View):
             data = {"error": str(e), "status": 403}
             print(data)
             return JsonResponse(data)
+
+
+# History of Stock
+class StockHistoriesList(View):
+
+    template_name = "inward/histories.html"
+
+    def get(self, request):
+        products = SimpleStockUpdte.objects.active()
+        results_per_page = 10
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, results_per_page)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context = {
+            "products": products,
+            "data" : [page,results_per_page]
+
+        }
+        return render(request, self.template_name, context)
+
 
 
 

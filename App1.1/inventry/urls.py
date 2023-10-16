@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth.decorators import login_required
 
 from .views import (InwardCreateView,
-                    OutwardCreateView, Dashboard, GetBillNoByInword, QCView, SimpleAddStock, StockHistoryInJson)
+                    OutwardCreateView, Dashboard, GetBillNoByInword, QCView, SimpleAddStock, StockHistoryInJson, StockHistoriesList)
 
 app_name = "inventry"
 
@@ -16,5 +16,6 @@ urlpatterns = [
     path("qc-list/",login_required(QCView.as_view()), name="qc-list"),
     path("add-stock/", login_required(SimpleAddStock.as_view()), name="add-stock"),
     path("<slug:id>/stock-history/", login_required(StockHistoryInJson.as_view()), name="json-stock-history"),
+    path("stock-history/", login_required(StockHistoriesList.as_view()), name="stock-histories"),
 
 ]

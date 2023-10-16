@@ -45,7 +45,7 @@ class ProductManager(models.Manager):
             return self.active().get(part_no=part_no)
         except:
             return None
-
+        
 
 class AttributeManager(models.Manager):
     def get_queryset(self):
