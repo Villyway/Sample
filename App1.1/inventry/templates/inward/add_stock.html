@@ -9,11 +9,11 @@
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted active" aria-current="page"><a
-        href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / <b class="text-dark">Stock<b></li>
+        href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / <b class="text-dark">Stock Transection<b></li>
 {% endblock %}
 
 {% block head %}
-Stock
+Stock Transection
 {% endblock %}
 
 {% block content %}
@@ -140,7 +140,7 @@ Stock
                         type: 'GET',
                         url: "{% url 'inventry:json-stock-history' 1  %}".replace("1", id),
                         success: function (response) {
-                            console.log(response)
+                            console.log(response.histories)
                         },
                         error: function (error) {
                             

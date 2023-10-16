@@ -234,7 +234,6 @@ class StockHistoryInJson(View):
                 return JsonResponse("Not Availabel",status = 200)
         except Exception as e:
             data = {"error": str(e), "status": 403}
-            print(data)
             return JsonResponse(data)
 
 
