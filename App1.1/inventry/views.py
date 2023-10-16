@@ -223,15 +223,15 @@ class StockHistoryInJson(View):
     
     def get(self,request, id):
         try:
-            
-            histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(id))
-            if histories:
-                data = {
-                    "histories":StockHistorySerializer(histories).data
-                }
-                return JsonResponse(data,status = 200)
-            else:
-                return JsonResponse("Not Availabel",status = 200)
+            histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(id))[:12]
+            html = render_to_string(
+                template_name="components/stock-trans-his.html",
+                context={"histories": histories}
+            )
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
         except Exception as e:
             data = {"error": str(e), "status": 403}
             return JsonResponse(data)
@@ -244,7 +244,7 @@ class StockHistoriesList(View):
 
     def get(self, request):
         products = SimpleStockUpdte.objects.active()
-        results_per_page = 10
+        results_per_page = 15
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)
         try:

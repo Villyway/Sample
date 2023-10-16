@@ -312,7 +312,6 @@ class CreateCategories(View):
     def post(self, request):
         try:
             data = json.loads(request.POST.get("data"))
-            print(data)
             if data["category"] != '':
                 category = data["category"]
                 obj, created = Categories.objects.get_or_create(
