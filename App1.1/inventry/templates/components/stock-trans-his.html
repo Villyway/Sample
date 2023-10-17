@@ -6,7 +6,8 @@
             <th>Part<br> No</th>
             <th>Date-Time</th>
             <th>Old-Stock</th>
-            <th>Issued / Received</th>
+            <th>Issued</th>
+            <th>Received</th>
             <th>Current Stock</th>
             
         </tr>
@@ -25,7 +26,20 @@
                 {{history.created_at}}
             </td>
             <td>{{history.old_stock}}</td>
-            <td>{{history.received_qty}}({{history.transection_type}})({{history.received_by}})</td>
+            <td>
+                {% if history.transection_type == "DR" %}
+                  - {{history.received_qty}}
+                {% else %}
+                  -
+                {% endif %}
+            </td>
+            <td>
+              {% if history.transection_type == "CR" %}
+                  + {{history.received_qty}}
+                {% else %}
+                  -
+                {% endif %}
+            </td>
             <td>{{history.quantity_on_hand}}</td>
           </tr>
         {% endfor %}

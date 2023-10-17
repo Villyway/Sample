@@ -41,7 +41,8 @@ Stock History
                 <th>Part<br> No</th>
                 <th>Date-Time</th>
                 <th>Old-Stock</th>
-                <th>Issued / Received</th>
+                <th>Issued</th>
+                <th>Received</th>
                 <th>Current Stock</th>
                 
               </tr>
@@ -53,12 +54,25 @@ Stock History
                 <td>
                 {{ forloop.counter|adjust_for_pagination:data }}
                 </td>
-                <td>{{product.part.part_no}} - ({{product.transection_type}})</td>
+                <td>{{product.part.part_no}}</td>
                 <td>
                     {{product.created_at}}
                 </td>
                 <td>{{product.old_stock}}</td>
-                <td>{{product.received_qty}}({{product.transection_type}})</td>
+                <td>
+                    {% if product.transection_type == "DR" %}
+                      - {{product.received_qty}}
+                    {% else %}
+                      -
+                    {% endif %}
+                </td>
+                <td>
+                  {% if product.transection_type == "CR" %}
+                      + {{product.received_qty}}
+                    {% else %}
+                      -
+                    {% endif %}
+                </td>
                 <td>{{product.quantity_on_hand}}</td>
 
                 

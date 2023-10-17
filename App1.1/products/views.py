@@ -52,6 +52,7 @@ class ProductList(View):
     template_name = "products/list.html"
 
     def get(self,request):
+        categories = Categories.objects.all()
         products = Product.objects.active()
         results_per_page = 7
         page = request.GET.get('page', 1)
@@ -64,7 +65,8 @@ class ProductList(View):
             products = paginator.page(paginator.num_pages)
         context = {
             "products": products,
-            "data" : [page,results_per_page]
+            "data" : [page,results_per_page],
+            "categories":categories
 
         }
         return render(request, self.template_name, context)
@@ -541,7 +543,6 @@ class SingleProductByPartNo(View):
             data = {"product":"NOT FOUND"}
             return JsonResponse(data, status=400)
             
-        
-        
 
-    
+# class ProdictSearch(View):
+
