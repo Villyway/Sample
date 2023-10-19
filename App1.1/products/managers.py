@@ -46,6 +46,12 @@ class ProductManager(models.Manager):
         except:
             return None
         
+    def search(self,query):
+
+        qs = self.active().filter(Q(name__icontains=query) | Q(
+            code__icontains=query) | Q(category__name__icontains=query) | Q(part_no__icontains=query))
+        return qs
+        
 
 class AttributeManager(models.Manager):
     def get_queryset(self):

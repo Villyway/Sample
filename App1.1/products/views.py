@@ -544,5 +544,41 @@ class SingleProductByPartNo(View):
             return JsonResponse(data, status=400)
             
 
-# class ProdictSearch(View):
+class ProductSearch(View):
+    template_name = "components/product-list.html"
+    # permission_required = "products.can_access_product"
 
+    def get(self, request):
+        # try:
+        if is_ajax(request):
+            query = request.GET.get("query", None)
+            print(query)
+            categories = Categories.objects.all()
+            products = Product.objects.search(
+                query=query)
+            
+            results_per_page = 100
+            page = request.GET.get('page', 1)
+            paginator = Paginator(products, results_per_page)
+            try:
+                products = paginator.page(page)
+            except PageNotAnInteger:
+                products = paginator.page(1)
+            except EmptyPage:
+                products = paginator.page(paginator.num_pages)
+            html = render_to_string(
+                template_name=self.template_name,
+                context={"products": products, "data" : [page,results_per_page], "categories":categories}
+            )
+            
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
+
+            # if request.META.get('HTTP_REFERER'):
+                # return redirect(request.META.get('HTTP_REFERER'))
+            # else:
+                # return redirect("products:list")
+        # except Exception as e:
+            # return JsonResponse({"error": str(e)})

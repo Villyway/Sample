@@ -6,7 +6,7 @@ from .views import (ProductList, CreateProduct,
                     RemoveProductProperty, Dashboard,
                     RemoveProductCategory, CreateCategories,
                     GetProductName, CreateQuality, BomItemList,
-                    SingelBom, CategoryWiseList, ExportData, CreatBOM, SingleProduct, SingleProductByPartNo
+                    SingelBom, CategoryWiseList, ExportData, CreatBOM, SingleProduct, SingleProductByPartNo, ProductSearch
                     )
 
 app_name = "products"
@@ -39,6 +39,8 @@ urlpatterns = [
          name="single-product"),
     path("<slug:id>/single-product-part-no", login_required(SingleProductByPartNo.as_view()),
          name="single-product-part-no"),
+    path("search/", login_required(ProductSearch.as_view()),
+         name="product-search"),
 
 
 ]

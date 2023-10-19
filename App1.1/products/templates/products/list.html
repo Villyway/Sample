@@ -34,7 +34,7 @@ All Products
     </div>
 
     <div class="col-4">
-      <input type="text" class="form-control" name="search" placeholder="Search" />      
+      <input type="text" class="form-control" id="id_search" name="search" placeholder="Search" />      
     </div>
     <div class="col-4"> 
       <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
@@ -47,7 +47,7 @@ All Products
         
         
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
-        <div class="table-responsive text-nowrap">
+        <div class="table-responsive text-nowrap" id="id_products_list">
           <table class="table">
             <thead>
               <tr>
@@ -129,5 +129,22 @@ All Products
 <script>
   $('#product-menu').addClass('active open');
   $('#sub-all-product').addClass('active')
+</script>
+
+<script>
+  $(document).on("keyup", "#id_search", function () {
+
+    var query = this.value;
+    // var category = $()
+    $.ajax({
+        url: '/products/search/',
+        type: 'GET',
+        data: { 'query': query,},
+        success: function (data) {
+            console.log(data)
+            $('#id_products_list').html(data.data);
+        }
+    });
+});
 </script>
 {% endblock js %}
