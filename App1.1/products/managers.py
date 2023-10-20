@@ -46,10 +46,16 @@ class ProductManager(models.Manager):
         except:
             return None
         
-    def search(self,query):
-
-        qs = self.active().filter(Q(name__icontains=query) | Q(
+    def search(self, query=None, category=None):
+        if category != None and query != None:
+            qs = self.category_wise(category).filter(Q(name__icontains=query) | Q(
             code__icontains=query) | Q(category__name__icontains=query) | Q(part_no__icontains=query))
+        elif category != None and query == None:
+            qs = self.category_wise(category)
+        
+        else:
+            qs = self.active().filter(Q(name__icontains=query) | Q(
+                code__icontains=query) | Q(category__name__icontains=query) | Q(part_no__icontains=query))
         return qs
         
 

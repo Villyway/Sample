@@ -549,36 +549,43 @@ class ProductSearch(View):
     # permission_required = "products.can_access_product"
 
     def get(self, request):
-        # try:
-        if is_ajax(request):
-            query = request.GET.get("query", None)
-            print(query)
-            categories = Categories.objects.all()
-            products = Product.objects.search(
-                query=query)
-            
-            results_per_page = 100
-            page = request.GET.get('page', 1)
-            paginator = Paginator(products, results_per_page)
-            try:
-                products = paginator.page(page)
-            except PageNotAnInteger:
-                products = paginator.page(1)
-            except EmptyPage:
-                products = paginator.page(paginator.num_pages)
-            html = render_to_string(
-                template_name=self.template_name,
-                context={"products": products, "data" : [page,results_per_page], "categories":categories}
-            )
-            
-            data_dict = {
-                "data": html
-            }
-            return JsonResponse(data=data_dict, safe=False)
+        try:
+            if is_ajax(request):
+                query = request.GET.get("query", None)
+                category = request.GET.get("category", None)
+                print(category)
+                if category != '0':
 
-            # if request.META.get('HTTP_REFERER'):
-                # return redirect(request.META.get('HTTP_REFERER'))
-            # else:
-                # return redirect("products:list")
-        # except Exception as e:
-            # return JsonResponse({"error": str(e)})
+                    item_category = Categories.objects.get(id=category)
+                else:
+                    item_category = None
+
+                categories = Categories.objects.all()
+                products = Product.objects.search(
+                    query=query,category = item_category)
+
+                results_per_page = 100
+                page = request.GET.get('page', 1)
+                paginator = Paginator(products, results_per_page)
+                try:
+                    products = paginator.page(page)
+                except PageNotAnInteger:
+                    products = paginator.page(1)
+                except EmptyPage:
+                    products = paginator.page(paginator.num_pages)
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"products": products, "data" : [page,results_per_page], "categories":categories}
+                )
+
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
+
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("products:list")
+        except Exception as e:
+            return JsonResponse({"error": str(e)})

@@ -76,23 +76,23 @@ class Command(BaseCommand):
                 )
     
     def create_product(self, i, quality_obj, category_obj):
-        if i['item_code']:
-            i['item_code'] = i['item_code'].strip()
+        if i['code']:
+            i['code'] = i['code'].strip()
         item_obj, created = Product.objects.get_or_create(
-                code = i['item_code'],
-                name = i['item_name'].strip(),
-                category = category_obj,
-                version = str(int(i['item_version'])).strip(),
-                quality_type = quality_obj,
-                is_active = True
+                name = i['description'].strip(),
                 )
+        item_obj.code = i['code']
+        item_obj.category = category_obj
+        item_obj.version = "1"
+        item_obj.quality_type = quality_obj
+        item_obj.is_active = True
         item_obj.part_no = generate_part_code(item_obj.id,item_obj.version, item_obj.quality_type.code)
         item_obj.save()
         return item_obj
                 
     def add_pre_item(self):
 
-        excel_data_df = pd.read_excel('static/item_data.xlsx', engine='openpyxl')
+        excel_data_df = pd.read_excel('static/domestic_sort_file.xlsx', engine='openpyxl')
         json_data = excel_data_df.to_json(orient='records')
 
         item_data = json.loads(json_data)
@@ -107,13 +107,13 @@ class Command(BaseCommand):
                 is_active =True
             )
 
-            # create Part Quality
+            # # create Part Quality
             quality_obj, created = PartQuality.objects.get_or_create(
                     name = i['quality'].strip(),
                     code = i['quality'].split("-")[0]
                 )
             
-            if i['item_code']:
+            if i['code']:
                 # Create Main Part
                 product = self.create_product(i, quality_obj, category_obj)
             
