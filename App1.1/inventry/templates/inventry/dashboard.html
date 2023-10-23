@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / 
+{% endblock %}
+
+{% block head %}
+Inventory
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- Order Statistics -->
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-4">
+        <div class="card h-100">
+          <div class="card-header d-flex align-items-center justify-content-between pb-0">
+            <div class="card-title mb-0">
+              <h5 class="m-0 me-2">Finished Item Stock</h5>
+              {% comment %} <small class="text-muted">42.82k Total Sales</small> {% endcomment %}
+            </div>
+            <div class="dropdown">
+              <button
+                class="btn p-0"
+                type="button"
+                id="orederStatistics"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
+                <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+                <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                <a class="dropdown-item" href="javascript:void(0);">Share</a>
+              </div>
+            </div>
+          </div>
+          <hr/>
+          <div class="card-body">
+            <ul class="p-0 m-0">
+              {% for item in finished_item %}
+              <li class="d-flex mb-4 pb-1">
+                <div class="avatar flex-shrink-0 me-3">
+                  
+                  {{forloop.counter}}
+                </div>
+                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                  <div class="me-2">
+                    <h6 class="mb-0">{{item.part_no}}</h6>
+                    <small class="text-muted">{{item.name}}</small>
+                  </div>
+                  <div class="user-progress">
+                    <small class="fw-semibold">{{item.stock}}</small>
+                  </div>
+                </div>
+              </li>
+              <hr/>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#inventory-menu').addClass('active open');
+  $('#inventry-dashboard').addClass('active')
+</script>
+{% endblock js %}

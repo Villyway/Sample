@@ -9,7 +9,7 @@
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted active" aria-current="page"><a
-        href="{% url 'vendors:vendor-list' %}">Products</a> / <b class="text-dark">Add<b></li>
+        href="{% url 'products:products-list' %}">Products</a> / <b class="text-dark">Add<b></li>
 {% endblock %}
 
 {% block head %}
@@ -29,8 +29,14 @@ New Product
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label class="form-label" for="basic-default-inword-bill_no">{{form.code.label}}</label>
-                                            <span class="text-danger">*</span>
+                                            <span class="text-danger"></span>
                                             {{form.code}}
+                                            <span class="text-danger print_error" id="code"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="basic-default-inword-bill_no">{{form.part_version.label}}</label>
+                                            <span class="text-danger">*</span>
+                                            {{form.part_version}}
                                             <span class="text-danger print_error" id="code"></span>
                                         </div>
                                         <div class="mb-3">
@@ -69,6 +75,12 @@ New Product
                                             <label class="form-label" for="basic-default-inword-bill_no">{{form.name.label}}</label>
                                             <span class="text-danger">*</span>
                                             {{form.name}}
+                                            <span class="text-danger print_error" id="name"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="basic-default-inword-bill_no">{{form.part_quality.label}}</label>
+                                            <span class="text-danger">*</span>
+                                            {{form.part_quality}}
                                             <span class="text-danger print_error" id="name"></span>
                                         </div>
                                         <div class="mb-3">

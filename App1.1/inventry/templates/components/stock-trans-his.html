@@ -1,0 +1,55 @@
+<table class=" table">
+    <thead>
+        <tr>
+            <th>No</th>
+            {% comment %} <th>Code</th> {% endcomment %}
+            <th>Part<br> No</th>
+            <th>Date-Time</th>
+            <th>Old-Stock</th>
+            <th>Issued</th>
+            <th>Received</th>
+            <th>Current Stock</th>
+            
+        </tr>
+    
+    
+        {% if histories %}
+    </thead>
+        <tbody id ="data-output">
+        {% for history in histories %}
+        <tr >
+            <td>
+            {{ forloop.counter}}
+            </td>
+            <td>{{history.part.part_no}}</td>
+            <td>
+                {{history.created_at}}
+            </td>
+            <td>{{history.old_stock}}</td>
+            <td>
+                {% if history.transection_type == "DR" %}
+                  - {{history.received_qty}}
+                {% else %}
+                  -
+                {% endif %}
+            </td>
+            <td>
+              {% if history.transection_type == "CR" %}
+                  + {{history.received_qty}}
+                {% else %}
+                  -
+                {% endif %}
+            </td>
+            <td>{{history.quantity_on_hand}}</td>
+          </tr>
+        {% endfor %}
+    </tbody>             
+        {% else %}
+        <tr>
+          Transection was Not Available
+        </tr>
+        </thead>
+        {% endif %}
+    
+
+</table>

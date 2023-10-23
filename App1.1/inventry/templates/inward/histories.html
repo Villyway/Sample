@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}Stock Histories{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / <b class="text-dark">Stock Histories<b></li>
+{% endblock %}
+
+{% block head %}
+Stock History    
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-3 mb-5">
+  <div class="row">
+    <div class="col-12">
+      <a href="{% url 'inventry:add-stock' %}"><button type="button" class="btn btn-success  mb-2"
+        style="float: right; ">Stock Operations</button></a>
+    </div>
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card">
+        
+        
+        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+        <div class="table-responsive text-nowrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Part<br> No</th>
+                <th>Date-Time</th>
+                <th>Old-Stock</th>
+                <th>Issued</th>
+                <th>Received</th>
+                <th>Current Stock</th>
+                
+              </tr>
+              
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% for product in products %}
+              <tr >
+                <td>
+                {{ forloop.counter|adjust_for_pagination:data }}
+                </td>
+                <td>{{product.part.part_no}}</td>
+                <td>
+                    {{product.created_at}}
+                </td>
+                <td>{{product.old_stock}}</td>
+                <td>
+                    {% if product.transection_type == "DR" %}
+                      - {{product.received_qty}}
+                    {% else %}
+                      -
+                    {% endif %}
+                </td>
+                <td>
+                  {% if product.transection_type == "CR" %}
+                      + {{product.received_qty}}
+                    {% else %}
+                      -
+                    {% endif %}
+                </td>
+                <td>{{product.quantity_on_hand}}</td>
+
+                
+                
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+          
+        </div>
+        
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+  <div class="row container-fluid mt-2">
+ 
+    {% if products.paginator.num_pages > 1 %}    
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
+</div>
+</div>
+<div class="mt-5"></div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    $('#inventory-menu').addClass('active open');
+    $('#stock-histories').addClass('active')
+</script>
+{% endblock js %}

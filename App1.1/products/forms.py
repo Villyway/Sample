@@ -2,12 +2,12 @@ from datetime import date, datetime
 
 from django import forms
 
-from .models import (Unit, Product, Attribute,
-                     ProductAttribute, Categories )
+from .models import (Unit, Product,
+                      Categories, PartQuality, BOMItem  )
 from vendors.models import Vendor
 
 class ProductForm(forms.Form):
-    code = forms.CharField(required=True, label="Item Code", widget=forms.TextInput(
+    code = forms.CharField(label="Item Code", widget=forms.TextInput(
         attrs={"class": "form-control"}))    
     name = forms.CharField(required=True, label="Item Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
@@ -26,7 +26,11 @@ class ProductForm(forms.Form):
     description = forms.CharField(required=False, label="Description", widget=forms.Textarea(
         attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
     specification = forms.CharField(required=False, label="Specification", widget=forms.Textarea(
-        attrs={"class": "form-control aiz-text-editor", "rows": "5"}))    
+        attrs={"class": "form-control aiz-text-editor", "rows": "5"}))
+    part_quality = forms.ModelChoiceField(queryset=PartQuality.objects.filter(is_active=True), widget=forms.Select(
+        attrs={"class": "form-control form-select"}), required=True, label="Quality", empty_label='--- Select Quality ---')
+    part_version = forms.CharField(required=True, label="Item Version", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
     image = forms.ImageField(required=False, label="Thumbnail Image(300x 300)",
                                     widget=forms.FileInput(attrs={'class': "form-control", 'accept': "image/jpeg image/png image/jpg",'id':'imgInp'}), help_text="Please upload only .jpg, .jpeg,.png file")
 
@@ -37,6 +41,8 @@ class ProductForm(forms.Form):
         super(ProductForm, self).__init__(*args, **kwargs)
         if self.edit and self.product:
             self.fields["code"].initial = self.product.code
+            self.fields["part_quality"].initial = self.product.quality_type
+            self.fields["part_version"].initial = self.product.version
             self.fields["name"].initial = self.product.name
             self.fields["category"].initial = self.product.category
             self.fields['code'].widget.attrs['readonly'] = True
@@ -56,7 +62,13 @@ class ProductForm(forms.Form):
             if Product.objects.filter(code=code):
                 raise forms.ValidationError(
                     "This item code is already registered, please use a different one.")
-
         return code
-            
 
+
+class BomForm(forms.Form):
+    product = forms.ModelChoiceField(queryset=Product.objects.filter(is_active=True, category__name = "Finish Goods"), widget=forms.Select(
+        attrs={"class": "form-control form-select"}), required=True, label="Main Product", empty_label='--- Select Category ---')
+    child = forms.ModelChoiceField(queryset=Product.objects.filter(is_active=True), widget=forms.Select(
+        attrs={"class": "form-control form-select"}), required=True, label="Child Product", empty_label='--- Select Category ---')
+    qty = forms.CharField(label="Quantity", widget=forms.TextInput(
+        attrs={"class": "form-control","type":"number","value":"0"}))

@@ -27,7 +27,37 @@ class ProductManager(models.Manager):
             return self.active().filter(category=category).count()
         except:
             return None
-
+        
+    def category_wise(self,category):
+        try:
+            return self.active().filter(category=category)
+        except:
+            return None
+    
+    def by_code(self,code):
+        try:
+            return self.active().get(code=code)
+        except:
+            return None
+        
+    def by_part_no(self,part_no):
+        try:
+            return self.active().get(part_no=part_no)
+        except:
+            return None
+        
+    def search(self, query=None, category=None):
+        if category != None and query != None:
+            qs = self.category_wise(category).filter(Q(name__icontains=query) | Q(
+            code__icontains=query) | Q(category__name__icontains=query) | Q(part_no__icontains=query))
+        elif category != None and query == None:
+            qs = self.category_wise(category)
+        
+        else:
+            qs = self.active().filter(Q(name__icontains=query) | Q(
+                code__icontains=query) | Q(category__name__icontains=query) | Q(part_no__icontains=query))
+        return qs
+        
 
 class AttributeManager(models.Manager):
     def get_queryset(self):

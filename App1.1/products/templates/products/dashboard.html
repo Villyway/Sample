@@ -39,15 +39,23 @@ Products
             </div>
           </div>
           {% for i, j in category_by.items %}
+          
+          
           <div class="col-lg-2 col-md-12 col-6 mb-4">
+            {% for k in categories %}
+          {% if k.name == i %}
+          <a href="{% url 'products:category-product' k.id %}">
             <div class="card">
               <div class="card-body">
                 <div class="card-title">
-                    <span>{{i}}</span>
+                    <span>{{i}} </span>
                 </div>
                 <h3 class="card-title text-nowrap mb-1">{{j}}</h3>
               </div>
             </div>
+          </a>
+          {% endif %}
+          {% endfor %}
           </div>
           {% endfor %}
         </div>

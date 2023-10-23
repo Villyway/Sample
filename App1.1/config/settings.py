@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # External Library
     'rest_framework',
+    'import_export',
 
     # Project applications
     'users.apps.UsersConfig',
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     'utils.apps.UtilsConfig',
     'products.apps.ProductsConfig',
     'vendors.apps.VendorsConfig',
+    'inventry.apps.InventryConfig'
+    # 'inventory.apps.InventoryConfig',
 ]
 
 MIDDLEWARE = [
@@ -97,7 +100,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         # 'NAME': os.environ.get('DB', 'Enventry'),
-        'NAME': os.environ.get('DB', 'inventory'),
+        # 'NAME': os.environ.get('DB', 'inventory'),
+        'NAME': os.environ.get('DB', 'latestData'), #latestData, inventory1
+        # 'NAME': os.environ.get('DB', 'teste'),
         'USER': os.environ.get('DBUSER', 'rupesh'),
         'PASSWORD': os.environ.get('DBPASSWORD', 'Rupesh@123'),
         'HOST': 'localhost',
@@ -184,3 +189,6 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 
 }
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000000 # higher than the count of fields

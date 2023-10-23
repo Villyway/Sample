@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% comment %} {% load product_extras %} {% endcomment %}
+
+{% block title %}Inword QC List{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'inventry:inventry-dashboard' %}">Invantory</a> / <b class="text-dark">Inword<b> / QC</li>
+{% endblock %}
+
+{% block head %}
+Inword QC List
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3 mb-5">
+  <div class="row">
+    <div class="col-12">
+      
+    </div>
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card">
+        <h5 class="card-header">All Inwords</h5>
+        
+        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+        <div class="table-responsive text-nowrap">
+          <table class="table">
+            <thead>
+              <tr class="bg-warning text-white">
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Date</th>
+                <th>GRN No.</th>
+                <th>Bill No</th>
+                <th>Bill Date</th>
+                <th>Part</th>
+                <th>Received <br> Qty</th>
+                <th>UOM</th>
+                <th>Vendor</th>
+                <th>Received <br> By</th>
+                <th>Purchase <br> Order <br> No</th>
+                <th>In<br> Time</th>
+                <th>QC<br> Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% for inword in qc_list %}
+              <tr >
+                <td> 
+                  {% comment %} {% if is_paginated %}
+                  {{ forloop.counter|adjust_for_pagination:page }}
+                  {% else %}
+                  
+                  {% endif %} {% endcomment %}
+                   {{ forloop.counter }} 
+                  
+             </td>
+                <td>{{inword.created_at|date:'d-m-Y'}}</td>
+                <td>{{inword.grn_no}}</td>
+                <td> {{inword.bill_no}} </td>
+                <td>{{inword.bill_date|date:'d-m-Y'}}</td>
+                <td>{{inword.part.code}}</td>
+                <td>{{inword.received_qty}}</td>
+                <td>{{inword.uom}}</td>
+                <td>{{inword.vendor.name}}</td>
+                <td>{{inword.receive_by}}</td>
+                <td>{{inword.purchase_order_no}}</td>
+                <td>{{inword.in_time}}</td>
+                <td>
+                {% if inword.qc_status %}
+                <i class="fas fa-check text-success" style="font-size: 15px;"></i>
+                {% else %}
+                <i class="fas fa-times text-danger" style="font-size: 15px;"></i>
+                {% endif %}
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Action
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item bg-success text-white" href="javascript:void(0);">APPROVED</a></li>
+                        
+                        <li><a class="dropdown-item bg-danger text-white" href="javascript:void(0);">REJECTED</a></li>
+                        
+                        <li><a class="dropdown-item bg-primary text-white" href="javascript:void(0);">IN REVIEW</a></li>
+                      </ul>
+                </td>
+              </tr>
+              {% endfor %} 
+
+            </tbody>
+          </table>
+          
+        </div>
+        
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+  <div class="row container-fluid mt-2">
+    {% if products.paginator.num_pages > 1 %}
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
+</div>
+</div>
+<div class="mt-5"></div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#inventory-menu').addClass('active open');
+  $('#inventory-qc').addClass('active')
+</script>
+{% endblock js %}

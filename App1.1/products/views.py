@@ -11,10 +11,15 @@ from django.template.loader import render_to_string
 from django.core.files.storage import default_storage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Product, Attribute, ProductAttribute, Categories, PartQuality
-from .forms import ProductForm
+
+from .models import (Product, Attribute, ProductAttribute,
+                      Categories, PartQuality, BOMItem
+                    )
+from .forms import ProductForm, BomForm
 from utils.views import get_secured_url, is_ajax
-from .serializers import InwordOfProductSerializer
+from .serializers import InwordOfProductSerializer, ProductSerializer, ProductSerializerWithId
+from utils.views import generate_part_code, BarCode
+from .resources import ProductResource
 
 
 # Product Dashboard
@@ -32,7 +37,13 @@ class Dashboard(View):
             "category_by":__item,
             "categories":total_categories
         }
-        
+
+        # product_a = Product.objects.get(code="FLBGC01")
+        # bom = product_a.get_bom()
+        # Print the BOM
+        # for component, quantity in bom.items():
+        #     print(f"Component: {component}, Quantity: {quantity}")
+
         return render(request,self.template_name, context)
 
 
@@ -41,10 +52,11 @@ class ProductList(View):
     template_name = "products/list.html"
 
     def get(self,request):
+        categories = Categories.objects.all()
         products = Product.objects.active()
-
+        results_per_page = 7
         page = request.GET.get('page', 1)
-        paginator = Paginator(products, 10)
+        paginator = Paginator(products, results_per_page)
         try:
             products = paginator.page(page)
         except PageNotAnInteger:
@@ -53,6 +65,8 @@ class ProductList(View):
             products = paginator.page(paginator.num_pages)
         context = {
             "products": products,
+            "data" : [page,results_per_page],
+            "categories":categories
 
         }
         return render(request, self.template_name, context)
@@ -91,10 +105,25 @@ class CreateProduct(FormView):
                     product.rack_no = form_data['rack_no']
                     product.tray_no = form_data['tray_no']
                     product.created_by = self.request.user.id
+                    product.quality_type = form_data['part_quality']
+                    product.version = form_data['part_version']                    
                     product.save()
+
+                    product.part_no = generate_part_code(product.id, product.version, product.quality_type.code)
+                    product.save()
+
                     if form_data['image']:
                         product.save_image_url(form_data["image"], get_secured_url(
                                 self.request) + self.request.META["HTTP_HOST"])
+                        
+                    gen_barcode = BarCode()
+                    path = "products/"+ product.part_no + "/barcodes/"
+                    status = gen_barcode.generate(product.part_no,product.part_no,path, product.name + ".png")
+                    product.barcode_image = get_secured_url(self.request) + self.request.META["HTTP_HOST"] +"/media/" + path + product.name + ".png"
+                    product.save()
+                        
+                    
+                    
                     messages.success(
                         self.request, "Product added successfully.")
                 data = {
@@ -285,7 +314,6 @@ class CreateCategories(View):
     def post(self, request):
         try:
             data = json.loads(request.POST.get("data"))
-            print(data)
             if data["category"] != '':
                 category = data["category"]
                 obj, created = Categories.objects.get_or_create(
@@ -371,12 +399,16 @@ class CreateQuality(View):
         try:
             data = json.loads(request.POST.get("data"))
             print(data)
-            if data["category"] != '':
+            if data["category"] != '' and data["code"] != '':
                 category = data["category"]
+                code = data["code"]
+                description = data["description"]
                 obj, created = PartQuality.objects.get_or_create(
                     name__iexact=category,
                     defaults={
-                        'name': category
+                        'name': category,
+                        'code': code,
+                        'description':description
                     },
                     is_active =True
                 )
@@ -400,3 +432,160 @@ class CreateQuality(View):
                 "status": 500
             }
             return JsonResponse(data)
+
+
+#Bom List
+class BomItemList(View):
+    template_name = "bom/bom_list.html"
+
+    def get(self,request):
+        # products = BOMItem.objects.values_list('product__name','product__code', 'product__id','product__part_no').distinct()
+        products = Product.objects.active().filter(category=Categories.objects.get(id=1))
+        results_per_page = 10
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, results_per_page)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context = {
+            "products": products,
+            "data" : [page,results_per_page]
+
+        }
+        return render(request, self.template_name, context)
+    
+
+#Get Bom of Singel Finished Product
+class SingelBom(View):
+    template_name = "bom/singel_bom.html"
+
+    def get(self,request, id):
+        product_a = Product.objects.by_code(id)
+        bom = product_a.get_bom()
+        context={
+            "name": product_a.name,
+            "code":product_a.code,
+            "image":product_a.image,
+            "components" : bom
+        }
+        
+        return render(request, self.template_name,context)
+    
+class CategoryWiseList(View):
+    template_name = "products/category_wise.html"
+
+    def get(self,request, id):
+        category = Categories.objects.get(id=id)
+        products = Product.objects.category_wise(category)
+
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 7)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context = {
+            "products": products,
+            "category" : category.name
+        }
+        return render(request, self.template_name, context)
+
+
+class ExportData(View):
+    
+    def get(self, request):
+        product_resourse = ProductResource()
+        queryset = Product.objects.all().order_by('id')
+        dataset = product_resourse.export(queryset)
+        response = HttpResponse(dataset.csv,content_type="text/csv")
+        response['Content-Disposition'] = 'attachment; filename="product.csv"'
+        return response
+    
+
+# Create Bom 
+class CreatBOM(View):
+    template_name = "bom/create.html"
+    form_name = BomForm()
+    
+    def get(self,request):
+        
+        return render(request,self.template_name,{"form":self.form_name})
+    
+    def post(self,request):
+        
+        return render(request,self.template_name,{"form":self.form_name})
+    
+
+# Row data by Json response
+# Singel Product return
+class SingleProduct(View):
+    
+    def get(self, request, id):
+        product = ProductSerializer(Product.objects.single_product(id)).data
+        data = {"product":product}
+        return JsonResponse(data, status=200)
+
+
+class SingleProductByPartNo(View):
+    
+    def get(self, request, id):
+        product = Product.objects.by_part_no(id)
+        if product:
+            product = ProductSerializerWithId(product).data
+            data = {"product":product}
+            return JsonResponse(data, status=200)
+        else:
+            data = {"product":"NOT FOUND"}
+            return JsonResponse(data, status=400)
+            
+
+class ProductSearch(View):
+    template_name = "components/product-list.html"
+    # permission_required = "products.can_access_product"
+
+    def get(self, request):
+        try:
+            if is_ajax(request):
+                query = request.GET.get("query", None)
+                category = request.GET.get("category", None)
+                print(category)
+                if category != '0':
+
+                    item_category = Categories.objects.get(id=category)
+                else:
+                    item_category = None
+
+                categories = Categories.objects.all()
+                products = Product.objects.search(
+                    query=query,category = item_category)
+
+                results_per_page = 100
+                page = request.GET.get('page', 1)
+                paginator = Paginator(products, results_per_page)
+                try:
+                    products = paginator.page(page)
+                except PageNotAnInteger:
+                    products = paginator.page(1)
+                except EmptyPage:
+                    products = paginator.page(paginator.num_pages)
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"products": products, "data" : [page,results_per_page], "categories":categories}
+                )
+
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
+
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("products:list")
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
