@@ -119,20 +119,41 @@ class Command(BaseCommand):
             
             else:
                 # Get Main Part
-                main_product = Product.objects.by_code(i['main'].strip())
+                # main_product = Product.objects.by_code(i['main'].strip())
 
                 # Create child Part
                 product = self.create_product(i, quality_obj, category_obj)
 
-                # Create Bom
-                BOMItem.objects.get_or_create(
-                    product = main_product,
-                    component = product,
-                    quantity = int(i['bom_qty']),
-                    category = i['bom_category']
-                )
+                # # Create Bom
+                # BOMItem.objects.get_or_create(
+                #     product = main_product,
+                #     component = product,
+                #     quantity = int(i['bom_qty']),
+                #     category = i['bom_category']
+                # )
+            
+    def add_stock(self):
+        excel_data_df = pd.read_excel('static/stock_update.xlsx', engine='openpyxl')
+        json_data = excel_data_df.to_json(orient='records')
+
+        item_data = json.loads(json_data)
+
+        for i in item_data:
+            try:
+                print(i)
+                product = Product.objects.get(name=i['name'])
+                if i['STOCK']:
+                    product.stock = i['STOCK']
+                else:
+                    product.stock = 0
+                product.save()
+            except:
+                pass
+            
+
+
 
     def handle(self, *args, **kwargs):
-        self.add_pre_item()
+        self.add_stock()
         # self.add_item()
         # self.add_bom()

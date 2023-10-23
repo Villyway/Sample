@@ -101,7 +101,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         # 'NAME': os.environ.get('DB', 'Enventry'),
         # 'NAME': os.environ.get('DB', 'inventory'),
-        'NAME': os.environ.get('DB', 'inventory1'), #latestData
+        'NAME': os.environ.get('DB', 'latestData'), #latestData, inventory1
         # 'NAME': os.environ.get('DB', 'teste'),
         'USER': os.environ.get('DBUSER', 'rupesh'),
         'PASSWORD': os.environ.get('DBPASSWORD', 'Rupesh@123'),
