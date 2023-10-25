@@ -76,12 +76,12 @@ class Command(BaseCommand):
                 )
     
     def create_product(self, i, quality_obj, category_obj):
-        if i['code']:
-            i['code'] = i['code'].strip()
+        if i['item_code']:
+            i['item_code'] = i['item_code'].strip()
         item_obj, created = Product.objects.get_or_create(
-                name = i['description'].strip(),
+                name = i['item_name'].strip(),
                 )
-        item_obj.code = i['code']
+        item_obj.code = i['item_code']
         item_obj.category = category_obj
         item_obj.version = "1"
         item_obj.quality_type = quality_obj
@@ -92,7 +92,7 @@ class Command(BaseCommand):
                 
     def add_pre_item(self):
 
-        excel_data_df = pd.read_excel('static/domestic_sort_file.xlsx', engine='openpyxl')
+        excel_data_df = pd.read_excel('static/item_data.xlsx', engine='openpyxl')
         json_data = excel_data_df.to_json(orient='records')
 
         item_data = json.loads(json_data)
@@ -113,7 +113,7 @@ class Command(BaseCommand):
                     code = i['quality'].split("-")[0]
                 )
             
-            if i['code']:
+            if i['item_code']:
                 # Create Main Part
                 product = self.create_product(i, quality_obj, category_obj)
             
@@ -154,6 +154,7 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **kwargs):
-        self.add_stock()
+        self.add_pre_item()
+        # self.add_stock()
         # self.add_item()
         # self.add_bom()
