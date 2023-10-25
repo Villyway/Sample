@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}Reports{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / <b class="text-dark">Reports<b></li>
+{% endblock %}
+
+{% block head %}
+Reports    
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-3 mb-5">
+  <div class="row">
+    <div class="col-12">
+        <div class="row">
+            <div class="mb-3 col-4">
+                <label for="defaultSelect" class="form-label">Time Line</label>
+                <select id="time-line-select" class="form-select">
+                  <option>Default select</option>
+                  <option value="Yearly">Yearly</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Today">Today</option>
+                  <option value="Custom">Custom</option>
+                </select>
+            </div>
+            <div class="mb-3 col-4" id="report-type-select">
+                <label for="defaultSelect" class="form-label">Report Type</label>
+                <select id="defaultSelect" class="form-select">
+                  <option>Default select</option>
+                  <option value="Received">Received</option>
+                  <option value="Issued">Issued</option>
+                  <option value="All">All</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" id ="yearly-select">
+            <div class="mb-3 col-4">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting year</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="start-year-input" />
+                </div>
+            </div>
+            <div class="mb-3 col-4">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending year</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="end-year-input" />
+                </div>
+            </div>
+            <div class="form-check col-4">
+                <input class=" form-control form-check-input" type="checkbox" value="" id="current-year-checked">
+                <label class="form-check-label" for="defaultCheck3"> Current year </label>
+            </div>
+        </div>
+        <div class="row" id="monthly-select">
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Month</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="start-month-input" />
+                </div>
+            </div>
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending month</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="end-month-input" />
+                </div>
+            </div>
+            <div class="form-check col-4">
+                <input class=" form-control form-check-input" type="checkbox" value="" id="current-month-checked" >
+                <label class="form-check-label" for="defaultCheck3"> Current Month </label>
+            </div>
+        </div>
+        <div class="row" id="custom-select">
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Date</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="date" value="" id="html5-date-input" />
+                </div>
+            </div>
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending Date</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="date" value="" id="html5-date-input" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card">
+        
+        
+        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+        <div class="table-responsive text-nowrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Part<br> No</th>
+                <th>Date-Time</th>
+                <th>Old-Stock</th>
+                <th>Issued</th>
+                <th>Received</th>
+                <th>Current Stock</th>
+                
+              </tr>
+              
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% for product in products %}
+              <tr >
+                <td>
+                {{ forloop.counter|adjust_for_pagination:data }}
+                </td>
+                <td>{{product.part.part_no}}</td>
+                <td>
+                    {{product.created_at}}
+                </td>
+                <td>{{product.old_stock}}</td>
+                <td>
+                    {% if product.transection_type == "DR" %}
+                      - {{product.received_qty}}
+                    {% else %}
+                      -
+                    {% endif %}
+                </td>
+                <td>
+                  {% if product.transection_type == "CR" %}
+                      + {{product.received_qty}}
+                    {% else %}
+                      -
+                    {% endif %}
+                </td>
+                <td>{{product.quantity_on_hand}}</td>
+
+                
+                
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+          
+        </div>
+        
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+  <div class="row container-fluid mt-2">
+ 
+    {% if products.paginator.num_pages > 1 %}    
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
+</div>
+</div>
+<div class="mt-5"></div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    $("#report-type-select").hide();
+    $("#yearly-select").hide();
+    $("#monthly-select").hide();
+    $("#custom-select").hide();
+    $('#inventory-menu').addClass('active open');
+    $('#stock-histories').addClass('active')
+</script>
+<script>
+    $("#time-line-select").change(function () {
+        $("#report-type-select").hide();
+        $("#yearly-select").hide();
+        $("#monthly-select").hide();
+        $("#custom-select").hide();
+        var id = $(this).find(":selected").val();
+        if (id=="Yearly"){
+            $("#report-type-select").show();
+            $("#yearly-select").show();
+        }
+        else if (id == "Monthly"){
+            $("#report-type-select").show();
+            $("#monthly-select").show();
+        }
+        else if (id == "Custom"){
+            $("#report-type-select").show();
+            $("#custom-select").show();
+        }
+        else if (id == "Today"){
+            $("#report-type-select").show();
+            $("#yearly-select").hide();
+            $("#monthly-select").hide();
+            $("#custom-select").hide();
+        }
+        
+    })
+    $("#current-year").change(function () {
+        if(this.checked){
+            $("#start-year-input").attr("disabled","disabled")
+            $("#end-year-input").attr("disabled","disabled")
+        }else{
+            $("#start-year-input").removeAttr("disabled","disabled")
+            $("#end-year-input").removeAttr("disabled","disabled")
+        }
+    })
+
+    $("#current-year-checked").change(function () {
+        if(this.checked){
+            $("#start-year-input").attr("disabled","disabled")
+            $("#end-year-input").attr("disabled","disabled")
+        }else{
+            $("#start-year-input").removeAttr("disabled","disabled")
+            $("#end-year-input").removeAttr("disabled","disabled")
+        }
+    })
+
+    $("#current-month-checked").change(function () {
+        if(this.checked){
+            $("#start-month-input").attr("disabled","disabled")
+            $("#end-month-input").attr("disabled","disabled")
+        }else{
+            $("#start-month-input").removeAttr("disabled","disabled")
+            $("#end-month-input").removeAttr("disabled","disabled")
+        }
+    })
+    
+</script>
+{% endblock js %}

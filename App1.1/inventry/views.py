@@ -261,6 +261,12 @@ class StockHistoriesList(View):
         return render(request, self.template_name, context)
 
 
+class InventryReport(View):
 
+    template_name = "inventry/report.html"
+
+    def get(self, request):
+         
+         return render(request, self.template_name)
 
         
