@@ -18,6 +18,8 @@ from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfBillWiseProductSerializer, StockHistorySerializer
 from products.models import Product, Categories
 from utils.constants import StockTransection
+from utils.constants import ReportTimeLine, InventryReportType
+from inventry.resources import StockUpdateReport
 
 
 # Create your views here.
@@ -243,7 +245,8 @@ class StockHistoriesList(View):
     template_name = "inward/histories.html"
 
     def get(self, request):
-        products = SimpleStockUpdte.objects.active()
+         
+        products = SimpleStockUpdte.objects.today_report()
         results_per_page = 15
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)
@@ -266,7 +269,19 @@ class InventryReport(View):
     template_name = "inventry/report.html"
 
     def get(self, request):
-         
-         return render(request, self.template_name)
+        print([(e.name,e.value) for e in ReportTimeLine])
+        return render(request, self.template_name)
 
+
+class ExportData(View):
+    
+    def get(self, request):
+        product_resourse = StockUpdateReport()
+        # queryset = SimpleStockUpdte.objects.today_report()
+        queryset = SimpleStockUpdte.objects.active()
+        dataset = product_resourse.export(queryset)
+        response = HttpResponse(dataset.csv,content_type="text/csv")
+        time_name = datetime.now().strftime("%Y%m%d-%H%M%S")
+        response['Content-Disposition'] = 'attachment; filename="stock_report'+ time_name + '".csv"'
+        return response
         

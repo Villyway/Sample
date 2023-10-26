@@ -29,17 +29,18 @@ Reports
                   <option>Default select</option>
                   <option value="Yearly">Yearly</option>
                   <option value="Monthly">Monthly</option>
+                  <option value="Daily">Daily</option>
                   <option value="Today">Today</option>
-                  <option value="Custom">Custom</option>
                 </select>
             </div>
             <div class="mb-3 col-4" id="report-type-select">
                 <label for="defaultSelect" class="form-label">Report Type</label>
                 <select id="defaultSelect" class="form-select">
                   <option>Default select</option>
-                  <option value="Received">Received</option>
-                  <option value="Issued">Issued</option>
-                  <option value="All">All</option>
+                  <option value="Received">Received Item</option>
+                  <option value="Issued">Issued Item</option>
+                  <option value="All">Both</option>
+                  <option value="current">Current Stock</option>
                 </select>
             </div>
         </div>
@@ -56,10 +57,6 @@ Reports
                   <input class="form-control" type="month" value="" id="end-year-input" />
                 </div>
             </div>
-            <div class="form-check col-4">
-                <input class=" form-control form-check-input" type="checkbox" value="" id="current-year-checked">
-                <label class="form-check-label" for="defaultCheck3"> Current year </label>
-            </div>
         </div>
         <div class="row" id="monthly-select">
             <div class="mb-3 col-4 row">
@@ -73,10 +70,6 @@ Reports
                 <div class="col-md-10">
                   <input class="form-control" type="month" value="" id="end-month-input" />
                 </div>
-            </div>
-            <div class="form-check col-4">
-                <input class=" form-control form-check-input" type="checkbox" value="" id="current-month-checked" >
-                <label class="form-check-label" for="defaultCheck3"> Current Month </label>
             </div>
         </div>
         <div class="row" id="custom-select">
@@ -93,6 +86,14 @@ Reports
                 </div>
             </div>
         </div>
+        <div class="row">
+          <div class="mb-3 col-4 row">
+            
+            <div class="col-md-10">
+              <butoon type="submit" class="btn btn-success ft-right">Submit</button>
+            </div>
+        </div>
+        </div>
     </div>
     <div class="col-12">
 
@@ -102,6 +103,7 @@ Reports
         
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
         <div class="table-responsive text-nowrap">
+        <button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit">Export</button>
           <table class="table">
             <thead>
               <tr>
@@ -113,9 +115,7 @@ Reports
                 <th>Issued</th>
                 <th>Received</th>
                 <th>Current Stock</th>
-                
               </tr>
-              
             </thead>
             <tbody class="table-border-bottom-0">
               {% for product in products %}
@@ -142,10 +142,7 @@ Reports
                       -
                     {% endif %}
                 </td>
-                <td>{{product.quantity_on_hand}}</td>
-
-                
-                
+                <td>{{product.quantity_on_hand}}</td>               
               </tr>
               {% endfor %}
 
@@ -193,7 +190,7 @@ Reports
             $("#report-type-select").show();
             $("#monthly-select").show();
         }
-        else if (id == "Custom"){
+        else if (id == "Daily"){
             $("#report-type-select").show();
             $("#custom-select").show();
         }
@@ -205,35 +202,7 @@ Reports
         }
         
     })
-    $("#current-year").change(function () {
-        if(this.checked){
-            $("#start-year-input").attr("disabled","disabled")
-            $("#end-year-input").attr("disabled","disabled")
-        }else{
-            $("#start-year-input").removeAttr("disabled","disabled")
-            $("#end-year-input").removeAttr("disabled","disabled")
-        }
-    })
-
-    $("#current-year-checked").change(function () {
-        if(this.checked){
-            $("#start-year-input").attr("disabled","disabled")
-            $("#end-year-input").attr("disabled","disabled")
-        }else{
-            $("#start-year-input").removeAttr("disabled","disabled")
-            $("#end-year-input").removeAttr("disabled","disabled")
-        }
-    })
-
-    $("#current-month-checked").change(function () {
-        if(this.checked){
-            $("#start-month-input").attr("disabled","disabled")
-            $("#end-month-input").attr("disabled","disabled")
-        }else{
-            $("#start-month-input").removeAttr("disabled","disabled")
-            $("#end-month-input").removeAttr("disabled","disabled")
-        }
-    })
+    
     
 </script>
 {% endblock js %}

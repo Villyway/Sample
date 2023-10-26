@@ -107,3 +107,25 @@ class StockTransection(Enum):
     @classmethod
     def choices(cls):
         return tuple((i.name, i.value) for i in cls)
+
+
+class ReportTimeLine(Enum):
+    YEARLY = "YEARLY"
+    MONTHLY = "MONTHLY"
+    DAILY = "DAILY"
+    TODAY = "TODAY"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+    
+
+class InventryReportType(Enum):
+    ISSUED_ITEM = "ISSUED ITEM"
+    RECEIVED_ITEM = "RECEIVED ITEM"
+    BOTH = "BOTH"
+    CURRENT_STOCK = "CURRENT_STOCK"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
