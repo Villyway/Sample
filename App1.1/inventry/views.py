@@ -201,8 +201,19 @@ class SimpleAddStock(FormView):
                 stock.received_by = form_data['receive_by']
                 stock.received_qty = form_data['qty']
                 if form_data['transection_type'] == StockTransection.DR.value:
-                    stock.transection_type = StockTransection.DR.value
-                    stock.quantity_on_hand = part.stock - int(form_data['qty'])
+                    if part.stock > int(stock.received_qty):
+                        stock.transection_type = StockTransection.DR.value
+                        stock.quantity_on_hand = part.stock - int(form_data['qty'])
+                    else:
+                        messages.error(
+                        self.request, part.part_no + "-"+ part.name +" of issued quantity is greater then availabel stock quantity.")
+                        data = {
+                            'error':part.part_no + "-"+ part.name +" of issued quantity is greater then availabel stock quantity.",
+                            "status": 403
+                        }
+                        return JsonResponse(data)
+                        
+
                 else:
                     stock.transection_type = StockTransection.CR.value
                     stock.quantity_on_hand = part.stock + int(form_data['qty'])
@@ -246,7 +257,7 @@ class StockHistoriesList(View):
 
     def get(self, request):
          
-        products = SimpleStockUpdte.objects.today_report()
+        products = SimpleStockUpdte.objects.active()
         results_per_page = 15
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)

@@ -147,13 +147,13 @@ Stock Transection
                 url: $thisURL,
                 data: formData,
                 success: function (data) {
-                    console.log(data)
                     if (data.error) {
+                        console.log(data.error)
                         var message = "<div class='bs-toast toast fade show bg-{{message.tags}} toast-placement-ex m-2 top-0 end-0' role='alert' aria-live='assertive' aria-atomic='true' style='float:right'>" +
                             "<div class='toast-header bg-danger'>" +
                             "<strong class='mr-auto text-white'>Error</strong>" +
                             "<button type='button' class='ml-2 mb-1 close' data-dismiss='toast'>&times;</button>" +
-                            "</div><div class='toast-body'>Error please check logs" +
+                            "</div><div class='toast-body'>Error Occurred, " + data.error +
                             "</div></div>";
                         $("#error-message").html(message);
                         $('.toast').toast('show');
