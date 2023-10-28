@@ -280,8 +280,54 @@ class InventryReport(View):
     template_name = "inventry/report.html"
 
     def get(self, request):
-        print([(e.name,e.value) for e in ReportTimeLine])
+        # print([(e.name,e.value) for e in ReportTimeLine])
         return render(request, self.template_name)
+
+
+class InventryReportStock(View):
+    template_name = "components/report-stock.html"
+
+    def get(self,request):
+        try:           
+            if is_ajax(request):
+                start_date = request.GET.get("start", None)
+                end_date = request.GET.get("end", None)
+                category = request.GET.get("category", None)
+                export_data = request.GET.get("export", None)
+
+                if category == ReportTimeLine.TODAY.value:
+                    products = SimpleStockUpdte.objects.today_report()
+                else:
+                    products = SimpleStockUpdte.objects.today_report()
+                
+                if export_data:
+                    print("hi")
+                    product_resourse = StockUpdateReport()
+                    dataset = product_resourse.export(products)
+                    response = HttpResponse(dataset.csv,content_type="text/csv")
+                    time_name = datetime.now().strftime("%Y%m%d-%H%M%S")
+                    response['Content-Disposition'] = 'attachment; filename="stock_report'+ time_name + '".csv"'
+                    return response
+                else:
+                    html = render_to_string(
+                        template_name=self.template_name,
+                        context={"products": products}
+                    )
+
+                    data_dict = {
+                        "data": html
+                    }
+                    return JsonResponse(data=data_dict, safe=False)
+
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("products:list")
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
+
+
+
 
 
 class ExportData(View):
@@ -289,7 +335,7 @@ class ExportData(View):
     def get(self, request):
         product_resourse = StockUpdateReport()
         # queryset = SimpleStockUpdte.objects.today_report()
-        queryset = SimpleStockUpdte.objects.active()
+        queryset = SimpleStockUpdte.objects.today_report()
         dataset = product_resourse.export(queryset)
         response = HttpResponse(dataset.csv,content_type="text/csv")
         time_name = datetime.now().strftime("%Y%m%d-%H%M%S")

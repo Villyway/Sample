@@ -27,13 +27,13 @@ Reports
                 <label for="defaultSelect" class="form-label">Time Line</label>
                 <select id="time-line-select" class="form-select">
                   <option>Default select</option>
-                  <option value="Yearly">Yearly</option>
-                  <option value="Monthly">Monthly</option>
-                  <option value="Daily">Daily</option>
-                  <option value="Today">Today</option>
+                  {% comment %} <option value="Yearly">Yearly</option> {% endcomment %}
+                  {% comment %} <option value="Monthly">Monthly</option> {% endcomment %}
+                  <option value="DAILY">Daily</option>
+                  <option value="TODAY">Today</option>
                 </select>
             </div>
-            <div class="mb-3 col-4" id="report-type-select">
+            {% comment %} <div class="mb-3 col-4" id="report-type-select">
                 <label for="defaultSelect" class="form-label">Report Type</label>
                 <select id="defaultSelect" class="form-select">
                   <option>Default select</option>
@@ -42,9 +42,9 @@ Reports
                   <option value="All">Both</option>
                   <option value="current">Current Stock</option>
                 </select>
-            </div>
+            </div> {% endcomment %}
         </div>
-        <div class="row" id ="yearly-select">
+        {% comment %} <div class="row" id ="yearly-select">
             <div class="mb-3 col-4">
                 <label for="html5-date-input" class="col-md-2 col-form-label"> Starting year</label>
                 <div class="col-md-10">
@@ -71,18 +71,18 @@ Reports
                   <input class="form-control" type="month" value="" id="end-month-input" />
                 </div>
             </div>
-        </div>
+        </div> {% endcomment %}
         <div class="row" id="custom-select">
             <div class="mb-3 col-4 row">
                 <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Date</label>
                 <div class="col-md-10">
-                  <input class="form-control" type="date" value="" id="html5-date-input" />
+                  <input class="form-control" type="date" value="" id="start-date-input" />
                 </div>
             </div>
             <div class="mb-3 col-4 row">
                 <label for="html5-date-input" class="col-md-2 col-form-label"> Ending Date</label>
                 <div class="col-md-10">
-                  <input class="form-control" type="date" value="" id="html5-date-input" />
+                  <input class="form-control" type="date" value="" id="end-date-input" />
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@ Reports
           <div class="mb-3 col-4 row">
             
             <div class="col-md-10">
-              <butoon type="submit" class="btn btn-success ft-right">Submit</button>
+              <butoon type="submit" id="get-report" class="btn btn-success ft-right">Submit</button>
             </div>
         </div>
         </div>
@@ -98,12 +98,9 @@ Reports
     <div class="col-12">
 
       <!-- Basic Bootstrap Table -->
-      <div class="card">
-        
-        
-        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+      <div class="card" id="report-card">
         <div class="table-responsive text-nowrap">
-        <button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit">Export</button>
+          <button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button>
           <table class="table">
             <thead>
               <tr>
@@ -117,38 +114,12 @@ Reports
                 <th>Current Stock</th>
               </tr>
             </thead>
-            <tbody class="table-border-bottom-0">
-              {% for product in products %}
-              <tr >
-                <td>
-                {{ forloop.counter|adjust_for_pagination:data }}
-                </td>
-                <td>{{product.part.part_no}}</td>
-                <td>
-                    {{product.created_at}}
-                </td>
-                <td>{{product.old_stock}}</td>
-                <td>
-                    {% if product.transection_type == "DR" %}
-                      - {{product.received_qty}}
-                    {% else %}
-                      -
-                    {% endif %}
-                </td>
-                <td>
-                  {% if product.transection_type == "CR" %}
-                      + {{product.received_qty}}
-                    {% else %}
-                      -
-                    {% endif %}
-                </td>
-                <td>{{product.quantity_on_hand}}</td>               
+            <tbody class="table-border-bottom-0" id="data-stock-body">
+              <tr>
+                <td colspan=7 align="center">No Data Availabel</td>
               </tr>
-              {% endfor %}
-
             </tbody>
           </table>
-          
         </div>
         
       </div>
@@ -190,7 +161,7 @@ Reports
             $("#report-type-select").show();
             $("#monthly-select").show();
         }
-        else if (id == "Daily"){
+        else if (id == "DAILY"){
             $("#report-type-select").show();
             $("#custom-select").show();
         }
@@ -200,7 +171,37 @@ Reports
             $("#monthly-select").hide();
             $("#custom-select").hide();
         }
-        
+    })
+    $("#get-report").click(function(){
+
+      var select = document.getElementById("time-line-select");
+      var start = document.getElementById("start-date-input");
+      var end = document.getElementById("end-date-input");
+      var selectedOption = select.options[select.selectedIndex];
+      var selectedValue = selectedOption.value;
+
+      $.ajax({
+        url: '/inventry/search-report/',
+        type: 'GET',
+        data: { 'start': start.value, "end":end.value, "category":selectedValue},
+        success: function (data) {
+            
+            $('#data-stock-body').html(data.data);
+        }
+    });
+    $("#data-export-btn").click(function(){
+      console.log("hi")
+      $.ajax({
+        url: '/inventry/search-report/',
+        type: 'GET',
+        data: { 'start': start.value, "end":end.value, "category":selectedValue, 'export':true},
+        success: function (data) {
+            
+            $('#data-stock-body').html(data.data);
+        }
+      });
+    });
+    
     })
     
     

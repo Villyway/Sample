@@ -15,7 +15,7 @@ class StockUpdateReport(resources.ModelResource):
     part_no = Field(column_name='Part No.')
     description = Field(column_name='Description')
     date = Field(column_name='Date-Time')
-    time = Field(column_name='Time')
+    time = Field(column_name='Date-Time')
     old_stock = Field(column_name='Old Stock')
     issued = Field(column_name='Issued')
     received = Field(column_name='Received')
@@ -63,6 +63,6 @@ class StockUpdateReport(resources.ModelResource):
     
     class Meta:
         model = SimpleStockUpdte
-        fields = ("part_no","description","date","time","old_stock","issued","received","current_stock")
-        export_order = ("part_no","description","date","time","old_stock","issued","received","current_stock")
+        fields = ("part_no","description","time","old_stock","issued","received","current_stock")
+        export_order = ("part_no","description","time","old_stock","issued","received","current_stock")
         
