@@ -129,3 +129,32 @@ class InventryReportType(Enum):
     @classmethod
     def choices(cls):
         return tuple((i.name,i.value) for i in cls)
+    
+
+class OrderStatus(Enum):
+    DELIVERED = "DELIVERED"
+    PENDING = "PENDING"
+    ON_THE_WAY = "ON THE WAY" 
+    IN_TRANSPORT = "IN TRANSPORT"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+    
+
+class PackingType(Enum):
+    BOX = "BOX"
+    LOOSE = "LOOSE"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+
+
+class OrderUOM(Enum):
+    NOS = "NOS"
+    SET = "SET"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)

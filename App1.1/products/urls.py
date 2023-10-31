@@ -41,6 +41,4 @@ urlpatterns = [
          name="single-product-part-no"),
     path("search/", login_required(ProductSearch.as_view()),
          name="product-search"),
-
-
 ]

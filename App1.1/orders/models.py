@@ -1,8 +1,9 @@
 from django.db import models
 
 from base.models import Base
-from products.models import Unit
+from products.models import Product, Unit
 from utils.models import Address
+from utils.constants import OrderStatus, OrderUOM, PackingType
 
 # Create your models here.
 class Customer(Base):
@@ -17,4 +18,36 @@ class Customer(Base):
         return self.name
     
 
-# class OrderDetails(Base):
+class OrderDetails(Base):
+    customer = models.ForeignKey(
+        Customer, on_delete=models.SET_NULL, null=True)
+    order_no = models.CharField(max_length=20, null=True, blank=True)
+    date = models.DateTimeField(blank=True, null=True)
+    order_status = models.CharField(
+        max_length=25, choices=OrderStatus.choices(), default=OrderStatus.PENDING.value)
+    sales_challan = models.CharField(max_length=80, null=True, blank=True)
+    lr_no = models.CharField(max_length=150, null=True, blank=True)
+    transport_compny = models.CharField(max_length=150, null=True, blank=True)
+    dispatch_date = models.DateTimeField(blank=True, null=True)
+    remarks = models.TextField(blank=True, null=True)
+    pickup_by_party_date = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.customer.name
+
+
+class OrderOfProduct(Base):
+    order = models.ForeignKey(
+        OrderDetails, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(
+        Product, on_delete=models.SET_NULL, null=True)
+    order_qty = models.PositiveIntegerField(default=0)
+    uom = models.CharField(
+        max_length=25, choices=OrderUOM.choices(), default=OrderUOM.NOS.value)
+    packing_type = models.CharField(
+        max_length=25, choices=PackingType.choices(), default=PackingType.BOX.value)
+    status = models.CharField(
+        max_length=25, choices=OrderStatus.choices(), default=OrderStatus.PENDING.value)
+    
+    def __str__(self):
+        return self.product.name

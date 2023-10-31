@@ -500,7 +500,7 @@ class ExportData(View):
     
     def get(self, request):
         product_resourse = ProductResource()
-        queryset = Product.objects.all().order_by('id')
+        queryset = Product.objects.active().order_by('id')
         dataset = product_resourse.export(queryset)
         response = HttpResponse(dataset.csv,content_type="text/csv")
         response['Content-Disposition'] = 'attachment; filename="product.csv"'
