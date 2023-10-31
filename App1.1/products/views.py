@@ -137,7 +137,6 @@ class CreateProduct(FormView):
         
         except Exception as e:
             data = {"error": str(e), "status": 403}
-            print(data)
             return JsonResponse(data)
 
 
@@ -162,7 +161,6 @@ class ProductEditView(FormView):
     
     def form_invalid(self, form):
         super(ProductEditView, self).form_invalid(form)
-        print(form.errors)
         messages.error(self.request,form.errors)
         return redirect(self.request.META['HTTP_REFERER'])
     
@@ -263,7 +261,6 @@ class ProductProperty(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -290,7 +287,6 @@ class RemoveProductProperty(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -337,7 +333,6 @@ class CreateCategories(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -364,7 +359,6 @@ class RemoveProductCategory(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -398,7 +392,6 @@ class CreateQuality(View):
     def post(self, request):
         try:
             data = json.loads(request.POST.get("data"))
-            print(data)
             if data["category"] != '' and data["code"] != '':
                 category = data["category"]
                 code = data["code"]
@@ -426,7 +419,6 @@ class CreateQuality(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -553,7 +545,6 @@ class ProductSearch(View):
             if is_ajax(request):
                 query = request.GET.get("query", None)
                 category = request.GET.get("category", None)
-                print(category)
                 if category != '0':
 
                     item_category = Categories.objects.get(id=category)

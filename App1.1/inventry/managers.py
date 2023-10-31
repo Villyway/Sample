@@ -65,6 +65,12 @@ class SimpleStockUpdteManager(models.Manager):
         month = today.month
         day = today.day
         return self.active().filter(created_at__day=day)
+    
+    def date_to_date(self,dates):
+        try:
+            return self.active().filter(created_at__range = dates)
+        except:
+            return None
         
 
 # meca = Meca.objects.filter(created_at__year=year, 

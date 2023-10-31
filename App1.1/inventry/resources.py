@@ -14,7 +14,6 @@ class ProductResource(resources.ModelResource):
 class StockUpdateReport(resources.ModelResource):
     part_no = Field(column_name='Part No.')
     description = Field(column_name='Description')
-    date = Field(column_name='Date-Time')
     time = Field(column_name='Date-Time')
     old_stock = Field(column_name='Old Stock')
     issued = Field(column_name='Issued')
@@ -28,10 +27,6 @@ class StockUpdateReport(resources.ModelResource):
     def dehydrate_description(self,SimpleStockUpdte):
         part = getattr(SimpleStockUpdte, "part", "unknown")
         return part.name
-    
-    def dehydrate_date(self,SimpleStockUpdte):
-        date = getattr(SimpleStockUpdte, "created_at", "unknown")
-        return date.date()
     
     def dehydrate_time(self,SimpleStockUpdte):
         date = getattr(SimpleStockUpdte, "created_at", "unknown")

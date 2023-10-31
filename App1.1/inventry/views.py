@@ -192,7 +192,6 @@ class SimpleAddStock(FormView):
         response = super(SimpleAddStock, self).form_valid(form)     
         if is_ajax(self.request):
             form_data = form.cleaned_data
-            print(form_data)
             with transaction.atomic():
                 part = Product.objects.by_part_no(form_data['part_no'])
                 stock = SimpleStockUpdte()
@@ -288,42 +287,31 @@ class InventryReportStock(View):
     template_name = "components/report-stock.html"
 
     def get(self,request):
-        try:           
-            if is_ajax(request):
-                start_date = request.GET.get("start", None)
-                end_date = request.GET.get("end", None)
-                category = request.GET.get("category", None)
-                export_data = request.GET.get("export", None)
+        try:
+            start_date = request.GET.get("start", None)
+            end_date = request.GET.get("end", None)
+            category = request.GET.get("category", None)
 
+            if is_ajax(request):
                 if category == ReportTimeLine.TODAY.value:
                     products = SimpleStockUpdte.objects.today_report()
                 else:
-                    products = SimpleStockUpdte.objects.today_report()
-                
-                if export_data:
-                    print("hi")
-                    product_resourse = StockUpdateReport()
-                    dataset = product_resourse.export(products)
-                    response = HttpResponse(dataset.csv,content_type="text/csv")
-                    time_name = datetime.now().strftime("%Y%m%d-%H%M%S")
-                    response['Content-Disposition'] = 'attachment; filename="stock_report'+ time_name + '".csv"'
-                    return response
-                else:
-                    html = render_to_string(
-                        template_name=self.template_name,
-                        context={"products": products}
-                    )
+                    products = SimpleStockUpdte.objects.date_to_date([start_date,end_date])
 
-                    data_dict = {
-                        "data": html
-                    }
-                    return JsonResponse(data=data_dict, safe=False)
-
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"products": products}
+                )
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
             if request.META.get('HTTP_REFERER'):
                 return redirect(request.META.get('HTTP_REFERER'))
             else:
                 return redirect("products:list")
         except Exception as e:
+            print(str(e))
             return JsonResponse({"error": str(e)})
 
 
@@ -333,9 +321,15 @@ class InventryReportStock(View):
 class ExportData(View):
     
     def get(self, request):
+        start_date = request.GET.get("start", None)
+        end_date = request.GET.get("end", None)
+        category = request.GET.get("category", None)
+        if category == ReportTimeLine.TODAY.value:
+            queryset = SimpleStockUpdte.objects.today_report()
+        else:
+            queryset = SimpleStockUpdte.objects.date_to_date([start_date,end_date])
         product_resourse = StockUpdateReport()
         # queryset = SimpleStockUpdte.objects.today_report()
-        queryset = SimpleStockUpdte.objects.today_report()
         dataset = product_resourse.export(queryset)
         response = HttpResponse(dataset.csv,content_type="text/csv")
         time_name = datetime.now().strftime("%Y%m%d-%H%M%S")

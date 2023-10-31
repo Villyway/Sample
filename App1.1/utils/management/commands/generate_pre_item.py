@@ -171,7 +171,6 @@ class Command(BaseCommand):
             
     def add_pre_item_by_json(self):
         for i in a:
-            print(i)
             category_obj, created = Categories.objects.get_or_create(
                 name__iexact= i['category'],
                 defaults={

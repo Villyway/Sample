@@ -100,7 +100,7 @@ Reports
       <!-- Basic Bootstrap Table -->
       <div class="card" id="report-card">
         <div class="table-responsive text-nowrap">
-          <button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button>
+          <a href="" id="export-link"><button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button><a>
           <table class="table">
             <thead>
               <tr>
@@ -144,7 +144,7 @@ Reports
     $("#monthly-select").hide();
     $("#custom-select").hide();
     $('#inventory-menu').addClass('active open');
-    $('#stock-histories').addClass('active')
+    $('#stock-report').addClass('active')
 </script>
 <script>
     $("#time-line-select").change(function () {
@@ -179,7 +179,7 @@ Reports
       var end = document.getElementById("end-date-input");
       var selectedOption = select.options[select.selectedIndex];
       var selectedValue = selectedOption.value;
-
+      $('#export-link').attr('href', '/inventry/export-report/?start=' + start.value + "&end=" + end.value + "&category="+selectedValue)
       $.ajax({
         url: '/inventry/search-report/',
         type: 'GET',
@@ -189,18 +189,7 @@ Reports
             $('#data-stock-body').html(data.data);
         }
     });
-    $("#data-export-btn").click(function(){
-      console.log("hi")
-      $.ajax({
-        url: '/inventry/search-report/',
-        type: 'GET',
-        data: { 'start': start.value, "end":end.value, "category":selectedValue, 'export':true},
-        success: function (data) {
-            
-            $('#data-stock-body').html(data.data);
-        }
-      });
-    });
+    
     
     })
     
