@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / 
+{% endblock %}
+
+{% block head %}
+Inventory
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- Order Statistics -->
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-4">
+        <div class="card h-100">
+          
+        </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#orders-menu').addClass('active open');
+  $('#orders-dashboard').addClass('active')
+</script>
+{% endblock js %}
