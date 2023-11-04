@@ -158,3 +158,14 @@ class OrderUOM(Enum):
     @classmethod
     def choices(cls):
         return tuple((i.name,i.value) for i in cls)
+    
+
+class DispatchStatus(Enum):
+
+    READY = "READY"
+    UNDER_PROCESS = "UNDER PROCESS"
+    PENDING = "PENDING"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)

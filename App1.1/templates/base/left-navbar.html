@@ -141,6 +141,7 @@
         </ul>
         
       </li>
+
       <li class="menu-item " id = "orders-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-clipboard"></i>
@@ -149,8 +150,29 @@
 
         <ul class="menu-sub">
           <li class="menu-item" id="orders-dashboard">
-            <a href="{% url 'products:products-dashboard' %}" class="menu-link">
+            <a href="{% url 'orders:orders-dashboard' %}" class="menu-link">
               <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
+          
+        </ul>
+      </li>
+
+      <li class="menu-item " id = "customers-menu">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-person-military-pointing"></i>
+          <div data-i18n="Layouts">Customers</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="customers-dashboard">
+            <a href="{% url 'customers:dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
+          <li class="menu-item" id="customers-create">
+            <a href="{% url 'customers:create-customer' %}" class="menu-link">
+              <div data-i18n="Without menu">Add</div>
             </a>
           </li>
         </ul>

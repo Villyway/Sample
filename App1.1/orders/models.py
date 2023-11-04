@@ -3,19 +3,21 @@ from django.db import models
 from base.models import Base
 from products.models import Product, Unit
 from utils.models import Address
-from utils.constants import OrderStatus, OrderUOM, PackingType
+from utils.constants import OrderStatus, OrderUOM, PackingType, DispatchStatus
+from customers.models import Customer
 
-# Create your models here.
-class Customer(Base):
-    name = models.CharField(max_length=150, null=True, blank=True)
-    mobile = models.CharField(max_length=50, null=True, blank=True)
-    country_code = models.CharField(max_length=4, default="91")
-    email = models.EmailField(null=True, blank=True)
-    contect_person = models.CharField(max_length=150, null=True, blank=True)
-    address = models.ManyToManyField(Address, blank=True)
+# # Create your models here.
+# class Customer(Base):
+#     name = models.CharField(max_length=150, null=True, blank=True)
+#     mobile = models.CharField(max_length=50, null=True, blank=True)
+#     country_code = models.CharField(max_length=4, default="91")
+#     email = models.EmailField(null=True, blank=True)
+#     contect_person = models.CharField(max_length=150, null=True, blank=True)
+#     address = models.ManyToManyField(Address, blank=True)
+#     mobile1 = models.CharField(max_length=50, null=True, blank=True)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
     
 
 class OrderDetails(Base):
@@ -31,6 +33,8 @@ class OrderDetails(Base):
     dispatch_date = models.DateTimeField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     pickup_by_party_date = models.DateTimeField(blank=True, null=True)
+    dispatch_status = models.CharField(
+        max_length=25, choices=DispatchStatus.choices(), default=DispatchStatus.PENDING.value)
 
     def __str__(self):
         return self.customer.name

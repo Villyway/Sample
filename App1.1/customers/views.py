@@ -9,27 +9,26 @@ from django.db import transaction
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, JsonResponse, Http404
 
-from customers.forms import CustomerForm
+from .forms import CustomerForm
 from utils.views import get_secured_url, is_ajax
 
 
 class Dashboard(View):
-    template_name = "orders/dashboard.html"
+    template_name = "customers/dashboard.html"
 
     def get(self,request):
 
         return render(request,self.template_name)
     
 
-# Create Customer
-class CreateOrders(FormView):
-    
+class CreateCustomer(FormView):
+
     template_name = "customers/create.html"
     form_class = CustomerForm
     success_url = "/orders/dashboard/"
 
     def form_invalid(self, form):
-        response = super(CreateOrders, self).form_invalid(form)
+        response = super(CreateCustomer, self).form_invalid(form)
         if is_ajax(self.request):
             data = form.errors
             return JsonResponse(data, status=400)
@@ -37,7 +36,7 @@ class CreateOrders(FormView):
             return response
 
     def form_valid(self, form):
-        response = super(CreateOrders, self).form_valid(form)
+        response = super(CreateCustomer, self).form_valid(form)
         try:
             if is_ajax(self.request):
                 form_data = form.cleaned_data
@@ -59,3 +58,4 @@ class CreateOrders(FormView):
             return JsonResponse(data)
 
 
+#
