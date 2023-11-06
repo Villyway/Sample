@@ -9,7 +9,7 @@ from django.db import transaction
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, JsonResponse, Http404
 
-from customers.forms import CustomerForm
+from orders.forms import OrdersForm
 from utils.views import get_secured_url, is_ajax
 
 
@@ -24,8 +24,8 @@ class Dashboard(View):
 # Create Customer
 class CreateOrders(FormView):
     
-    template_name = "customers/create.html"
-    form_class = CustomerForm
+    template_name = "orders/create.html"
+    form_class = OrdersForm
     success_url = "/orders/dashboard/"
 
     def form_invalid(self, form):
@@ -42,7 +42,13 @@ class CreateOrders(FormView):
             if is_ajax(self.request):
                 form_data = form.cleaned_data
                 with transaction.atomic():
-                                            
+                    products = self.request.POST.getlist('product[]')
+                    quantities = self.request.POST.getlist('quantity[]')
+
+                    for product_name, quantity_value in zip(products, quantities):
+                        print(product_name, quantity_value)
+
+                    
                     messages.success(
                         self.request, "Product added successfully.")
                 data = {

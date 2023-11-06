@@ -62,6 +62,8 @@ Customers
     $(document).ready(function () {
         var $myForm = $('#create-orders')
         $myForm.on("submit", function (event) {
+
+          console.log("hi")
             event.preventDefault()
             var formData = $(this).serialize()
             var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url

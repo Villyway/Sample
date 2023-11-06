@@ -11,6 +11,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 
 from .forms import CustomerForm
 from utils.views import get_secured_url, is_ajax
+from customers.models import Customer
 
 
 class Dashboard(View):
@@ -40,14 +41,22 @@ class CreateCustomer(FormView):
         try:
             if is_ajax(self.request):
                 form_data = form.cleaned_data
+                
                 with transaction.atomic():
+                    customer = Customer()
+                    customer.name = form_data['name']
+                    customer.mobile = form_data['mobile1']
+                    customer.email = form_data['email']
+                    customer.contect_person = form_data['person_name']
+                    customer.mobile1 = form_data['mobile2']
+                    customer.save()                    
                                             
                     messages.success(
-                        self.request, "Product added successfully.")
+                        self.request, "Customer added successfully.")
                 data = {
-                        'message': "Product added successfully.",
+                        'message': "customer added successfully.",
                         'url': get_secured_url(
-                            self.request) + self.request.META["HTTP_HOST"] + '/products/' + str(1) + '/product-property/'
+                            self.request) + self.request.META["HTTP_HOST"] + '/orders/create-orders'
                     }
                 return JsonResponse(data)
             else:

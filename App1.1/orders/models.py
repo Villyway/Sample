@@ -6,20 +6,8 @@ from utils.models import Address
 from utils.constants import OrderStatus, OrderUOM, PackingType, DispatchStatus
 from customers.models import Customer
 
-# # Create your models here.
-# class Customer(Base):
-#     name = models.CharField(max_length=150, null=True, blank=True)
-#     mobile = models.CharField(max_length=50, null=True, blank=True)
-#     country_code = models.CharField(max_length=4, default="91")
-#     email = models.EmailField(null=True, blank=True)
-#     contect_person = models.CharField(max_length=150, null=True, blank=True)
-#     address = models.ManyToManyField(Address, blank=True)
-#     mobile1 = models.CharField(max_length=50, null=True, blank=True)
 
-#     def __str__(self):
-#         return self.name
-    
-
+# Order Details
 class OrderDetails(Base):
     customer = models.ForeignKey(
         Customer, on_delete=models.SET_NULL, null=True)
@@ -40,6 +28,7 @@ class OrderDetails(Base):
         return self.customer.name
 
 
+# OrderOfProduct:
 class OrderOfProduct(Base):
     order = models.ForeignKey(
         OrderDetails, on_delete=models.SET_NULL, null=True)
