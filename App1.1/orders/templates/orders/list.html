@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}All Orders{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'products:products-list' %}">Orders</a> / <b class="text-dark">All<b></li>
+{% endblock %}
+
+{% block head %}
+All Orders
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-3 mb-5">
+  <div class="row">
+    <div class="col-4">
+      <div class="input-group">
+        <label class="input-group-text" for="inputGroupSelect01">Categories</label>
+        <select class="form-select" id="inputGroupSelect01">
+          <option value="0" selected>Choose...</option>
+          {% for category in categories %}
+          <option value={{category.id}}>{{category.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <input type="text" class="form-control" id="id_search" name="search" placeholder="Search" />      
+    </div>
+    <div class="col-4"> 
+      <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
+        style="float: right; ">Add New Orders</button></a>
+    </div>
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card">
+        
+        
+        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+        <div class="table-responsive text-nowrap" id="id_products_list">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Image</th>
+                <th>Part<br> No</th>
+                <th>Name</th>
+                <th>UOM</th>
+                <th>Stock</th>
+                <th>Minimum<br> Stock<br> Level</th>
+                
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+              
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% for product in orders %}
+              <tr >
+                <td>
+                {{ forloop.counter }}
+                </td>
+                <td><img src="{{product.image}}" height="50px" width="50px"></td>
+                <td>{{product.part_no}}</td>
+                <td>{{product.name}}</td>
+                <td> {{product.umo}} </td>
+                {% if product.stock < product.minimum_stock_level %}
+                <td class="bg-danger"> 
+                  {% else %}
+                  <td> 
+                {% endif %}
+                {{product.stock}} </td>
+                
+                <td>{{product.minimum_stock_level}} </td>
+                
+                <td> 
+                    {% if product.is_active %}
+                    <i class="fas fa-check text-success" style="font-size: 15px;"></i>
+                    {% else %}
+                    <i class="fas fa-times text-danger" style="font-size: 15px;"></i>
+                    {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'products:product-property' product.id %}"
+                                class="btn btn-success btn-circle " title="Publish"><i class="fa-solid fa-magnet"></i></i></a>
+                  <a href=""
+                                class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>
+                  <a href="{% url 'products:products-edit' product.id %}" class="btn btn-primary btn-circle "
+                                title="Product Edit"><i class="fas fa-edit" aria-hidden="true"></i></a>
+                  <a href="" class="open-modal btn btn-danger btn-circle " data-toggle="modal"
+                                data-target="" title="Delete"><i class="fa fa-trash"
+                                    aria-hidden="true"></i></a>
+                </td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+          
+        </div>
+        
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+  <div class="row container-fluid mt-2">
+ 
+    {% if products.paginator.num_pages > 1 %}    
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
+</div>
+</div>
+<div class="mt-5"></div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#product-menu').addClass('active open');
+  $('#sub-all-product').addClass('active')
+</script>
+
+<script>
+  $(document).on("keyup", "#id_search", function () {
+    var select = document.getElementById("inputGroupSelect01");
+    var selectedOption = select.options[select.selectedIndex];
+    var selectedValue = selectedOption.value;
+    
+    var query = this.value;
+    // var category = $()
+    $.ajax({
+        url: '/products/search/',
+        type: 'GET',
+        data: { 'query': query, "category":selectedValue},
+        success: function (data) {
+            $('#id_products_list').html(data.data);
+        }
+    });
+});
+</script>
+{% endblock js %}

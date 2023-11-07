@@ -155,6 +155,11 @@
             </a>
           </li>
           <li class="menu-item" id="orders-dashboard">
+            <a href="{% url 'orders:orders-list' %}" class="menu-link">
+              <div data-i18n="Without menu">List</div>
+            </a>
+          </li>          
+          <li class="menu-item" id="orders-dashboard">
             <a href="{% url 'orders:orders-create' %}" class="menu-link">
               <div data-i18n="Without menu">Add</div>
             </a>

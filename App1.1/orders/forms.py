@@ -11,12 +11,6 @@ class OrdersForm(forms.Form):
 
     customer = forms.ModelChoiceField(queryset=Customer.objects.all(), widget=forms.Select(
         attrs={"class": "form-control form-select ml-5"}), required=True, label="Customer", empty_label='--- Select Customer ---')
-    
-    QuantityFormSet = formset_factory(
-    forms.modelform_factory(OrderOfProduct, fields=['product', 'order_qty', "uom", "packing_type"]),
-    extra=1,
-    can_delete=True
-    )
     # product = forms.ModelChoiceField(queryset=Product.objects.finished_product(), widget=forms.Select(
     #     attrs={"class": "form-control form-select ml-5"}), required=True, label="Product", empty_label='--- Select Product ---')
     
