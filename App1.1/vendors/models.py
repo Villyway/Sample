@@ -75,7 +75,7 @@ class Vendor(Base):
     objects = VendorManager()
 
     def __str__(self):
-        return self.comany_name
+        return str(self.comany_name)
     
 
 pre_save.connect(pre_save_slug_receiver, sender=Vendor)

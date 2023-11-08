@@ -26,3 +26,11 @@ def get_total_price_by_part_no(part_no, qty):
     if VendorWithProductData.objects.filter(product = product).exists():
         return VendorWithProductData.objects.filter(product = product).first().price * qty
     return 0
+
+
+@register.filter(name='get_vendor')
+def get_vendor_name(part_no):
+    product = Product.objects.by_part_no(part_no)
+    if VendorWithProductData.objects.filter(product = product).exists():
+        return VendorWithProductData.objects.filter(product = product).first().vendor.comany_name
+    return "-"

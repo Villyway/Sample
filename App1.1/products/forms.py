@@ -9,7 +9,7 @@ from vendors.models import Vendor, PartyType
 from utils.models import City, State, Country
 
 class ProductForm(forms.Form):
-    code = forms.CharField(label="Item Code", widget=forms.TextInput(
+    code = forms.CharField(required=False,label="Item Code", widget=forms.TextInput(
         attrs={"class": "form-control"}))    
     name = forms.CharField(required=True, label="Item Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
@@ -58,13 +58,13 @@ class ProductForm(forms.Form):
             self.fields["image"].initial = None
 
     
-    def clean_code(self):
-        code = self.cleaned_data.get("code")
-        if self.edit == None:
-            if Product.objects.filter(code=code):
-                raise forms.ValidationError(
-                    "This item code is already registered, please use a different one.")
-        return code
+    # def clean_code(self):
+    #     code = self.cleaned_data.get("code")
+    #     if self.edit == None:
+    #         if Product.objects.filter(code=code):
+    #             raise forms.ValidationError(
+    #                 "This item code is already registered, please use a different one.")
+    #     return code
 
 
 class BomForm(forms.Form):

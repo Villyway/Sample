@@ -2,10 +2,11 @@
 {% load static %}
 {% load product_extras %}
 
-{% block title %}BOM OF {% endblock %}
+{% block title %}BOM OF {{code}}-{{name}}{% endblock %}
 
 {% block css %}
-
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 {% endblock css %}
 
 {% block next_page %}
@@ -28,39 +29,61 @@ BOM OF {{name}}
         <div class="col-12">
           <!-- Basic Bootstrap Table -->
           <div class="card">
-            <h5 class="card-header">BOM OF</h5>
-            <table class="table mt-3 mb-3">
+            <h5 class="card-header">BOM OF {{code}}-{{name}} </h5>
+            <table id="example" class="display nowrap table mt-3 mb-3" style="width:100%">
+              <thead>
                 <tr>
-                    <th><img src="{{image}}" width="100px" height="100px"></th>
-                    <th>Name: &nbsp <b>{{name}}</b>,</br>Code: &nbsp <b>{{code}}</th>
+                  <th>Code:<b>{{code}}</b></th>
+                  <th>Name:<b>{{name}}</b></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                 </tr>
+                  
+              </thead>
+              <tbody>
                 <tr>
-                    <th class="text-center bg-primary text-white" colspan=3>components</th>
-                </tr>
-                <tr class="bg-warning ">
-                    {% comment %} <th>Image</th> {% endcomment %}
-                    <th>Name</th>
-                    <th>QTY</th>
-                    <th>price</th>
-                    <th>Total Price</th>
-                    <th>Action</th>
-                </tr>
+                  <th>Part No.</th>
+                  <th>Name</th>
+                  <th>QTY</th>
+                  <th>Vendor</th>
+                  <th>price</th>
+                  <th>Total Price</th>
+                  <th>Action</th>
+                  
+              </tr>
                 {%for i in components %}
-                <tr>
-                    {% comment %} <th><img src="{{i.image}}" width="100px" height="100px"></th> {% endcomment %}
-                    <th>{{i.part_no}} - {{i.name}}</th>
-                    <th>{{i.qty}}</th>
-                    <th>{{i.part_no|get_price }}</th>
-                    <th>{{i.part_no|get_total_price:i.qty}}</th>
-                    <th>
-                      {% if i.part_no %}
-                      <a href="{% url 'products:add-vendor-of-product' i.part_no %}"
-                                class="btn btn-success btn-circle " title="Add Vendor"><i class="fa-solid fa-magnet"></i></i></a>
-                      {% endif %}
-                    </th>
-                </tr>
-                {% endfor %}
-              </table>
+                  <tr>
+                      <td>{{i.part_no}}</td>
+                      <td>{{i.name}}</td>
+                      <td>{{i.qty}}</td>
+                      <td>{{i.part_no|get_vendor}}</td>
+                      <td>{{i.part_no|get_price }}</td>
+                      <td>{{i.part_no|get_total_price:i.qty}}</td>
+                      <td>
+                        {% if i.part_no %}
+                        <a href="{% url 'products:add-vendor-of-product' i.part_no %}"
+                                  class="btn btn-success btn-circle " title="Add Vendor"><i class="fa-solid fa-magnet"></i></i></a>
+                        {% endif %}
+                      </td>
+                      
+                  </tr>
+                  {% endfor %}
+              </tbody>
+              <tfoot>
+                  <tr>
+                    <th>Code:<b>{{code}}</b></th>
+                    <th>Name:<b>{{name}}</b></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+              </tfoot>
+          </table>
           </div>
           
         </div>
@@ -72,8 +95,28 @@ BOM OF {{name}}
 {% endblock content %}
 
 {% block js %}
+<script type="text/javascript" src = "https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script>
   $('#bom').addClass('active open');
   $('#product-bom').addClass('active')
+</script>
+<script>
+  $(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+        "bPaginate": false,
+        searching: false, paging: false, info: false,"ordering": false,
+        buttons: [
+            'excel', 'pdf', 'print'
+        ]
+    } );
+} );
 </script>
 {% endblock js %}
