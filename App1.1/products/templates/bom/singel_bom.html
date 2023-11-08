@@ -41,12 +41,23 @@ BOM OF {{name}}
                     {% comment %} <th>Image</th> {% endcomment %}
                     <th>Name</th>
                     <th>QTY</th>
+                    <th>price</th>
+                    <th>Total Price</th>
+                    <th>Action</th>
                 </tr>
                 {%for i in components %}
                 <tr>
                     {% comment %} <th><img src="{{i.image}}" width="100px" height="100px"></th> {% endcomment %}
-                    <th>{{i.name}}</th>
+                    <th>{{i.part_no}} - {{i.name}}</th>
                     <th>{{i.qty}}</th>
+                    <th>{{i.part_no|get_price }}</th>
+                    <th>{{i.part_no|get_total_price:i.qty}}</th>
+                    <th>
+                      {% if i.part_no %}
+                      <a href="{% url 'products:add-vendor-of-product' i.part_no %}"
+                                class="btn btn-success btn-circle " title="Add Vendor"><i class="fa-solid fa-magnet"></i></i></a>
+                      {% endif %}
+                    </th>
                 </tr>
                 {% endfor %}
               </table>
