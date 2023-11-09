@@ -127,6 +127,8 @@ class Address(Base):
     zip = models.CharField("Zip Code", max_length=100, blank=True, null=True)
     a_type = models.CharField(
         max_length=25, choices=AddressType.choices(), default=AddressType.PERMANENT.value)
+    contect_person = models.CharField(max_length=200, blank=True, null=True)
+    contect_phone = models.CharField(max_length=20, blank=True, null=True)
     objects = AddressManager()
 
     def __str__(self):

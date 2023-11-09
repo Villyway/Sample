@@ -17,7 +17,7 @@ class OrderDetails(Base):
         max_length=25, choices=OrderStatus.choices(), default=OrderStatus.PENDING.value)
     sales_challan = models.CharField(max_length=80, null=True, blank=True)
     lr_no = models.CharField(max_length=150, null=True, blank=True)
-    transport_compny = models.CharField(max_length=150, null=True, blank=True)
+    
     dispatch_date = models.DateTimeField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     pickup_by_party_date = models.DateTimeField(blank=True, null=True)
@@ -41,6 +41,10 @@ class OrderOfProduct(Base):
         max_length=25, choices=PackingType.choices(), default=PackingType.BOX.value)
     status = models.CharField(
         max_length=25, choices=OrderStatus.choices(), default=OrderStatus.PENDING.value)
+    
+    transport_compny = models.CharField(max_length=150, null=True, blank=True)
+    delivery_mode = models.CharField(max_length=150, null=True, blank=True)
+
     
     def __str__(self):
         return self.product.name
