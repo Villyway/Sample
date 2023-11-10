@@ -22,7 +22,30 @@ class CustomerForm(forms.Form):
         label=" Alternative Mobile No", widget=forms.TextInput(attrs={"class": "form-control"}))
     email = forms.EmailField(label='Email', widget=forms.EmailInput(
         attrs={'class': 'form-control'}), required=False, validators=[validate_email])
+    gst_no = forms.CharField(
+        required= False ,label=" GST No", widget=forms.TextInput(attrs={"class": "form-control"}))
     
+    def __init__(self, *args, **kwargs):
+        self.user = None
+        self.edit = kwargs.pop("edit", None)
+        self.customer = kwargs.pop("customer", None)
+        
+        super(CustomerForm, self).__init__(*args, **kwargs)
+        if self.edit and self.customer:
+            self.fields['name'].initial = self.customer.name
+            self.fields["person_name"].initial = self.customer.contect_person
+            self.fields['mobile1'].initial = self.customer.mobile
+            self.fields["mobile2"].initial = self.customer.mobile1
+            self.fields["email"].initial = self.customer.email
+            self.fields["gst_no"].initial = self.customer.gst_no
+            
+    
+
+class CustomerAddressDetails(forms.Form):
+    person_name = forms.CharField(label="Contect Person Name", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
+    mobile1 = forms.CharField(
+        required= True ,label=" Mobile No", widget=forms.TextInput(attrs={"class": "form-control"}))
     street = forms.CharField(required=True, label="Street 1",
                              widget=forms.TextInput(attrs={"class": "form-control"}))
     street2 = forms.CharField(required=False, label="Street 2",
@@ -37,25 +60,4 @@ class CustomerForm(forms.Form):
 
     pincode = forms.IntegerField(required=False, label="Pincode", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
-    
-    def __init__(self, *args, **kwargs):
-        self.user = None
-        self.edit = kwargs.pop("edit", None)
-        self.customer = kwargs.pop("customer", None)
-        
-        super(CustomerForm, self).__init__(*args, **kwargs)
-        if self.edit and self.customer:
-            self.address = self.customer.address.first()
-            self.fields['code'].widget.attrs['readonly'] = True
-            self.fields["name"].initial = self.customer.name
-            self.fields['type'].initial = self.vendor.type
-            self.fields["mobile"].initial = self.vendor.mobile
-            self.fields["email"].initial = self.vendor.email
-            self.fields["gst_no"].initial = self.vendor.gst_no
-            self.fields["street"].initial = self.address.street
-            self.fields["street2"].initial =self.address.street2
-            self.fields["country"].initial =self.address.country
-            self.fields["state"].initial = self.address.state
-            self.fields["city"].initial = self.address.city
-            self.fields["pincode"].initial =self.address.zip
     

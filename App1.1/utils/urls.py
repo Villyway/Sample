@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth.decorators import login_required
 
 from .views import (CityView,
-                    StateView)
+                    StateView, DeleteAddress)
 
 
 app_name = "utils"
@@ -12,6 +12,7 @@ urlpatterns = [
          name="city"),
     path("<int:id>/state_ajex/", StateView.as_view(),
          name="state"),
+    path("<int:id>/delete/address", DeleteAddress.as_view(), name="delete-address"),
 
     # list of country, state, city:
     # path("country/", CountryAPIView.as_view(), name="country-list"),

@@ -12,6 +12,7 @@ class Customer(Base):
     contect_person = models.CharField(max_length=150, null=True, blank=True)
     address = models.ManyToManyField(Address, blank=True)
     mobile1 = models.CharField(max_length=50, null=True, blank=True)
+    gst_no = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name

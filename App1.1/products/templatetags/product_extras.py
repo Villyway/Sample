@@ -2,6 +2,7 @@ from django import template
 from django.conf import settings
 
 from products.models import Product, VendorWithProductData
+from customers.models import Customer
 
 register = template.Library()
 
@@ -33,4 +34,12 @@ def get_vendor_name(part_no):
     product = Product.objects.by_part_no(part_no)
     if VendorWithProductData.objects.filter(product = product).exists():
         return VendorWithProductData.objects.filter(product = product).first().vendor.comany_name
+    return "-"
+
+
+@register.filter(name='get_addresses')
+def get_customer_address(customer):
+    customer_obj = Customer.objects.get(id = customer)
+    if customer_obj.address:
+        return customer_obj.address.filter(is_active = True)
     return "-"

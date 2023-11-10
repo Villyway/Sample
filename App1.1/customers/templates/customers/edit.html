@@ -9,7 +9,7 @@
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted active" aria-current="page"><a
-    href="{% url 'customers:dashboard' %}">Customers</a> / Create
+    href="{% url 'customers:dashboard' %}">Customers</a> / Edit
 {% endblock %}
 
 {% block head %}
@@ -25,7 +25,7 @@ Customers
       <!-- Order Statistics -->
       <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
         <div class="card h-100">
-            <div class="card-header"><h5>New customer</h5></div>
+            <div class="card-header"><h5>Edit customer</h5></div>
             <form class="mt-3 " method="post" enctype="multipart/form-data" action='.'
                     data-url='{{ request.build_absolute_uri|safe }}' id="create-orders">
                                 {% csrf_token %}
@@ -33,7 +33,7 @@ Customers
                                     <div class="col-1"></div>
                                     <div class="col-8">
                                         {{form}}
-                                        <button class="btn btn-success mt-2 mb-3 " type="submit" style="float:right">Add</button>
+                                        <button class="btn btn-success mt-2 mb-3 " type="submit" style="float:right">Edit</button>
                                     </div>
                                 </div>
                         </form>
@@ -73,13 +73,14 @@ Customers
                 url: $thisURL,
                 data: formData,
                 success: function (data) {
+                  console.log(data)
                     if (data.error) {
                         var message = "";
                         $("#error-message").html(message);
                         $('.toast').toast('show');
                     }
                     else {
-                        location.replace(data.url)
+                      location.replace(data.url)
                     }
                 },
                 error: function (data) {

@@ -28,17 +28,18 @@ class CreateOrders(View):
     template_name = "orders/create.html"
     success_url = "/orders/dashboard/"
 
-    def get(self,request):
-        customers = Customer.objects.filter(is_active = True)
+    def get(self,request, id):
+        if Customer.objects.filter(id=id).exists():
+            customer = Customer.objects.get(id=id)
         products = Product.objects.finished_product()
         context = {
             'products': products,
-            'customers': customers
+            'customer': customer
 
         }
         return render(request,self.template_name, context)
     
-    def post(self, request):
+    def post(self, request, id):
         if is_ajax(self.request):
             with transaction.atomic():
 

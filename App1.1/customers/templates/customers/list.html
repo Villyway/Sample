@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Customers{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'customers:dashboard' %}">Customers</a> / List
+{% endblock %}
+
+{% block head %}
+Customers
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- Order Statistics -->
+      <div class="col-md-6 col-lg-4 col-xl-12 order-0 mb-4">
+        <div class="card h-100">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Contect Person</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for customer in customers %}
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{customer.name}}</td>
+                <td>{{customer.contect_person}}</td>
+                <td>{{customer.mobile}}</td>
+                <td>{{customer.email}}</td>
+                <td>
+                  <a href="{% url 'customers:show-customer' customer.id %}"
+                                class="btn btn-success btn-circle " title="Show"><i class=" text-white fa-solid fa-eye"></i></i></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfooter>
+              <th>No</th>
+                <th>Name</th>
+                <th>Contect Person</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tfooter>
+          </table>    
+        </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#customers-menu').addClass('active open');
+  $('#customers-dashboard').addClass('active')
+</script>
+{% endblock js %}

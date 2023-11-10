@@ -7,7 +7,7 @@ import io
 from random import randint, choices
 
 from django.utils import timezone
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
@@ -18,9 +18,7 @@ from django.utils.encoding import force_bytes, force_str #force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.files.storage import default_storage
 
-
-
-from .models import City, State, Country
+from .models import City, State, Country, Address
 
 # Create your views here.
 
@@ -175,3 +173,13 @@ def generate_part_code(id,version,quality,compny_name="KI"):
     else:
         id = str(id)
     return compny_name + str(version) + quality + str(id)
+
+
+class DeleteAddress(View):
+
+    def get(self,request,id):
+
+        address = Address.objects.get(id = id)
+        address.is_active = False
+        address.save()
+        return redirect(request.META.get('HTTP_REFERER'))

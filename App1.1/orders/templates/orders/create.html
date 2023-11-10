@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load product_extras %}
 
 {% block title %}Orders-create{% endblock %}
 
@@ -33,49 +34,66 @@ Orders
                                             <div class="row">
                                                 <!-- Billed to and Shipped to -->
                                                 <div class="form-group col-md-12">
-                                                    <label for="customer">Customer</label>
-                                                    <span class="text-danger">*</span>
-                                                    <select name="customers" class="form-control form-select" autofocus="" id="customer" required="">
-                                                        <option value="" selected="">--- Select Customer ---</option>
-                                                        {% for customer in customers %}
-                                                        <option value="{{customer.id}}">{{customer.name}}</option>
-                                                        {% endfor %}
-                                                    </select>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <table class="table">
+                                                                <tr>
+                                                                    <td>Name:</td>
+                                                                    <td>{{customer.name}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="2" class="text-center bg-warning"><h5><b>Contect Information:- </b></h5></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Contect Person</td>
+                                                                    <td>{{customer.contect_person}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Mobile</td>
+                                                                    <td>{{customer.mobile}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Alternative Mobile</td>
+                                                                    <td>{{customer.mobile1}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Email</td>
+                                                                    <td>{{customer.email}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>GST No.</td>
+                                                                    <td>{{customer.gst_no}}</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="billedTo">Billing to:</label>
+                                                            <select name="billingto" class="form-control form-select" autofocus="" id="billingTo" required="">
+                                                                <option value="" selected="">--- Select Address ---</option>
+                                                                {% for address in customer.id|get_addresses %}
+                                                                <option value="address">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <label for="shippedTo">Shipped to:</label>
+                                                            <select name="shippedto" class="form-control form-select" autofocus="" id="shippedTo" required="">
+                                                                <option value="" selected="">--- Select Address ---</option>
+                                                                {% for address in customer.id|get_addresses %}
+                                                                <option value="address">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="billedTo">Billed to:</label>
-                                                        <input type="text" class="form-control" id="billedTo">
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="shippedTo">Shipped to:</label>
-                                                        <input type="text" class="form-control" id="shippedTo">
-                                                    </div>
+                                                    
                                                 
                                                 <!-- Name, Address, Pincode, State, Country, GST NO. -->
                                                 
                                                     <div class="form-group col-md-6">
-                                                        <label for="name">Name:</label>
-                                                        <input type="text" class="form-control" id="name">
+                                                        
                                                     </div>
                                                     <div class="form-group col-md-6">
-                                                        <label for="address">Address/Street/Landmark:</label>
-                                                        <input type="text" class="form-control" id="address">
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="pincode">Pincode:</label>
-                                                        <input type="text" class="form-control" id="pincode">
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="state">State:</label>
-                                                        <input type="text" class="form-control" id="state">
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="country">Country:</label>
-                                                        <input type="text" class="form-control" id="country">
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="gstNo">GST NO.:</label>
-                                                        <input type="text" class="form-control" id="gstNo">
+                                                        
                                                     </div>
                                                     <div class="product-entry col-12 mb-3">
                                                         <div class="row" id="products">
@@ -92,17 +110,12 @@ Orders
                                                             <div class="col-md-2">
                                                                 <label for="quantity1">Unit:</label>
                                                                 <span class="text-danger">*</span>
-                                                                <input type="number" class="form-control" name="quantity[]" id="quantity1" required>
+                                                                <input type="number" class="form-control" name="unit[]" id="unit1" required>
                                                             </div>
                                                             <div class="col-md-2">
                                                                 <label for="quantity1">Packageing Type:</label>
                                                                 <span class="text-danger">*</span>
-                                                                <input type="number" class="form-control" name="quantity[]" id="quantity1" required>
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <label for="quantity1">Quantity:</label>
-                                                                <span class="text-danger">*</span>
-                                                                <input type="number" class="form-control" name="quantity[]" id="quantity1" required>
+                                                                <input type="number" class="form-control" name="packageing_type[]" id="packageing_type1" required>
                                                             </div>
                                                             
                                                             <div class="col-md-2">
@@ -162,19 +175,31 @@ Orders
 
             productEntry.innerHTML = `
             <div class="row">
-                <div class="col-md-4">
-                    <label for="product${productCount}">Product Code:</label>
+                <div class="col-md-2">
+                    <label for="product1">Product Code:</label>
                     <span class="text-danger">*</span>
                     <input type="text" class="form-control" name="product[]" id="product${productCount}" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
+                    <label for="quantity1">Quantity:</label>
                     <span class="text-danger">*</span>
-                    <label for="quantity${productCount}">Quantity:</label>
                     <input type="number" class="form-control" name="quantity[]" id="quantity${productCount}" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
+                    <label for="quantity1">Unit:</label>
+                    <span class="text-danger">*</span>
+                    <input type="number" class="form-control" name="quantity[]" id="unit${productCount}" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="quantity1">Packageing Type:</label>
+                    <span class="text-danger">*</span>
+                    <input type="number" class="form-control" name="quantity[]" id="packageing_type${productCount}" required>
+                </div>
+                
+                <div class="col-md-2">
                     <button type="button" class="btn btn-danger remove-product mt-4">Remove</button>
                 </div>
+            </div>
             </div>
             `;
 
@@ -188,6 +213,44 @@ Orders
         }
     });
 </script>
+<script>
+        $(document).ready(function () {
+            $("#id_state").change(function () {
+                $('#id_city').empty().append('<option>--- Select City ---</option>');
+                var id = $(this).find(":selected").val();
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'utils:city' 1  %}".replace("1", id),
+                    success: function (response) {
+                        for (i in response.cities) {
+                            $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                })
+            })
+    
+            $("#id_country").change(function () {
+                $('#id_state').empty().append('<option>--- Select State ---</option>');
+                var id = $(this).find(":selected").val();
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'utils:state' 1  %}".replace("1", id),
+                    success: function (response) {
+                        for (i in response.states) {
+                            $("#id_state").append("<option value='" + response.states[i].id + "'>" + response.states[i].name + "</option>");
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                })
+            })
+    
+        });
+    </script>
 
 <script>
     
@@ -225,6 +288,28 @@ Orders
             $myForm.ajaxSubmit(option)
         })
     })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#customer").change(function () {
+            $('#billingTo').empty().append('<option>--- Select Address ---</option>');
+            $('#shippedTo').empty().append('<option>--- Select Address ---</option>');
+            var id = $(this).find(":selected").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'utils:city' 1  %}".replace("1", id),
+                success: function (response) {
+                    for (i in response.cities) {
+                        $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
+                    }
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        })
+
+    });
 </script>
 
 {% endblock js %}

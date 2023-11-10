@@ -10,6 +10,6 @@ app_name = "orders"
 
 urlpatterns = [
     path("dashboard",login_required(Dashboard.as_view()), name="orders-dashboard"),
-    path("create-orders",login_required(CreateOrders.as_view()), name="orders-create"),
+    path("<slug:id>/create-orders",login_required(CreateOrders.as_view()), name="orders-create"),
     path("orders-list",login_required(OrderList.as_view()), name="orders-list"),
 ]
