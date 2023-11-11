@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+
+
+{% block css %}
+<title>Dispatch</title>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'customers:dashboard' %}">Orders</a> / Dispatch Process
+{% endblock %}
+
+{% block head %}
+Orders
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-12 order-0 mb-2">
+                  <div class="card h-100">
+                      
+                            <form method="post" enctype="multipart/form-data" action='.'
+                                    data-url='{{ request.build_absolute_uri|safe }}' id="create-orders">
+                                      {% csrf_token %}
+                                      <div class="row">
+                                        <div class='col-md-12 card-body'>
+                                            <div class="row">
+                                                <!-- Billed to and Shipped to -->
+                                                <div class="form-group col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <table class="table" id="example">
+                                                              <thead>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td colspan="2">Krunal Industries</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>DESPATCH NOTE</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                            
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td>Customer Details</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                
+                                                            </tr>
+                                                            <tr class="bg-warning">
+                                                                <td></td>
+                                                                <td>Name:</td>
+                                                                <td>Contect Person</td>
+                                                                <td>Mobile</td>
+                                                                <td>Email</td>
+                                                                <td>GST No.</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                
+                                                                
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td>{{order_details.order.customer.name}}</td>
+                                                                <td>{{order_details.order.customer.contect_person}}</td>
+                                                                <td>{{order_details.order.customer.mobile}} / {{order_details.order.customer.mobile1}}</td>
+                                                                <td>{{order_details.order.customer.email}}</td>
+                                                                <td>{{order_details.order.customer.gst_no}}</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                
+                                                            </tr>
+                                                            <tr class="bg-warning">
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                
+                                                            </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Despatch Note No.:</td>
+                                                                    <td>{{order_details.order.order_no}}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Date:</td>
+                                                                    <td>{% now "d-m-Y" %}</td>
+                                                                    
+                                                                </tr>
+                                                                
+                                                                <tr class="bg-warning">
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Billed to</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Shipped to</td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Name</td>
+                                                                    <td>{{order_details.billing_add.contect_person}}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Name</td>
+                                                                    <td>{{order_details.shipped_add.contect_person}}</td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Address/Street/Landmark</td>
+                                                                    <td>{{order_details.billing_add.street}}, {{order_details.billing_add.street2}}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Address/Street/Landmark</td>
+                                                                    <td>{{order_details.shipped_add.street}}, {{order_details.shipped_add.street2}}</td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Pincode</td>
+                                                                    <td>{{order_details.billing_add.street}}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Pincode</td>
+                                                                    <td>{{order_details.shipped_add.street}}</td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>State</td>
+                                                                    <td>{{order_details.billing_add.street}}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>State</td>
+                                                                    <td>{{order_details.shipped_add.street}}</td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Country</td>
+                                                                    <td>{{order_details.billing_add.street}}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Country</td>
+                                                                    <td>{{order_details.shipped_add.street}}</td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>GST NO.</td>
+                                                                    <td>{{order_details.order.customer.gst_no}}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>GST NO.</td>
+                                                                    <td>{{order_details.order.customer.gst_no}}</td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr class="bg-warning">
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Sr.No.</td>
+                                                                    <td>Order Date</td>
+                                                                    <td>Product Code</td>
+                                                                    <td>Product Description</td>
+                                                                    <td>Qty. (Nos/Sets/Cartoon)</td>
+                                                                    <td>Delivery Mode</td>
+                                                                    <td>Order Status</td>
+                                                                    <td>Delivery Status </td>
+                                                                    
+                                                                </tr>
+                                                                {% for i in products %}
+                                                                <tr>
+                                                                    <td>{{forloop.counter}}</td>
+                                                                    <td>{{i.order.date|date:"d-m-Y"}}</td>
+                                                                    <td>{{i.product.code}}</td>
+                                                                    <td> {{i.product.name}} </td>
+                                                                    <td>{{i.order_qty}}</td>
+                                                                    <td></td>
+                                                                    <td>{{i.status}}</td>
+                                                                    <td>{{i.status}}</td>
+                                                                    
+                                                                </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                            <tfooter>
+                                                                <tr>
+                                                                    <td colspan="7">REMARKS: {{order_details.remarks}}</td>
+                                                                </tr>
+                                                                    
+                                                                <tr>
+                                                                    <td colspan="7"><b>Document Generated By: {{ user.name }}</td>
+                                                                    
+                                                                </tr>
+                                                            </tfooter>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div>
+                                            <div>
+                                              <button class="btn btn-success mt-2 mb-3 " type="submit" style="float:right;margin-right:10px">Verify</button>
+                                          </div>
+                                      </div>
+                            </form>
+                      </div>
+                    </div>
+                    
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+  <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+
+<script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+  $('#orders-menu').addClass('active open');
+  $('#orders-add').addClass('active')
+</script>
+
+<!--This is script for add multiple field-->
+<script type="text/javascript" src = "https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src = "https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+</script>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable( {
+                dom: 'Bfrtip',
+                "bPaginate": false,
+                searching: false, paging: false, info: false,"ordering": false,
+                buttons: [
+                    'excel', 'pdf', 'print'
+                ]
+            } );
+        } );
+      </script>
+
+{% endblock js %}

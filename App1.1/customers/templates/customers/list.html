@@ -33,6 +33,7 @@ Customers
                 <th>Contect Person</th>
                 <th>Mobile</th>
                 <th>Email</th>
+                <th>orders</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -44,9 +45,12 @@ Customers
                 <td>{{customer.contect_person}}</td>
                 <td>{{customer.mobile}}</td>
                 <td>{{customer.email}}</td>
+                <th>{{customer.orderdetails_set.count}}</th>
                 <td>
                   <a href="{% url 'customers:show-customer' customer.id %}"
-                                class="btn btn-success btn-circle " title="Show"><i class=" text-white fa-solid fa-eye"></i></i></a>
+                                class="btn btn-primary btn-circle " title="Show details"><i class=" text-white fa-solid fa-eye"></i></i></a>
+                                <a href="{% url 'orders:orders-create' customer.id %}"
+                                class="btn btn-success btn-circle " title="Create Order"><i class="fa-solid fa-store"></i></a>
                 </td>
               </tr>
               {% endfor %}
@@ -57,6 +61,7 @@ Customers
                 <th>Contect Person</th>
                 <th>Mobile</th>
                 <th>Email</th>
+                <th>orders</th>
                 <th>Action</th>
             </tfooter>
           </table>    

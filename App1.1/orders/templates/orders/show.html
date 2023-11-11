@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+{% block title %}Orders{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'customers:dashboard' %}">Orders</a> /{{order.order_no}} 
+{% endblock %}
+
+{% block head %}
+Orders
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- Order Statistics -->
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h4><b>Customer Details</b></h4></div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{order.customer.name}}<td>
+                    </tr>
+                    <tr>
+                        <th>Contect Person</th>
+                        <td>{{order.customer.contect_person}}<td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>{{order.customer.mobile}}<td>
+                    </tr>
+                    <tr>
+                        <th>Alternative Phone:</th>
+                        <td>{{order.customer.mobile1}}<td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{order.customer.email}}<td>
+                    </tr>
+                    <tr>
+                        <th>GST No.</th>
+                        <td>{{order.customer.gst_no}}<td>
+                    </tr>
+                    <tr>
+                        <th>Remark</th>
+                        <td>{{order.remarks}}<td>
+                    </tr>
+                    <tr>
+                        <th>Order Dispatch Status</th>
+                        <td>{{order.dispatch_status}}</td>
+                    </tr>
+                    {% if order.dispatch_status == "DISPATCHED" %}
+                    <tr>
+                        <th>Order sales_challan No.</th>
+                        <td>{{order.sales_challan}}</td>
+                    </tr>
+                    <tr>
+                        <th>Order Lr. No.</th>
+                        <td>{{order.lr_no}}</td>
+                    </tr>
+                    {% endif %}
+
+                    {% if order.dispatch_status == "DISPATCHED" %}
+                    <tr>
+                        <th>Order Dispatched Date</th>
+                        <td>{{order.dispatch_date}}</td>
+                    </tr>
+                    {% endif %}
+
+                    <tr>
+                        <th>Order Status</th>
+                        <td>{{order.order_status}}</td>
+                    </tr>
+
+                    {% if order_status == "DELIVERED" %}
+                    <tr>
+                        <th>Order Delivered Date </th>
+                        <td>{{order.pickup_by_party_date}}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td></td>
+                        <td><a class="btn btn-success" href="{% url 'orders:order-dispatch-process' order.id %}">Dispatch Note</a></td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h5>Address Details</h5></div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th colspan="2" class="bg-warning">Billing To.</th>
+                    </tr>
+                    <tr>
+                        <th>Contect Person</th>
+                        <td>{{order.billing_add.contect_person}}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{order.billing_add.contect_phone}}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>
+                            {{order.billing_add.street}}, {{order.billing_add.street2}}<br/> 
+                            {{order.billing_add.city}}, {{order.billing_add.state}}, {{order.billing_add.country}},
+                            <br/> -{{order.billing_add.zip}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="bg-warning">shipped To.</th>
+                    </tr>
+                    <tr>
+                        <th>Contect Person</th>
+                        <td>{{order.shipped_add.contect_person}}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{order.shipped_add.contect_phone}}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>
+                            {{order.shipped_add.street}}, {{order.shipped_add.street2}}<br/> 
+                            {{order.shipped_add.city}}, {{order.shipped_add.state}}, {{order.shipped_add.country}},
+                            <br/> -{{order.shipped_add.zip}}
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+      </div>
+      <div class="col-xl-12 order-0 mb-2">
+        <div class="col-12">
+
+            <!-- Basic Bootstrap Table -->
+            <div class="card">
+              
+              
+              {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+              <div class="table-responsive text-nowrap" >
+                <table class="table">
+                  <thead>
+                    <tr>
+                        <th>Sr No</th>
+                        
+                        <th>Date</th>
+                        <th>Product<br/>Code</th>
+                        <th>Product<br/>Description</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Packaging<br/>Type</th>
+                        <th>Dispatch<br/> Status</th>
+                        <th>Order <br/> Status</th>
+                        <th>Action</th>
+                        
+                    </tr>
+                    
+                  </thead>
+                  <tbody class="">
+                    {% for product in order.orderofproduct_set.all %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        
+                        <td>{{product.order.date}}</td>
+                        <td>{{product.product.code}}</td>
+                        <td>{{product.product.name}}</td>
+                        <td>{{product.order_qty}}</td>
+                        <td>{{product.uom}}</td>
+                        <td>{{product.packing_type}}</td>
+                        <td>
+                            {% if product.dispatch_status != 'DISPATCHED' %}
+                            <select name="dispatch" class="form-control form-select" autofocus="" id="dispatch" onchange="location = this.value;">
+                                {% for i in dispatch_status %}
+                                {% if i == product.dispatch_status %}
+                                <option value="" selected=""> {{product.dispatch_status}}</option>
+                                {% comment %} {% elif i == "READY" %}
+                                <option value="{% url 'orders:order-dispatch-process' product.id %}?status={{i}}" >{{i}}</option> {% endcomment %}
+                                {% else %}
+                                <option value="{% url 'orders:change-order-dispatch-status' product.id %}?status={{i}}" >{{i}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% else %}
+                            {{product.dispatch_status}}
+                            {% endif %}
+                        </td>
+                        {% if product.status != 'DELIVERED'  %}
+                        {% if product.dispatch_status != 'DISPATCHED' %}
+                        <td>{{product.status}}</td>
+                        {% else %}
+                        <td>
+                        <select name="status" class="form-control form-select" autofocus="" id="status" onchange="location = this.value;">
+                            {% for i in order_status %}
+                            {% if i == product.status %}
+                            <option value="{{i}}" selected=""> {{i}}</option>
+                            {% else %}
+                            <option value="{% url 'orders:change-order-delivery-status' product.id %}?status={{i}}">{{i}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        
+                        </td>
+                        {% endif %}
+                        {% else %}
+                        <td>{{product.status}}</td>
+                        {% endif %}
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+              
+            </div>
+            <!--/ Basic Bootstrap Table -->
+          </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+  $('#orders-menu').addClass('active open');
+  $('#orders-create').addClass('active')
+</script>
+
+{% endblock js %}

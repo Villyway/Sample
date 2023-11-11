@@ -175,6 +175,24 @@ def generate_part_code(id,version,quality,compny_name="KI"):
     return compny_name + str(version) + quality + str(id)
 
 
+def generate_order_dispatch_no(id):
+    # KIDN000001			
+    id = str(id)
+    if len(id) == 1:
+        id = "00000" + str(id)
+    elif len(id) == 2:
+        id = "0000" + str(id)
+    elif len(id) == 3:
+        id = "000" + str(id)
+    elif len(id) == 4:
+        id = "00" + str(id)
+    elif len(id) == 5:
+        id = "0" + str(id)
+    else:
+        id = str(id)
+    return "KIDN" + id
+
+
 class DeleteAddress(View):
 
     def get(self,request,id):

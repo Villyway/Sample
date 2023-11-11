@@ -36,10 +36,7 @@ All Orders
     <div class="col-4">
       <input type="text" class="form-control" id="id_search" name="search" placeholder="Search" />      
     </div>
-    <div class="col-4"> 
-      <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
-        style="float: right; ">Add New Orders</button></a>
-    </div>
+    
     <div class="col-12">
 
       <!-- Basic Bootstrap Table -->
@@ -53,54 +50,58 @@ All Orders
               <tr>
                 <th>No</th>
                 {% comment %} <th>Code</th> {% endcomment %}
-                <th>Image</th>
-                <th>Part<br> No</th>
-                <th>Name</th>
-                <th>UOM</th>
-                <th>Stock</th>
-                <th>Minimum<br> Stock<br> Level</th>
-                
+                <th>Date</th>
+                <th>Order No</th>
+                <th>Customer Name</th>
+                <th>Product</th>
+                <th>sales_challan</th>
                 <th>Status</th>
+                
+                
+                
                 <th>Action</th>
               </tr>
               
             </thead>
             <tbody class="table-border-bottom-0">
-              {% for product in orders %}
+              {% for order in orders %}
               <tr >
                 <td>
                 {{ forloop.counter }}
                 </td>
-                <td><img src="{{product.image}}" height="50px" width="50px"></td>
-                <td>{{product.part_no}}</td>
-                <td>{{product.name}}</td>
-                <td> {{product.umo}} </td>
-                {% if product.stock < product.minimum_stock_level %}
-                <td class="bg-danger"> 
-                  {% else %}
-                  <td> 
-                {% endif %}
-                {{product.stock}} </td>
-                
-                <td>{{product.minimum_stock_level}} </td>
-                
-                <td> 
-                    {% if product.is_active %}
-                    <i class="fas fa-check text-success" style="font-size: 15px;"></i>
-                    {% else %}
-                    <i class="fas fa-times text-danger" style="font-size: 15px;"></i>
-                    {% endif %}
-                </td>
+                <td>{{order.date}}</td>
+                <td>{{order.order_no}}</td>
+                <td>{{order.customer.name}}</td>
                 <td>
-                  <a href="{% url 'products:product-property' product.id %}"
+                  <table class="table">
+                    <tr>
+                      <th>Product code</th>
+                      <th>Qty</th>
+                    </tr>
+                    {% if  order.orderofproduct_set.all %}
+                    {% for i in order.orderofproduct_set.all %}
+                    <tr>
+                      <td>{{i.product.code}}</td>
+                      <td>{{i.order_qty}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    No Product
+                    {% endif %}
+                  </table>
+                </td>
+                <td>{{order.sales_challan}}</td>
+                <td>{{order.order_status}}</td>
+                <td>
+                  <a href="{% url 'orders:order-details' order.id %}" class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>
+                  {% comment %} <a href="{% url 'products:product-property' product.id %}"
                                 class="btn btn-success btn-circle " title="Publish"><i class="fa-solid fa-magnet"></i></i></a>
-                  <a href=""
-                                class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>
+                  
                   <a href="{% url 'products:products-edit' product.id %}" class="btn btn-primary btn-circle "
                                 title="Product Edit"><i class="fas fa-edit" aria-hidden="true"></i></a>
                   <a href="" class="open-modal btn btn-danger btn-circle " data-toggle="modal"
                                 data-target="" title="Delete"><i class="fa fa-trash"
-                                    aria-hidden="true"></i></a>
+                                    aria-hidden="true"></i></a> {% endcomment %}
                 </td>
               </tr>
               {% endfor %}

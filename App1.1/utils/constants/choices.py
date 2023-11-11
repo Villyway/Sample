@@ -134,7 +134,6 @@ class InventryReportType(Enum):
 class OrderStatus(Enum):
     DELIVERED = "DELIVERED"
     PENDING = "PENDING"
-    ON_THE_WAY = "ON THE WAY" 
     IN_TRANSPORT = "IN TRANSPORT"
 
     @classmethod
@@ -163,8 +162,20 @@ class OrderUOM(Enum):
 class DispatchStatus(Enum):
 
     READY = "READY"
+    DISPATCHED = "DISPATCHED"
     UNDER_PROCESS = "UNDER PROCESS"
     PENDING = "PENDING"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)
+    
+
+class OrdersType(Enum):
+    DOMESTIC = "DOMESTIC"
+    ECOMMERCE = "ECOMMERCE"
+    EXPORT = "EXPORT"
+    DIRECT = "DIRECT"
 
     @classmethod
     def choices(cls):

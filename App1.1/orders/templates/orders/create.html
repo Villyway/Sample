@@ -71,16 +71,18 @@ Orders
                                                             <select name="billingto" class="form-control form-select" autofocus="" id="billingTo" required="">
                                                                 <option value="" selected="">--- Select Address ---</option>
                                                                 {% for address in customer.id|get_addresses %}
-                                                                <option value="address">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                                                <option value="{{address.id}}">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
                                                                 {% endfor %}
                                                             </select>
                                                             <label for="shippedTo">Shipped to:</label>
                                                             <select name="shippedto" class="form-control form-select" autofocus="" id="shippedTo" required="">
                                                                 <option value="" selected="">--- Select Address ---</option>
                                                                 {% for address in customer.id|get_addresses %}
-                                                                <option value="address">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                                                <option value="{{address.id}}">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
                                                                 {% endfor %}
                                                             </select>
+                                                            <label for="shippedTo">Remark:</label>
+                                                            <textarea id="w3review" name="remark" class="form-control" rows="4" cols="50"></textarea>
                                                             
                                                         </div>
                                                     </div>
@@ -89,42 +91,46 @@ Orders
                                                 
                                                 <!-- Name, Address, Pincode, State, Country, GST NO. -->
                                                 
-                                                    <div class="form-group col-md-6">
-                                                        
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        
-                                                    </div>
-                                                    <div class="product-entry col-12 mb-3">
-                                                        <div class="row" id="products">
-                                                            <div class="col-md-2">
-                                                                <label for="product1">Product Code:</label>
-                                                                <span class="text-danger">*</span>
-                                                                <input type="text" class="form-control" name="product[]" id="product1" required>
+                                                    
+                                                    
+                                                    <div id="billingFields" class="mt-4">
+                                                        <div class="row billing-entry">
+                                                            <div class="form-group col-md-2">
+                                                                <label for="productCode">Product Code:</label>
+                                                                <input type="text" class="form-control" name="productCode[]" required>
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <label for="quantity1">Quantity:</label>
-                                                                <span class="text-danger">*</span>
-                                                                <input type="number" class="form-control" name="quantity[]" id="quantity1" required>
+                                                            <div class="form-group col-md-2">
+                                                                <label for="quantity">Quantity:</label>
+                                                                <input type="text" class="form-control" name="quantity[]" required>
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <label for="quantity1">Unit:</label>
-                                                                <span class="text-danger">*</span>
-                                                                <input type="number" class="form-control" name="unit[]" id="unit1" required>
+                                                            <div class="form-group col-md-2">
+                                                                <label for="unit">Unit:</label>
+                                                                <select name="unit[]" class="form-control form-select" autofocus="" id="billingTo" required="">
+                                                                    <option value="" selected="">--- Select Unit ---</option>
+                                                                    {% for i in unit %}
+                                                                    <option value="{{i}}">{{i}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                {% comment %} <input type="text" class="form-control" name="unit[]" required> {% endcomment %}
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <label for="quantity1">Packageing Type:</label>
-                                                                <span class="text-danger">*</span>
-                                                                <input type="number" class="form-control" name="packageing_type[]" id="packageing_type1" required>
+                                                            <div class="form-group col-md-2">
+                                                                <label for="packagingType">Packaging Type:</label>
+                                                                <select name="packagingType[]" class="form-control form-select" autofocus="" id="billingTo" required="">
+                                                                    <option value="" selected="">Select Packaging Type ---</option>
+                                                                    {% for i in packaging_type %}
+                                                                    <option value="{{i}}">{{i}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                {% comment %} <input type="text" class="form-control" name="packagingType[]" required> {% endcomment %}
                                                             </div>
-                                                            
-                                                            <div class="col-md-2">
-                                                                <button type="button" class="btn btn-danger remove-product mt-4">Remove</button>
+                                                            <div class="form-group col-md-2">
+                                                                <button type="button" class="btn btn-danger remove-billing mt-4">Remove</button>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    
                                                     <div class="col-2">
-                                                        <button type="button" class="btn btn-primary" id="add-row">Add Product</button>
+                                                        <button type="button" class="btn btn-primary mt-3" id="add-row">Add Product</button>
                                                     <div>
                                                     
                                                 <!-- Sr.No., Order Date, Product Code, Product Description, Qty -->
@@ -166,93 +172,6 @@ Orders
 
 <!--This is script for add multiple field-->
 <script>
-    $("#add-row").click(function(){
-        const productsDiv = document.getElementById("products");
-            const productCount = productsDiv.querySelectorAll(".product-entry").length + 1;
-
-            const productEntry = document.createElement("div");
-            productEntry.className = "product-entry col-12 mb-3";
-
-            productEntry.innerHTML = `
-            <div class="row">
-                <div class="col-md-2">
-                    <label for="product1">Product Code:</label>
-                    <span class="text-danger">*</span>
-                    <input type="text" class="form-control" name="product[]" id="product${productCount}" required>
-                </div>
-                <div class="col-md-2">
-                    <label for="quantity1">Quantity:</label>
-                    <span class="text-danger">*</span>
-                    <input type="number" class="form-control" name="quantity[]" id="quantity${productCount}" required>
-                </div>
-                <div class="col-md-2">
-                    <label for="quantity1">Unit:</label>
-                    <span class="text-danger">*</span>
-                    <input type="number" class="form-control" name="quantity[]" id="unit${productCount}" required>
-                </div>
-                <div class="col-md-2">
-                    <label for="quantity1">Packageing Type:</label>
-                    <span class="text-danger">*</span>
-                    <input type="number" class="form-control" name="quantity[]" id="packageing_type${productCount}" required>
-                </div>
-                
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger remove-product mt-4">Remove</button>
-                </div>
-            </div>
-            </div>
-            `;
-
-            productsDiv.appendChild(productEntry);
-      }); 
-
-    document.getElementById("create-orders").addEventListener("click", function(e) {
-        console.log('hi')
-        if (e.target && e.target.className == "btn btn-danger remove-product") {
-            e.target.parentElement.parentElement.parentElement.remove();
-        }
-    });
-</script>
-<script>
-        $(document).ready(function () {
-            $("#id_state").change(function () {
-                $('#id_city').empty().append('<option>--- Select City ---</option>');
-                var id = $(this).find(":selected").val();
-                $.ajax({
-                    type: 'GET',
-                    url: "{% url 'utils:city' 1  %}".replace("1", id),
-                    success: function (response) {
-                        for (i in response.cities) {
-                            $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error)
-                    }
-                })
-            })
-    
-            $("#id_country").change(function () {
-                $('#id_state').empty().append('<option>--- Select State ---</option>');
-                var id = $(this).find(":selected").val();
-                $.ajax({
-                    type: 'GET',
-                    url: "{% url 'utils:state' 1  %}".replace("1", id),
-                    success: function (response) {
-                        for (i in response.states) {
-                            $("#id_state").append("<option value='" + response.states[i].id + "'>" + response.states[i].name + "</option>");
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error)
-                    }
-                })
-            })
-    
-        });
-    </script>
-
-<script>
     
     $(document).ready(function () {
         var $myForm = $('#create-orders')
@@ -289,26 +208,68 @@ Orders
         })
     })
 </script>
-<script>
-    $(document).ready(function () {
-        $("#customer").change(function () {
-            $('#billingTo').empty().append('<option>--- Select Address ---</option>');
-            $('#shippedTo').empty().append('<option>--- Select Address ---</option>');
-            var id = $(this).find(":selected").val();
-            $.ajax({
-                type: 'GET',
-                url: "{% url 'utils:city' 1  %}".replace("1", id),
-                success: function (response) {
-                    for (i in response.cities) {
-                        $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
-                    }
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            })
-        })
 
+<script>
+    // Add Billing Field
+    //document.getElementById("").addEventListener("click", function() {
+    $("#add-row").click(function(){
+        console.log('hi')
+        const billingFieldsDiv = document.getElementById("billingFields");
+        const billingCount = billingFieldsDiv.querySelectorAll(".billing-entry").length + 1;
+
+        const billingEntry = document.createElement("div");
+        billingEntry.className = "form-row billing-entry";
+
+        billingEntry.innerHTML = `
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label for="productCode${billingCount}">Product Code:</label>
+                <input type="text" class="form-control" name="productCode[]" required>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="quantity${billingCount}">Quantity:</label>
+                <input type="text" class="form-control" name="quantity[]" required>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="unit${billingCount}">Unit:</label>
+                <select name="unit[]" class="form-control form-select" autofocus="" id="billingTo" required="">
+                    <option value="" selected="">--- Select Unit ---</option>
+                    {% for address in unit %}
+                    <option value="{{address}}">{{address}}</option>
+                    {% endfor %}
+                </select>
+                {% comment %} <input type="text" class="form-control" name="unit[]" required> {% endcomment %}
+            </div>
+            <div class="form-group col-md-2">
+                <label for="packagingType${billingCount}">Packaging Type:</label>
+                <select name="packagingType[]" class="form-control form-select" autofocus="" id="billingTo" required="">
+                    <option value="" selected="">Select Packaging Type ---</option>
+                    {% for address in packaging_type %}
+                    <option value="{{address}}">{{address}}</option>
+                    {% endfor %}
+                </select>
+                
+            </div>
+            <div class="form-group col-md-2">
+                <button type="button" class="btn btn-danger remove-billing mt-4">Remove</button>
+            </div>
+        </div>
+        `;
+
+        billingFieldsDiv.appendChild(billingEntry);
+
+        // Add an event listener to the new remove button
+        const newRemoveButton = billingEntry.querySelector(".remove-billing");
+        newRemoveButton.addEventListener("click", function() {
+            billingEntry.remove();
+        });
+    });
+
+    // Remove Billing Field
+    document.getElementById("billingFields").addEventListener("click", function(e) {
+        if (e.target && e.target.className == "btn btn-danger remove-billing") {
+            e.target.parentElement.parentElement.remove();
+        }
     });
 </script>
 
