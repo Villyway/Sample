@@ -37,65 +37,40 @@ Orders
                                                 <!-- Billed to and Shipped to -->
                                                 <div class="form-group col-md-12">
                                                     <div class="row">
-                                                        <div class="col-md-12">
-                                                            <table class="table" id="example">
+                                                        <div class="col-md-12 table-bordered table-responsive ">
+                                                            <table class="table table-bordered" style="border: 1px solid #ddd !important;" id="example">
                                                               <thead>
                                                                 <tr>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td colspan="2">Krunal Industries</td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    
+                                                                    <th colspan="7" class="text-center"><h2>Krunal Industries</h2></th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="7" class="text-center"><h3>DESPATCH NOTE</h3></td>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td>DESPATCH NOTE</td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    
-                                                                </tr>
-                                                            
                                                             <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td>Customer Details</td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                
+                                                                <td colspan="7" class="text-center"><h4>Customer Details</h4></td>
                                                             </tr>
                                                             <tr class="bg-warning">
-                                                                <td></td>
-                                                                <td>Name:</td>
-                                                                <td>Contect Person</td>
-                                                                <td>Mobile</td>
-                                                                <td>Email</td>
-                                                                <td>GST No.</td>
+                                                                <td>Sr no.</td>
+                                                                <th><b>Name:</b></th>
+                                                                <th><b>Contect Person</b></th>
+                                                                <th><b>Mobile</b></th>
+                                                                <th><b>Email</b></th>
+                                                                <th><b>GST No.</b></th>
                                                                 <td></td>
                                                                 <td></td>
                                                                 
                                                                 
                                                             </tr>
                                                             <tr>
-                                                                <td></td>
-                                                                <td>{{order_details.order.customer.name}}</td>
-                                                                <td>{{order_details.order.customer.contect_person}}</td>
-                                                                <td>{{order_details.order.customer.mobile}} / {{order_details.order.customer.mobile1}}</td>
-                                                                <td>{{order_details.order.customer.email}}</td>
-                                                                <td>{{order_details.order.customer.gst_no}}</td>
-                                                                <td></td>
-                                                                <td></td>
+                                                                <td>1</td>
+                                                                <td>{{order_details.customer.name}}</td>
+                                                                <td>{{order_details.customer.contect_person}}</td>
+                                                                <td>{{order_details.customer.mobile}} / {{order_details.customer.mobile1}}</td>
+                                                                <td>{{order_details.customer.email}}</td>
+                                                                <td colspan="2">{{order_details.customer.gst_no}}</td>
+                                                                
                                                                 
                                                             </tr>
                                                             <tr class="bg-warning">
@@ -112,7 +87,7 @@ Orders
                                                                 <tr>
                                                                     <td></td>
                                                                     <td>Despatch Note No.:</td>
-                                                                    <td>{{order_details.order.order_no}}</td>
+                                                                    <td>{{order_details.order_no}}</td>
                                                                     <td></td>
                                                                     <td></td>
                                                                     <td></td>
@@ -124,7 +99,7 @@ Orders
                                                                 <tr class="bg-warning">
                                                                     <td></td>
                                                                     <td></td>
-                                                                    <td>Billed to</td>
+                                                                    <td>Billing to</td>
                                                                     <td></td>
                                                                     <td></td>
                                                                     <td></td>
@@ -190,11 +165,11 @@ Orders
                                                                 <tr>
                                                                     <td></td>
                                                                     <td>GST NO.</td>
-                                                                    <td>{{order_details.order.customer.gst_no}}</td>
+                                                                    <td>{{order_details.customer.gst_no}}</td>
                                                                     <td></td>
                                                                     <td></td>
                                                                     <td>GST NO.</td>
-                                                                    <td>{{order_details.order.customer.gst_no}}</td>
+                                                                    <td>{{order_details.customer.gst_no}}</td>
                                                                     <td></td>
                                                                     
                                                                 </tr>
@@ -277,7 +252,7 @@ Orders
   $('#orders-add').addClass('active')
 </script>
 
-<!--This is script for add multiple field-->
+{% comment %} <!--This is script for add multiple field-->
 <script type="text/javascript" src = "https://code.jquery.com/jquery-3.7.0.js"></script>
     <script type="text/javascript" src = "https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src = "https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
@@ -298,6 +273,6 @@ Orders
                 ]
             } );
         } );
-      </script>
+      </script> {% endcomment %}
 
 {% endblock js %}

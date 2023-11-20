@@ -17,6 +17,7 @@ from orders.models import OrderDetails, OrderOfProduct
 from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus
 from utils.models import Address
 
+from wkhtmltopdf.views import PDFTemplateResponse
 
 class Dashboard(View):
     template_name = "orders/dashboard.html"
@@ -193,11 +194,34 @@ class OrderDispatchProcess(View):
     def post(self,request, id):
         obj = OrderOfProduct.objects.get(id=id)
 
-        print(request.POST)
-
         return redirect("orders:order-details",id=obj.order.id)
 
 
+class ExportDispatchNote(View):
+
+    template_name = "orders/dispatch_note.html"
+    # template_name = 'my_template.html'
+
+    def get(self, request, id):
+        # You can pass context data if needed
+        order = OrderDetails.objects.get(id=id)
+        products = OrderOfProduct.objects.filter(dispatch_status=DispatchStatus.READY.value)
+        context_data = {'variable': 'Hello, World!',
+                            "order_details" : order,
+                            "products" : products,
+                        }
+
+        # Render the template as PDF
+        response = PDFTemplateResponse(
+            request=request,
+            template=self.template_name,
+            filename='output.pdf',
+            context=context_data,
+            show_content_in_browser=False,
+            cmd_options={'margin-top': 10},  # Optional: Set additional wkhtmltopdf options
+        )
+
+        return response
 # class CreateOrders1(FormView):
     
 #     template_name = "orders/create.html"

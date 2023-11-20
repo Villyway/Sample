@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # External Library
     'rest_framework',
     'import_export',
+    'wkhtmltopdf',
 
     # Project applications
     'users.apps.UsersConfig',
@@ -193,3 +194,9 @@ MESSAGE_TAGS = {
 IMPORT_EXPORT_USE_TRANSACTIONS = True
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000000 # higher than the count of fields
 
+WKHTMLTOPDF_CMD_OPTIONS = {
+    'quiet': True,
+    'margin-top': 10,
+    # Add any other options as needed
+}
+WKHTMLTOPDF_PATH = '/usr/bin/wkhtmltopdf' 

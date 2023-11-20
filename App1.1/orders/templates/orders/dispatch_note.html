@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My PDF</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th colspan="7"><h2>Krunal Industries</h2></th>
+            
+        </tr>
+        <tr>
+            <th colspan="7"><h3>DESPATCH NOTE</h3></th>
+            
+        </tr>
+        <tr>
+            <th colspan="2">Despatch Note No.:</th>
+            <td colspan="2">KIDN000001</td>
+            <th colspan="2">Date:</td>
+            <td colspan="2">7.11.2023</td>
+        </tr>
+        
+        <tr>
+            <th colspan="3">Billed to</th>
+            <th colspan="3">Shipped to</th>
+        </tr>
+        <tr>
+            <td colspan="2">Name</td>
+            <td colspan="2"></td>
+            
+            <td colspan="2">Name</td>
+            <td colspan="2"></td>
+            
+        </tr>
+        <tr>
+            <td colspan="2">Address/Street/Landmark</td>
+            <td colspan="2"></td>
+            
+            <td colspan="2">Address/Street/Landmark</td>
+            <td colspan="2"></td>
+        </tr>
+        <tr>
+            <td colspan="2">Pincode</td>
+            <td colspan="2"></td>
+            <td colspan="2">Pincode</td>
+            <td colspan="2"></td>
+        </tr>
+        <tr>
+            <td colspan="2">State</td>
+            <td colspan="2"></td>
+            <td colspan="2">State</td>
+            <td colspan="2"></td>
+        </tr>
+        <tr>
+            <td colspan="2">Country</td>
+            <td colspan="2"></td>
+            <td colspan="2">Country</td>
+            <td colspan="2"></td>
+        </tr>
+        <tr>
+            <td colspan="2">GST NO.</td>
+            <td colspan="2"></td>
+            <td colspan="2">GST NO.</td>
+            <td colspan="2"></td>
+        </tr>
+    
+        <tr>
+            <td>Sr.No.</td>
+            <td>Order Date</td>
+            <td>Product Code</td>
+            <td>Product Description</td>
+            <td>Qty. (Nos/Sets/Cartoon)</td>
+            <td>Delivery Mode</td>
+            <td>Order Status</td>
+            <td>Delivery Status </td>
+            
+        </tr>
+        {% for i in products %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.order.date|date:"d-m-Y"}}</td>
+            <td>{{i.product.code}}</td>
+            <td> {{i.product.name}} </td>
+            <td>{{i.order_qty}}</td>
+            <td></td>
+            <td>{{i.status}}</td>
+            <td>{{i.status}}</td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
