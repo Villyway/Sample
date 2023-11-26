@@ -21,7 +21,7 @@ All Orders
 
 <div class="container-fluid mt-3 mb-5">
   <div class="row">
-    <div class="col-4">
+    <div class="col-4 mb-3">
       <div class="input-group">
         <label class="input-group-text" for="inputGroupSelect01">Categories</label>
         <select class="form-select" id="inputGroupSelect01">
@@ -54,7 +54,7 @@ All Orders
                 <th>Order No</th>
                 <th>Customer Name</th>
                 <th>Product</th>
-                <th>sales_challan</th>
+                {% comment %} <th>sales_challan</th> {% endcomment %}
                 <th>Status</th>
                 
                 
@@ -69,7 +69,7 @@ All Orders
                 <td>
                 {{ forloop.counter }}
                 </td>
-                <td>{{order.date}}</td>
+                <td>{{order.date|date:"d M, Y"}}</td>
                 <td>{{order.order_no}}</td>
                 <td>{{order.customer.name}}</td>
                 <td>
@@ -77,12 +77,28 @@ All Orders
                     <tr>
                       <th>Product code</th>
                       <th>Qty</th>
+                      <th>Dispatch</br>Status</th>
+                      <th>Status</th>
                     </tr>
                     {% if  order.orderofproduct_set.all %}
                     {% for i in order.orderofproduct_set.all %}
+                    {% if i.dispatch_status == 'DISPATCHED' and i.status == 'DELIVERED' %}
                     <tr>
+                    {% elif i.dispatch_status == 'DISPATCHED' and i.status == 'IN TRANSPORT' %}
+                    <tr class="bg-primary text-white">
+                    {% elif i.dispatch_status == 'UNDER PROCESS' %}
+                    <tr class="bg-warning">
+                    {% elif i.dispatch_status == 'READY' %}
+                    <tr class="bg-success">
+                    {% elif i.dispatch_status == 'PENDING' %}
+                    <tr class="bg-danger text-white">
+                    {% endif %}
+                    
                       <td>{{i.product.code}}</td>
-                      <td>{{i.order_qty}}</td>
+                      <td>{{i.order_qty}}/{{i.uom}}</td>
+                      <td>{{i.dispatch_status}}</td>
+                      <td>{{i.status}}</td>
+                      
                     </tr>
                     {% endfor %}
                     {% else %}
@@ -90,7 +106,7 @@ All Orders
                     {% endif %}
                   </table>
                 </td>
-                <td>{{order.sales_challan}}</td>
+                {% comment %} <td>{{order.sales_challan}}</td> {% endcomment %}
                 <td>{{order.order_status}}</td>
                 <td>
                   <a href="{% url 'orders:order-details' order.id %}" class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>

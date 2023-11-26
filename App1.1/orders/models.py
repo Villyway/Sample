@@ -6,6 +6,7 @@ from utils.models import Address
 from utils.constants import OrderStatus, OrderUOM, PackingType, DispatchStatus, OrdersType
 from customers.models import Customer
 from utils.models import Address
+from orders.managers import OrdersDetailsManager, OrderOfProductManager
 
 
 # Order Details
@@ -29,7 +30,8 @@ class OrderDetails(Base):
     shipped_add = models.ForeignKey(
         Address, on_delete=models.SET_NULL, null=True, related_name="shipping_address")
     order_type = models.CharField(
-        max_length=25, choices=OrdersType.choices(), default=OrdersType.DOMESTIC.value)    
+        max_length=25, choices=OrdersType.choices(), default=OrdersType.DOMESTIC.value)
+    objects = OrdersDetailsManager()
 
     def __str__(self):
         return self.customer.name
@@ -60,6 +62,8 @@ class OrderOfProduct(Base):
         Address, on_delete=models.SET_NULL, null=True, related_name="shipping_address_for_single_product")
     lr_no = models.CharField(max_length=150, null=True, blank=True)
     invoice_no = models.CharField(max_length=150, null=True, blank=True)
+
+    objects = OrderOfProductManager()
     
     def __str__(self):
         return self.product.name

@@ -190,7 +190,7 @@ def generate_order_dispatch_no(id):
         id = "0" + str(id)
     else:
         id = str(id)
-    return "KIDN" + id
+    return "KISO" + id
 
 
 class DeleteAddress(View):

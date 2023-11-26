@@ -22,18 +22,55 @@ Orders
 
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
-      <!-- Order Statistics -->
-      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-4">
-        <div class="card h-100">
+      <div class="col-lg-12 col-md-4 order-1">
+        <div class="row">
+          <div class="col-lg-2 col-md-12 col-6 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title d-flex align-items-start justify-content-between">
+
+                    <span class="fw-semibold d-block mb-1">Total Orders</span>    
+                  
+                </div>
+                
+                <h3 class="card-title mb-2">{{total_orders}}</h3>
+                
+              </div>
+            </div>
+            
+          </div>
+          {% comment %} {% for i, j in category_by.items %} {% endcomment %}
           
+          
+          <div class="col-lg-2 col-md-12 col-6 mb-4">
+            
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">
+                    <span>Panding orders </span>
+                </div>
+                <h3 class="card-title text-nowrap mb-1">{{total_panding_order}}</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-12 col-6 mb-4">
+            
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">
+                    <span>Total Deleverd </span>
+                </div>
+                <h3 class="card-title text-nowrap mb-1">{{total_deleverd}}</h3>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <!--/ Order Statistics -->
-
+      
       
     </div>
+    
   </div>
-  <!-- / Content -->
 {% endblock content %}
 
 {% block js %}

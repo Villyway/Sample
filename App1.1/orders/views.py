@@ -23,8 +23,14 @@ class Dashboard(View):
     template_name = "orders/dashboard.html"
 
     def get(self,request):
-
-        return render(request,self.template_name)
+        total_order = OrderDetails.objects.total_order()
+        context = {
+            "total_orders":total_order,
+            "total_panding_order":OrderDetails.objects.total_panding_order(),
+            "total_deleverd":OrderDetails.objects.total_deleverd(),
+            
+        }
+        return render(request,self.template_name,context)
     
 
 class CreateOrders(View):
@@ -84,7 +90,7 @@ class CreateOrders(View):
             data = {
                     'message': "Order added successfully.",
                     'url': get_secured_url(
-                        self.request) + self.request.META["HTTP_HOST"] + 'orders/orders-list'
+                        self.request) + self.request.META["HTTP_HOST"] + '/orders/orders-list'
                 }
             return JsonResponse(data)
         else:
@@ -97,7 +103,7 @@ class OrderList(View):
 
     def get(self,request):
 
-        orders = OrderDetails.objects.all()
+        orders = OrderDetails.objects.active()
         context = {"orders":orders}
         return render(request,self.template_name, context)
 
@@ -110,23 +116,69 @@ class SingelOrderView(View):
     def get(self, request, id):
 
         order_details =  OrderDetails.objects.get(id=id)
+        if order_details.orderofproduct_set.filter(dispatch_status=DispatchStatus.READY.value).count() == 0:
+            dn = 0
+        else:
+            dn=1
         context = {
             "order" : order_details,
             "dispatch_status": [i.value for i in DispatchStatus],
             "order_status":[i.value for i in OrderStatus],
+            'unit' :[e.value for e in OrderUOM], 
+            'packaging_type' : [e.value for e in PackingType],
+            'dn' : dn
         }
         return render(request, self.template_name, context)
+    
+    def post(self, request, id):
+        if is_ajax(self.request):
+            order =  OrderDetails.objects.get(id=id)
+            products = request.POST.getlist('productCode[]')
+            quantities = request.POST.getlist('quantity[]')
+            units = request.POST.getlist('unit[]')
+            packaging_types = request.POST.getlist('packagingType[]')
+            bill_add = request.POST.get('billingto')
+            ship_add = request.POST.get('shippedto')
+
+            if order.remarks != request.POST.get('remark'):
+                order.remarks = request.POST.get('remark')
+
+            if order.shipped_add != Address.objects.get(id=ship_add):
+                order.shipped_add = Address.objects.get(id=ship_add)
+
+            if order.billing_add != Address.objects.get(id=bill_add):
+                order.billing_add = Address.objects.get(id=bill_add)
+            order.save()
+
+            for product_name, quantity_value, p_unit, p_type in zip(products, quantities, units, packaging_types):
+                if Product.objects.by_code(product_name):
+                    product = Product.objects.by_code(product_name)
+                    order_of_product = OrderOfProduct()
+                    order_of_product.order = order
+                    order_of_product.product = product
+                    order_of_product.order_qty = quantity_value
+                    order_of_product.uom = p_unit
+                    order_of_product.packing_type = p_type
+                    order_of_product.created_by = request.user.id
+                    order_of_product.save()
+
+            data = {
+                        'message': "Order updated successfully.",
+                        'url': get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + '/orders/' + str(order.id) + '/order-details'
+                    }
+            return JsonResponse(data)
         
 
 class ChangeDispatchStatusOfOrderOfChild(View):
 
     def get(self,request, id):
-        print(request.GET.get("status", None))
         status = request.GET.get("status", None)
         obj = OrderOfProduct.objects.get(id=id)
         obj.dispatch_status = status
         if DispatchStatus.DISPATCHED.value == status:
             obj.dispatch_date = datetime.now()
+            obj.status = OrderStatus.IN_TRANSPORT.value
         obj.save()
 
         # Main Order sheet Changes
@@ -136,6 +188,7 @@ class ChangeDispatchStatusOfOrderOfChild(View):
             main_order = OrderDetails.objects.get(id = obj.order.id)
             main_order.dispatch_status = DispatchStatus.DISPATCHED.value
             main_order.dispatch_date = datetime.now()
+            main_order.order_status = OrderStatus.IN_TRANSPORT.value
             main_order.save()
         
         data = {
@@ -181,9 +234,7 @@ class OrderDispatchProcess(View):
     def get(self, request, id):
 
         order = OrderDetails.objects.get(id=id)
-        products = OrderOfProduct.objects.filter(dispatch_status=DispatchStatus.READY.value)
-        
-
+        products = OrderOfProduct.objects.filter(order=order,dispatch_status=DispatchStatus.READY.value)
 
         context = {
             "order_details" : order,
@@ -192,9 +243,22 @@ class OrderDispatchProcess(View):
         return render(request, self.template_name, context)
     
     def post(self,request, id):
-        obj = OrderOfProduct.objects.get(id=id)
-
-        return redirect("orders:order-details",id=obj.order.id)
+        order = OrderDetails.objects.get(id=id)
+        products = OrderOfProduct.objects.filter(order=order,dispatch_status=DispatchStatus.READY.value)
+        for i in products:
+            # i.lr_no = request.POST.get('lr_no')
+            i.transport_compny = request.POST.get('transport_compny')
+            i.invoice_no = request.POST.get('invoice_no')
+            i.billing_add = order.billing_add
+            i.shipped_add = order.shipped_add
+            i.save()
+            
+        data = {
+                    'message': "Ready To Dispatch order.",
+                    'url': get_secured_url(
+                        self.request) + self.request.META["HTTP_HOST"] + '/orders/'+ str(order.id) +'/order-details'
+                }
+        return JsonResponse(data)
 
 
 class ExportDispatchNote(View):
@@ -222,6 +286,14 @@ class ExportDispatchNote(View):
         )
 
         return response
+    
+class AddLRNo(View):
+
+    def post(self, request, id):
+        orderofproduct = OrderOfProduct.objects.get(id=id)
+        orderofproduct.lr_no = request.POST.get('lr_no')
+        return redirect('orders:order-details', id = orderofproduct.order.id)
+    
 # class CreateOrders1(FormView):
     
 #     template_name = "orders/create.html"
