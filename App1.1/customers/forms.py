@@ -19,11 +19,11 @@ class CustomerForm(forms.Form):
     mobile1 = forms.CharField(
         required= True ,label=" Mobile No", widget=forms.TextInput(attrs={"class": "form-control"}))
     mobile2 = forms.CharField(
-        label=" Alternative Mobile No", widget=forms.TextInput(attrs={"class": "form-control"}))
+        label=" Alternative Mobile No", widget=forms.TextInput(attrs={"class": "form-control"}), required=False)
     email = forms.EmailField(label='Email', widget=forms.EmailInput(
-        attrs={'class': 'form-control'}), required=False, validators=[validate_email])
+        attrs={'class': 'form-control'}), required=False, validators=[validate_email], required=False)
     gst_no = forms.CharField(
-        required= False ,label=" GST No", widget=forms.TextInput(attrs={"class": "form-control"}))
+        required= False ,label=" GST No", widget=forms.TextInput(attrs={"class": "form-control"}), required=False)
     
     def __init__(self, *args, **kwargs):
         self.user = None
