@@ -15,6 +15,7 @@ class Roles(Enum):
     OPERATOR = "OPERATOR"  # Can approve websites
     CUSTOMER = "CUSTOMER" #Customer
     STORE_EXECUTIVE = "STORE EXECUTIVE"
+    ACCOUNTANT = "ACCOUNTANT" 
 
     @classmethod
     def choices(cls):
@@ -176,6 +177,16 @@ class OrdersType(Enum):
     ECOMMERCE = "ECOMMERCE"
     EXPORT = "EXPORT"
     DIRECT = "DIRECT"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)
+
+
+class OrderConfirmation(Enum):
+    CONFIRMED = "CONFIRMED"
+    IN_REVIEW = "IN REVIEW"
+    HOLD = "HOLD"
 
     @classmethod
     def choices(cls):

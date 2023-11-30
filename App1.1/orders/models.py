@@ -3,7 +3,7 @@ from django.db import models
 from base.models import Base
 from products.models import Product, Unit
 from utils.models import Address
-from utils.constants import OrderStatus, OrderUOM, PackingType, DispatchStatus, OrdersType
+from utils.constants import OrderStatus, OrderUOM, PackingType, DispatchStatus, OrdersType, OrderConfirmation
 from customers.models import Customer
 from utils.models import Address
 from orders.managers import OrdersDetailsManager, OrderOfProductManager
@@ -19,7 +19,6 @@ class OrderDetails(Base):
         max_length=25, choices=OrderStatus.choices(), default=OrderStatus.PENDING.value)
     sales_challan = models.CharField(max_length=80, null=True, blank=True)
     lr_no = models.CharField(max_length=150, null=True, blank=True)
-    
     dispatch_date = models.DateTimeField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     pickup_by_party_date = models.DateTimeField(blank=True, null=True)
@@ -31,6 +30,9 @@ class OrderDetails(Base):
         Address, on_delete=models.SET_NULL, null=True, related_name="shipping_address")
     order_type = models.CharField(
         max_length=25, choices=OrdersType.choices(), default=OrdersType.DOMESTIC.value)
+    order_confirmation = models.CharField(
+        max_length=25, choices=OrderStatus.choices(), default=OrderConfirmation.IN_REVIEW.value)
+    order_confirmation_remark = models.TextField(blank=True, null=True)
     objects = OrdersDetailsManager()
 
     def __str__(self):

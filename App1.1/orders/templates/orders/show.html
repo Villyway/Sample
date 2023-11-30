@@ -25,6 +25,11 @@ Orders
     <div class="row">
     
       <!-- Order Statistics -->
+      {% if order.order_confirmation == "IN REVIEW" %}
+      <div class="col-12 alert alert-primary">This Order currently in {{order.order_confirmation}}</div>
+      {% elif order.order_confirmation == "HOLD" %}
+      <div class="col-12 alert alert-danger">This Order ON {{order.order_confirmation}}</div>
+      {% endif %}
       <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2 ">
         <div class="card h-100">
             <div class="card-header"><h4><b>Customer Details</b></h4></div>
@@ -196,6 +201,7 @@ Orders
                   </thead>
                   <tbody class="">
                     {% for product in order.orderofproduct_set.all|dictsort:'created_at' %}
+                    {% if order.order_confirmation == "CONFIRMED" %}
                     {% if product.dispatch_status == 'DISPATCHED' and product.status == 'DELIVERED' %}
                     <tr>
                     {% elif product.dispatch_status == 'DISPATCHED' and product.status == 'IN TRANSPORT' %}
@@ -206,6 +212,9 @@ Orders
                     <tr class="bg-success">
                     {% elif product.dispatch_status == 'PENDING' %}
                     <tr class="bg-danger text-white">
+                    {% endif %}
+                    {% else %}
+                        <tr>
                     {% endif %}
                     
                         <td>{{forloop.counter}}</td>
@@ -246,6 +255,7 @@ Orders
                         </td>
                         
                         <td>
+                            {% if order.order_confirmation == "CONFIRMED" %}
                             {% if product.dispatch_status != 'DISPATCHED' %}
                             <select name="dispatch" class="form-control form-select" autofocus="" id="dispatch" onchange="location = this.value;">
                                 {% for i in dispatch_status %}
@@ -259,12 +269,19 @@ Orders
                             {% else %}
                             {{product.dispatch_status}}
                             {% endif %}
+                            {% else %}
+                                -
+                            {% endif %}
+                            
                         </td>
+                        <!---->
+                        {% if order.order_confirmation == "CONFIRMED" %}
                         {% if product.status != 'DELIVERED'  %}
                         {% if product.dispatch_status != 'DISPATCHED' %}
                         <td>{{product.status}}</td>
                         {% else %}
                         <td>
+                            
                         <select name="status" class="form-control form-select" autofocus="" id="status" onchange="location = this.value;">
                             {% for i in order_status %}
                             {% if i == product.status %}
@@ -286,6 +303,10 @@ Orders
                         {% else %}
                         <td>{{product.status}}</td>
                         {% endif %}
+                        {% else %}
+                        <td>-</td>
+                        {% endif %}
+                        
                         <td></td>
                     </tr>
                     {% endfor %}

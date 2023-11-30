@@ -20,9 +20,8 @@ class Command(BaseCommand):
             name=Roles.OPERATOR.value)
         group_customer, created = Group.objects.get_or_create(
             name = Roles.CUSTOMER.value)
-
-
-        
+        group_accountant, created = Group.objects.get_or_create(
+            name = Roles.ACCOUNTANT.value)
         
 
         # self.stdout.write("Group created for Manager.")

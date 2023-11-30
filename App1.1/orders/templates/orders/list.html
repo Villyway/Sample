@@ -44,7 +44,7 @@ All Orders
         
         
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
-        <div class="table-responsive text-nowrap" id="id_products_list">
+        <div class="table-responsive text-nowrap text-center" id="id_products_list">
           <table class="table">
             <thead>
               <tr>
@@ -55,17 +55,22 @@ All Orders
                 <th>Customer Name</th>
                 <th>Product</th>
                 {% comment %} <th>sales_challan</th> {% endcomment %}
-                <th>Status</th>
-                
-                
-                
+                <th>Status</th>              
+                <th>Confirmation <br>Status</th>                
                 <th>Action</th>
               </tr>
               
             </thead>
-            <tbody class="table-border-bottom-0">
+            <tbody class="table-border-bottom-1">
               {% for order in orders %}
-              <tr >
+              {% if order.order_confirmation == "IN REVIEW" %}
+              <tr class=" alert-primary" >
+              {% elif order.order_confirmation == "HOLD" %}
+              <tr class="alert-danger">
+              {% else %}
+              <tr class="">
+              {% endif %}
+              
                 <td>
                 {{ forloop.counter }}
                 </td>
@@ -82,6 +87,7 @@ All Orders
                     </tr>
                     {% if  order.orderofproduct_set.all %}
                     {% for i in order.orderofproduct_set.all %}
+                    {% if order.order_confirmation == 'CONFORMED' %}
                     {% if i.dispatch_status == 'DISPATCHED' and i.status == 'DELIVERED' %}
                     <tr>
                     {% elif i.dispatch_status == 'DISPATCHED' and i.status == 'IN TRANSPORT' %}
@@ -92,6 +98,9 @@ All Orders
                     <tr class="bg-success">
                     {% elif i.dispatch_status == 'PENDING' %}
                     <tr class="bg-danger text-white">
+                    {% endif %}
+                    {% else %}
+                    <tr>
                     {% endif %}
                     
                       <td>{{i.product.code}}</td>
@@ -108,6 +117,7 @@ All Orders
                 </td>
                 {% comment %} <td>{{order.sales_challan}}</td> {% endcomment %}
                 <td>{{order.order_status}}</td>
+                <td>{{order.order_confirmation}}</td>                
                 <td>
                   <a href="{% url 'orders:order-details' order.id %}" class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>
                   {% comment %} <a href="{% url 'products:product-property' product.id %}"
@@ -156,14 +166,14 @@ All Orders
     
     var query = this.value;
     // var category = $()
-    $.ajax({
-        url: '/products/search/',
-        type: 'GET',
-        data: { 'query': query, "category":selectedValue},
-        success: function (data) {
-            $('#id_products_list').html(data.data);
-        }
-    });
+    // $.ajax({
+    //     url: '/products/search/',
+    //     type: 'GET',
+    //     data: { 'query': query, "category":selectedValue},
+    //     success: function (data) {
+    //         $('#id_products_list').html(data.data);
+    //     }
+    // });
 });
 </script>
 {% endblock js %}

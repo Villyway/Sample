@@ -21,9 +21,9 @@ class CustomerForm(forms.Form):
     mobile2 = forms.CharField(
         label=" Alternative Mobile No", widget=forms.TextInput(attrs={"class": "form-control"}), required=False)
     email = forms.EmailField(label='Email', widget=forms.EmailInput(
-        attrs={'class': 'form-control'}), required=False, validators=[validate_email], required=False)
+        attrs={'class': 'form-control'}), required=False, validators=[validate_email])
     gst_no = forms.CharField(
-        required= False ,label=" GST No", widget=forms.TextInput(attrs={"class": "form-control"}), required=False)
+        required= False ,label=" GST No", widget=forms.TextInput(attrs={"class": "form-control"}))
     
     def __init__(self, *args, **kwargs):
         self.user = None

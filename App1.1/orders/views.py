@@ -23,12 +23,25 @@ class Dashboard(View):
     template_name = "orders/dashboard.html"
 
     def get(self,request):
-        total_order = OrderDetails.objects.total_order()
+        total_order = OrderDetails.objects.orders(count=True)
+        totla_orders_list = OrderDetails.objects.orders()[:10]
+        total_hold_orders = OrderDetails.objects.orders_in_hold(count=True)
+        total_hold_orders_list = OrderDetails.objects.orders_in_hold()[:10]
+        total_confirmed_orders = OrderDetails.objects.orders_confirmed(count=True)
+        total_confirmed_orders_list = OrderDetails.objects.orders_confirmed()[:10]
+        total_in_review_orders = OrderDetails.objects.orders_in_review(count=True)
+        total_in_review_orders_list = OrderDetails.objects.orders_in_review()[:10]
         context = {
             "total_orders":total_order,
+            "totla_orders_list" : totla_orders_list,
+            "total_hold_orders" : total_hold_orders,
+            "total_hold_orders_list":total_hold_orders_list,
+            "total_confirmed_orders":total_confirmed_orders,
+            "total_confirmed_orders_list":total_confirmed_orders_list,
+            "total_in_review_orders" : total_in_review_orders,
+            "total_in_review_orders_list":total_in_review_orders_list,
             "total_panding_order":OrderDetails.objects.total_panding_order(),
             "total_deleverd":OrderDetails.objects.total_deleverd(),
-            
         }
         return render(request,self.template_name,context)
     
@@ -102,8 +115,9 @@ class OrderList(View):
     template_name = "orders/list.html"
 
     def get(self,request):
-
-        orders = OrderDetails.objects.active()
+        in_review_orders = OrderDetails.objects.orders_in_review()
+        Holding_orders = OrderDetails.objects.orders_in_hold()
+        orders = OrderDetails.objects.orders()
         context = {"orders":orders}
         return render(request,self.template_name, context)
 

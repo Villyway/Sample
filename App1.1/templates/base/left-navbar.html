@@ -14,6 +14,13 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
+
+      <li class="menu-item " id = "dashboard">
+        <a href="{% url 'base:dashboard' %}" class="menu-link ">
+          <i class="menu-icon tf-icons fa-solid fa-home"></i>
+          <div data-i18n="Layouts">Dashboard</div>
+        </a>
+      </li>
       {% comment %} <!-- Dashboard -->
       <li class="menu-item" id="dashboard-menu" >
         <a href="{% url 'base:dashboard' %}" class="menu-link">
@@ -22,6 +29,7 @@
         </a>
       </li> {% endcomment %}
       {% comment %} Products {% endcomment %}
+      {% if user.role != "ACCOUNTANT" %}
       <li class="menu-item " id = "product-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
@@ -111,6 +119,7 @@
           </li>
         </ul>
       </li>
+      {% if user.role != "MANAGER" %}
       <li class="menu-item " id = "vendor-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-shop"> </i>
@@ -139,8 +148,9 @@
             </a>
           </li>
         </ul>
-        
       </li>
+      {% endif %}
+      {% endif %}
       <li class="menu-item " id = "customers-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-person-military-pointing"></i>

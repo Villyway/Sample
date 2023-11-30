@@ -22,49 +22,99 @@ Orders
 
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
+      
       <div class="col-lg-12 col-md-4 order-1">
         <div class="row">
-          <div class="col-lg-2 col-md-12 col-6 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="card-title d-flex align-items-start justify-content-between">
+          <div class="accordion accordion-flush " id="accordionFlushExample">
+            <div class="accordion-item ">
+              <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                  Total In Review Orders :- {{total_in_review_orders}}
+                </button>
+              </h2>
+              <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                  <table class="table">
+                    <tr>
+                      <th>No.</th>
+                      <th>Customer</th>
+                      <th>Order No.</th>
+                      <th>Date</th>
+                      <th>Confirmation Status</th>
+                    </tr>
+                    {% for order in total_in_review_orders_list %}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{order.customer.name}}</td>
+                      <td>{{order.order_no}}</td>
+                      <td>{{order.date}}</td>
+                      <td>{{order.order_confirmation}}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="flush-headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                  Total Confirmed Orders :- {{total_confirmed_orders}}
+                </button>
+              </h2>
+              <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                  <table class="table">
+                    <tr>
+                      <th>No.</th>
+                      <th>Customer</th>
+                      <th>Order No.</th>
+                      <th>Date</th>
+                      <th>Confirmation Status</th>
+                    </tr>
+                    {% for order in total_confirmed_orders_list %}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{order.customer.name}}</td>
+                      <td>{{order.order_no}}</td>
+                      <td>{{order.date}}</td>
+                      <td>{{order.order_confirmation}}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
 
-                    <span class="fw-semibold d-block mb-1">Total Orders</span>    
-                  
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="flush-headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                  Total Orders On Hold:- {{total_hold_orders}}
+                </button>
+              </h2>
+              <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                  <table class="table">
+                    <tr>
+                      <th>No.</th>
+                      <th>Customer</th>
+                      <th>Order No.</th>
+                      <th>Date</th>
+                      <th>Confirmation Status</th>
+                    </tr>
+                    {% for order in total_hold_orders_list %}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{order.customer.name}}</td>
+                      <td>{{order.order_no}}</td>
+                      <td>{{order.date}}</td>
+                      <td>{{order.order_confirmation}}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
                 </div>
-                
-                <h3 class="card-title mb-2">{{total_orders}}</h3>
-                
-              </div>
-            </div>
-            
-          </div>
-          {% comment %} {% for i, j in category_by.items %} {% endcomment %}
-          
-          
-          <div class="col-lg-2 col-md-12 col-6 mb-4">
-            
-            <div class="card">
-              <div class="card-body">
-                <div class="card-title">
-                    <span>Panding orders </span>
-                </div>
-                <h3 class="card-title text-nowrap mb-1">{{total_panding_order}}</h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-2 col-md-12 col-6 mb-4">
-            
-            <div class="card">
-              <div class="card-body">
-                <div class="card-title">
-                    <span>Total Deleverd </span>
-                </div>
-                <h3 class="card-title text-nowrap mb-1">{{total_deleverd}}</h3>
               </div>
             </div>
           </div>
-        </div>
       </div>
       
       
