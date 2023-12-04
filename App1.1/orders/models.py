@@ -31,7 +31,7 @@ class OrderDetails(Base):
     order_type = models.CharField(
         max_length=25, choices=OrdersType.choices(), default=OrdersType.DOMESTIC.value)
     order_confirmation = models.CharField(
-        max_length=25, choices=OrderStatus.choices(), default=OrderConfirmation.IN_REVIEW.value)
+        max_length=25, choices=OrderConfirmation.choices(), default=OrderConfirmation.IN_REVIEW.value)
     order_confirmation_remark = models.TextField(blank=True, null=True)
     objects = OrdersDetailsManager()
 

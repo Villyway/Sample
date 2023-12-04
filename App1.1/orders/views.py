@@ -6,15 +6,13 @@ from datetime import datetime
 from django.views.generic import View
 from django.contrib import messages
 from django.db import transaction
-from django.views.generic.edit import FormView
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import JsonResponse
 
-from orders.forms import OrdersForm
 from utils.views import get_secured_url, is_ajax, generate_order_dispatch_no
 from customers.models import Customer
 from products.models import Product
 from orders.models import OrderDetails, OrderOfProduct
-from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus
+from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles
 from utils.models import Address
 
 from wkhtmltopdf.views import PDFTemplateResponse
@@ -25,12 +23,14 @@ class Dashboard(View):
     def get(self,request):
         total_order = OrderDetails.objects.orders(count=True)
         totla_orders_list = OrderDetails.objects.orders()[:10]
-        total_hold_orders = OrderDetails.objects.orders_in_hold(count=True)
-        total_hold_orders_list = OrderDetails.objects.orders_in_hold()[:10]
-        total_confirmed_orders = OrderDetails.objects.orders_confirmed(count=True)
-        total_confirmed_orders_list = OrderDetails.objects.orders_confirmed()[:10]
-        total_in_review_orders = OrderDetails.objects.orders_in_review(count=True)
-        total_in_review_orders_list = OrderDetails.objects.orders_in_review()[:10]
+        total_hold_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.HOLD.value, count=True)
+        total_hold_orders_list = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.HOLD.value)[:10]
+        total_confirmed_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.CONFIRMED.value, count=True)
+        total_confirmed_orders_list = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.CONFIRMED.value)[:10]
+        total_in_review_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.IN_REVIEW.value, count=True)
+        total_in_review_orders_list = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.IN_REVIEW.value)[:10]
+
+        #Order of products.       
         context = {
             "total_orders":total_order,
             "totla_orders_list" : totla_orders_list,
@@ -40,10 +40,10 @@ class Dashboard(View):
             "total_confirmed_orders_list":total_confirmed_orders_list,
             "total_in_review_orders" : total_in_review_orders,
             "total_in_review_orders_list":total_in_review_orders_list,
-            "total_panding_order":OrderDetails.objects.total_panding_order(),
-            "total_deleverd":OrderDetails.objects.total_deleverd(),
+            
         }
         return render(request,self.template_name,context)
+    
     
 
 class CreateOrders(View):
@@ -115,11 +115,31 @@ class OrderList(View):
     template_name = "orders/list.html"
 
     def get(self,request):
-        in_review_orders = OrderDetails.objects.orders_in_review()
-        Holding_orders = OrderDetails.objects.orders_in_hold()
+        in_review_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.IN_REVIEW.value)
+        # Holding_orders = OrderDetails.objects.orders_in_hold()
         orders = OrderDetails.objects.orders()
-        context = {"orders":orders}
+        context = {"orders":orders,"confirm_status": [i.value for i in OrderConfirmation],}
         return render(request,self.template_name, context)
+    
+    def post(self,request):
+        if is_ajax(request):
+            order_no = request.POST.get('order_no')
+            status = request.POST.get('status')
+            reason = request.POST.get('reason')
+            order =OrderDetails.objects.singel_order_by_order_no(order_no)
+            if order:
+                order.order_confirmation = status
+                order.order_confirmation_remark = reason
+                order.updated_by = request.user.id
+                order.save()
+            
+        data = {
+                    'message': order_no + "was in" + order.order_confirmation,
+                    'url': get_secured_url(
+                        self.request) + self.request.META["HTTP_HOST"] + '/orders/orders-list'
+                }
+        return JsonResponse(data)
+    
 
 
 #singel Order Process
@@ -302,11 +322,73 @@ class ExportDispatchNote(View):
         return response
     
 class AddLRNo(View):
+    template_name = "orders/panding_lr_list.html"
 
-    def post(self, request, id):
-        orderofproduct = OrderOfProduct.objects.get(id=id)
-        orderofproduct.lr_no = request.POST.get('lr_no')
-        return redirect('orders:order-details', id = orderofproduct.order.id)
+    def get(self,request):
+        order_list=OrderOfProduct.objects.get_pending_lr_no()
+
+        context = {
+            'list':order_list
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self,request):
+
+        if is_ajax(request):
+            lr_no = request.POST.get('lr_no')
+            invoice_no = request.POST.get('invoice_no')
+            order_list=OrderOfProduct.objects.filter(invoice_no = invoice_no)
+            main_order_id = order_list.first().order.id
+            for i in order_list:
+                i.lr_no = lr_no
+                i.save()            
+        data = {
+                    'message': "Ready To Dispatch order.",
+                    'url': get_secured_url(
+                        self.request) + self.request.META["HTTP_HOST"] + '/orders/'+ str(main_order_id) +'/order-details'
+                }
+        return JsonResponse(data)
+
+class ChangeOrderConfirmationStatus(View):
+
+    def get(self,request,id):
+        status = request.GET.get("status", None)
+        remark = request.GET.get("remark", None)
+        order = OrderDetails.objects.get(id=id)
+        if order.order_confirmation != OrderConfirmation.CONFIRMED.value and request.user.role != Roles.SUPER_ADMIN.value:
+            order.order_confirmation = status
+            order.order_confirmation_remark = remark
+            order.save()
+        elif request.user.role == Roles.SUPER_ADMIN.value: 
+            order.order_confirmation = status
+            order.order_confirmation_remark = remark
+            order.save()
+        return redirect("orders:orders-list")
+    
+
+class OrderOfProductCancleation(View):
+
+    def get(self, request, id):
+        order_of_item = OrderOfProduct.objects.single_order_of_product(id)
+        if order_of_item:
+            order_of_item.is_active = False
+            order_of_item.updated_by = request.user.id
+            order_of_item.save()
+
+        return redirect(get_secured_url(
+                        self.request) + self.request.META["HTTP_HOST"] + '/orders/'+ str(order_of_item.order.id) +'/order-details')
+
+
+    
+    
+
+
+    # def post(self, request):
+    #     orderofproduct = OrderOfProduct.objects.get(id=id)
+    #     orderofproduct.lr_no = request.POST.get('lr_no')
+    #     return redirect('orders:order-details', id = orderofproduct.order.id)
+    
+
     
 # class CreateOrders1(FormView):
     

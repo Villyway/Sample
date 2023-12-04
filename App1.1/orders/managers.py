@@ -23,43 +23,25 @@ class OrdersDetailsManager(models.Manager):
         else:
             return self.active().order_by('-date')
     
-    def total_deleverd(self, count=False):
+    def oders_filtered_by_status(self, status, count=False):
         if count:
-            return self.active().filter(order_status = OrderStatus.DELIVERED.value).count()
+            return self.active().filter(order_status = status).count()
         else:
-            return self.active().filter(order_status = OrderStatus.DELIVERED.value)
-    
-    def total_orders_in_transport(self,count=False):
-        if count:
-            return self.active().filter(order_status = OrderStatus.IN_TRANSPORT.value).count()
-        else:
-            return self.active().filter(order_status = OrderStatus.IN_TRANSPORT.value)
-    
-    def total_panding_order(self, count=False):
-        if count:
-            return self.active().filter(order_status = OrderStatus.PENDING.value).count()
-        else:
-            return self.active().filter(order_status = OrderStatus.PENDING.value)
+            return self.active().filter(order_status = status)
         
-    
-    def orders_in_review(self, count=False):
+    def orders_filtered_by_confirmation(self, status, count=False):
         if count:
-            return self.active().filter(order_confirmation = OrderConfirmation.IN_REVIEW.value).count()
+            return self.active().filter(order_confirmation = status).count()
         else:
-            return self.active().filter(order_confirmation = OrderConfirmation.IN_REVIEW.value)
-    
-    def orders_in_hold(self, count=False):
-        if count:
-            return self.active().filter(order_confirmation = OrderConfirmation.HOLD.value).count()
-        else:
-            return self.active().filter(order_confirmation = OrderConfirmation.HOLD.value)
-    
-    def orders_confirmed(self, count=False):
-        if count:
-            return self.active().filter(order_confirmation = OrderConfirmation.CONFIRMED.value).count()
-        else:
-            return self.active().filter(order_confirmation = OrderConfirmation.CONFIRMED.value)
-    
+            return self.active().filter(order_confirmation = status)
+        
+    def singel_order_by_order_no(self, order_no):
+        try:
+            return self.active().get(order_no = order_no)
+        except:
+            return None
+
+
     
 class OrderOfProductManager(models.Manager):
 
@@ -73,24 +55,20 @@ class OrderOfProductManager(models.Manager):
     def active(self):
         return self.filter(is_active=True)
     
-    def panding(self):
-        return self.active().filter(dispatch_status = DispatchStatus.PENDING.value).count()
+    def single_order_of_product(self, id):
+        try:
+            return self.active().get(id=id)
+        except:
+            return None
     
-    def underprocess(self):
-        return self.active().filter(dispatch_status = DispatchStatus.UNDER_PROCESS.value).count()
+    def get_list_by_dispatch_status(self, status, count=False):
+
+        if count:
+            return self.active().filter(dispatch_status = status).count()
+        else:
+            return self.active().filter(dispatch_status = status)
+        
+    def get_pending_lr_no(self):
+        return self.active().filter(lr_no=None,invoice_no__isnull=False,transport_compny__isnull=False).values_list('order__date','order__order_no', 'order__customer__name', 'transport_compny', 'invoice_no','dispatch_date').distinct()
     
-    def ready(self):
-        return self.active().filter(dispatch_status = DispatchStatus.READY.value).count()
-    
-    def dispatched(self):
-        return self.active().filter(dispatch_status = DispatchStatus.DISPATCHED.value).count()
-    
-    def total_deleverd(self):
-        return self.active().filter(status = OrderStatus.DELIVERED.value).count()
-    
-    def total_orders_in_transport(self):
-        return self.active().filter(status = OrderStatus.IN_TRANSPORT.value).count()
-    
-    def total_panding_order(self):
-        return self.active().filter(status = OrderStatus.PENDING.value).count()
     

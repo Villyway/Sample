@@ -458,11 +458,13 @@ class SingelBom(View):
     def get(self,request, id):
         product_a = Product.objects.by_code(id)
         bom = product_a.get_bom()
+        
         context={
             "part_no": product_a.part_no,
             "name": product_a.name,
             "code":product_a.code,
             "image":product_a.image,
+            "stock" : product_a.stock,
             "components" : bom,
             
         }

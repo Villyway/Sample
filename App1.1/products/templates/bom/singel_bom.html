@@ -40,6 +40,7 @@ BOM OF {{name}}
                   <th></th>
                   <th></th>
                   <th></th>
+                  <th></th>
                 </tr>
                   
               </thead>
@@ -48,6 +49,7 @@ BOM OF {{name}}
                   <th>Part No.</th>
                   <th>Name</th>
                   <th>QTY</th>
+                  <th>Current<br>Stock</th>
                   <th>Vendor</th>
                   <th>price</th>
                   <th>Total Price</th>
@@ -59,6 +61,7 @@ BOM OF {{name}}
                       <td>{{i.part_no}}</td>
                       <td>{{i.name}}</td>
                       <td>{{i.qty}}</td>
+                      <td>{{i.stock}}</td>
                       <td>{{i.part_no|get_vendor}}</td>
                       <td>{{i.part_no|get_price }}</td>
                       <td>{{i.part_no|get_total_price:i.qty}}</td>
@@ -76,6 +79,7 @@ BOM OF {{name}}
                   <tr>
                     <th>Code:<b>{{code}}</b></th>
                     <th>Name:<b>{{name}}</b></th>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>

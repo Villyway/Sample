@@ -26,9 +26,9 @@ Orders
     
       <!-- Order Statistics -->
       {% if order.order_confirmation == "IN REVIEW" %}
-      <div class="col-12 alert alert-primary">This Order currently in {{order.order_confirmation}}</div>
+      <div class="col-12 alert alert-primary">This Order currently in {{order.order_confirmation}} </div>
       {% elif order.order_confirmation == "HOLD" %}
-      <div class="col-12 alert alert-danger">This Order ON {{order.order_confirmation}}</div>
+      <div class="col-12 alert alert-danger">This Order ON {{order.order_confirmation}} <b>Reason:</b> {{order.order_confirmation_remark}}</div>
       {% endif %}
       <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2 ">
         <div class="card h-100">
@@ -236,14 +236,7 @@ Orders
                             {% if product.lr_no %}
                             {{product.lr_no}}
                             {% else %}
-                            
-                            {% if product.dispatch_status == 'DISPATCHED' and product.status != "DELIVERED" %}
-                                <button>Add Lr</button>
-                            {% elif product.dispatch_status == 'DISPATCHED' and product.status == "DELIVERED" %}
                             -
-                            {% else %}
-                            -
-                            {% endif %}
                             {% endif %}
                         </td>
                         <td>
@@ -307,7 +300,13 @@ Orders
                         <td>-</td>
                         {% endif %}
                         
-                        <td></td>
+                        <td>
+                            {% if product.is_active %}
+                            <a class="btn btn-warning" href="{% url 'orders:order-item-cancle' product.id %}">Cancle</a>
+                            {% else %}
+                                Cancled
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                   </tbody>

@@ -187,6 +187,18 @@
             <a href="{% url 'orders:orders-list' %}" class="menu-link">
               <div data-i18n="Without menu">List</div>
             </a>
+          </li>
+
+          {% comment %} <li class="menu-item" id="orders-confirmation-list">
+            <a href="{% url 'orders:orders-list' %}" class="menu-link">
+              <div data-i18n="Without menu">Order Confirmation</div>
+            </a>
+          </li> {% endcomment %}
+
+          <li class="menu-item" id="orders-of-lr-list">
+            <a href="{% url 'orders:pending-lr-details' %}" class="menu-link">
+              <div data-i18n="Without menu">Panding Lr</div>
+            </a>
           </li>          
                  
         </ul>

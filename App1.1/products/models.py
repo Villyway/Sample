@@ -112,6 +112,7 @@ class Product(Base):
             bom['qty'] = quantity
             bom['part_no'] = component_part_no
             bom['code'] = component_code
+            bom['stock'] = bom_item.component.stock
             components.append(bom)
             a = a + quantity
         components.append(
@@ -121,6 +122,7 @@ class Product(Base):
                 'qty' : a,
                 'part_no': "",
                 'code' : "",
+                'stock':"",
             }
         )
 

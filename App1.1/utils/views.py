@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.core.validators import validate_email, ValidationError
 from django.views.generic import View
 from django.http import JsonResponse
@@ -46,20 +46,56 @@ def get_secured_url(request):
         return "http://"
 
 
-def send_email(obj, message, template, request):
+# def send_email(obj, message, template, request):
+#     message.update({
+#         "domain": get_secured_url(
+#             request) + request.META["HTTP_HOST"]
+#     })
+#     email_message = render_to_string("email/" + template, message)
+#     send_mail(
+#         settings.EMAIL_WELCOME_MESSAGE,
+#         email_message,
+#         settings.DEFAULT_FROM_EMAIL,
+#         [obj.email],
+#         fail_silently=False,
+#         html_message=email_message,
+#     )
+
+# Not able to User verification due to Error : EmailMessage.__init__() got an unexpected keyword argument 'html_message'
+def send_email(obj, message, template, request, email_subject=None, to_email=None, attachment_path=None):
     message.update({
-        "domain": get_secured_url(
-            request) + request.META["HTTP_HOST"]
+        "domain": get_secured_url(request) + request.META["HTTP_HOST"]
     })
+    
+    # Render the email content from the template
     email_message = render_to_string("email/" + template, message)
-    send_mail(
-        settings.EMAIL_WELCOME_MESSAGE,
-        email_message,
-        settings.DEFAULT_FROM_EMAIL,
-        [obj.email],
-        fail_silently=False,
-        html_message=email_message
+
+    if to_email:
+        from_email=to_email
+    else:
+        from_email= settings.DEFAULT_FROM_EMAIL
+    
+    if email_subject:
+        subject = email_subject
+    else:
+        subject = settings.EMAIL_WELCOME_MESSAGE
+
+    # Create an EmailMessage object
+    email = EmailMultiAlternatives(
+        to=[obj.email],
+        from_email= from_email,
+        subject = subject,
     )
+    email.attach_alternative(email_message,"text/html")
+
+    # Attach a file to the email if attachment_path is provided
+    if attachment_path:
+        with open(attachment_path, 'rb') as file:
+            email.attach_file(attachment_path)
+
+    # Send the email
+    email.send()
+
 
 
 # decode data
