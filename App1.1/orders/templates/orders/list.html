@@ -132,7 +132,7 @@ All Orders
                   {% if order.order_confirmation == 'CONFIRMED' %}
                   {{order.order_confirmation}}
                   {% else %}
-                 <button class="btn btn-warning" id="status" data-order-id="{{ order.order_no }}">Confirmed</button>
+                  <button class="btn btn-warning status-btn" data-order-id="{{ order.order_no }}">Confirmed</button>
                 {% endif %}
                 </td>                
                 <td>
@@ -248,20 +248,18 @@ All Orders
 
 <script>
   $(document).ready(function () {
-    // Bind the change event to the dropdown
-    $('#status').click(function () {
-      // Get the data-order-id attribute from the selected option
-      var orderId = $(this).data('order-id');
+      // Bind the click event to the button with class "status-btn"
+      $('.status-btn').click(function () {
+          // Get the data-order-id attribute from the clicked button
+          var orderId = $(this).data('order-id');
 
-      // Update the result div
-      console.log(orderId);
-      $('#basicModal').modal('show');
-      document.getElementById('order-id').value = orderId;
-      
-      
-      // Perform additional actions based on the selected option
-      // Add your logic here
-    });
+          // Update the result div
+          $('#basicModal').modal('show');
+          document.getElementById('order-id').value = orderId;
+
+          // Perform additional actions based on the selected option
+          // Add your logic here
+      });
   });
 </script>
 
