@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from datetime import datetime
+import operator
 
 from django.views.generic import View
 from django.contrib import messages
@@ -20,26 +21,39 @@ from wkhtmltopdf.views import PDFTemplateResponse
 class Dashboard(View):
     template_name = "orders/dashboard.html"
 
+    def get_top_10_products(self):
+        # Aggregate the total quantity ordered for each product
+        top_products = OrderOfProduct.objects.top_products()
+
+        # Order the products by total quantity ordered in descending order
+        top_products = top_products.order_by('-total_quantity_ordered')[:10]
+
+        # Retrieve the actual Product instances for the top products
+        top_product_ids = [item['product'] for item in top_products]
+        top_10_products = Product.objects.filter(id__in=top_product_ids)
+
+        # Add the total quantity ordered to each product in the list
+        for product in top_10_products:
+            product.total_quantity_ordered = next(item['total_quantity_ordered'] for item in top_products if item['product'] == product.id)
+
+        return sorted(top_10_products,key=operator.attrgetter('total_quantity_ordered'),reverse=True)  #sorted(auths, key=operator.attrgetter('last_name'))
+
     def get(self,request):
-        total_order = OrderDetails.objects.orders(count=True)
-        totla_orders_list = OrderDetails.objects.orders()[:10]
-        total_hold_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.HOLD.value, count=True)
-        total_hold_orders_list = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.HOLD.value)[:10]
-        total_confirmed_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.CONFIRMED.value, count=True)
-        total_confirmed_orders_list = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.CONFIRMED.value)[:10]
-        total_in_review_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.IN_REVIEW.value, count=True)
-        total_in_review_orders_list = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.IN_REVIEW.value)[:10]
+        hold_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.HOLD.value,True)
+        confirm_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.CONFIRMED.value,True)
+        today_orders = OrderDetails.objects.today_orders(True)
+        customer_list = Customer.objects.filter(is_active=True).values('name')
+        customers,orders = Customer.objects.customer_wise_total_orders()
+        top_10_products = self.get_top_10_products()
 
         #Order of products.       
         context = {
-            "total_orders":total_order,
-            "totla_orders_list" : totla_orders_list,
-            "total_hold_orders" : total_hold_orders,
-            "total_hold_orders_list":total_hold_orders_list,
-            "total_confirmed_orders":total_confirmed_orders,
-            "total_confirmed_orders_list":total_confirmed_orders_list,
-            "total_in_review_orders" : total_in_review_orders,
-            "total_in_review_orders_list":total_in_review_orders_list,
+            "hold_orders":hold_orders,
+            "confirm_orders" : confirm_orders,
+            "today_orders":today_orders,
+            "customers":customers,
+            "orders" : orders,
+            "top_10_products" :top_10_products,
             
         }
         return render(request,self.template_name,context)

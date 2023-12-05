@@ -4,9 +4,11 @@ from itertools import chain
 
 from django.db import models
 from django.db.models import Q
-from django.db.models import Sum
+from django.db.models import Sum, Count
+
 
 from utils.constants import OrderStatus, DispatchStatus, OrderConfirmation
+
 
 
 class OrdersDetailsManager(models.Manager):
@@ -40,8 +42,14 @@ class OrdersDetailsManager(models.Manager):
             return self.active().get(order_no = order_no)
         except:
             return None
-
-
+        
+    def today_orders(self,count=True):
+        today = datetime.datetime.now().date()
+        if count:
+            return self.filter(date=today).count()
+        else:
+            return self.filter(date=today)
+        
     
 class OrderOfProductManager(models.Manager):
 
@@ -70,5 +78,8 @@ class OrderOfProductManager(models.Manager):
         
     def get_pending_lr_no(self):
         return self.active().filter(lr_no=None,invoice_no__isnull=False,transport_compny__isnull=False).values_list('order__date','order__order_no', 'order__customer__name', 'transport_compny', 'invoice_no','dispatch_date').distinct()
+    
+    def top_products(self):
+        return self.active().values('product').annotate(total_quantity_ordered=Sum('order_qty'))
     
     
