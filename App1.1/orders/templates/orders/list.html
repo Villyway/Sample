@@ -127,7 +127,14 @@ All Orders
               </td>
                 
                 {% comment %} <td>{{order.sales_challan}}</td> {% endcomment %}
-                <td>{{order.order_status}}</td>
+                <td>
+                  {% if order.order_confirmation != 'CONFIRMED' %}
+                  {{order.order_confirmation}}
+                  {% else %}
+                  {{order.order_status}}
+                  {% endif %}
+                  
+                </td>
                 <td>
                   {% if order.order_confirmation == 'CONFIRMED' %}
                   {{order.order_confirmation}}

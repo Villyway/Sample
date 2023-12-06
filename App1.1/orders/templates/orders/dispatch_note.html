@@ -3,7 +3,9 @@
 <head>
     <title>My PDF</title>
     <style>
-       
+        td {
+            text-align: center;
+          }
         
     </style>
 </head>
@@ -20,7 +22,7 @@
     </table>
     <table style="width:100%; border-collapse: collapse;margin-top:5px" border='1' >
         <tr>
-            <th colspan="2">Despatch Note No.:</th>
+            <th colspan="2">DN No.:</th>
             <td colspan="2">{{order_details.order_no}}</td>
             <th colspan="2">Date:</td>
             <td colspan="2">{% now "d-m-Y" %}</td>
@@ -29,7 +31,7 @@
     <table style="width:100%">
         <tr>
                                                                 
-            <th><b>Name:</b></th>
+            <th><b>Customer Name:</b></th>
             <th><b>Contect Person</b></th>
             <th><b>Mobile</b></th>
             <th><b>Email</b></th>
@@ -98,7 +100,7 @@
             <td>Product Code</td>
             <td>Product Description</td>
             <td>Qty. </td>
-            <td>Order Status</td>
+            <td>Dispatch Status</td>
             <td>Delivery Status </td>
             
         </tr>
@@ -109,13 +111,14 @@
             <td>{{i.product.code}}</td>
             <td> {{i.product.name}} </td>
             <td>{{i.order_qty}} {{i.uom}}</td>
-            <td>{{i.status}}</td>
+            <td>{{i.dispatch_status}}</td>
             <td>{{i.status}}</td>
             
         </tr>
         {% endfor %}
     </table>
     <table style="margin-top:50px; border-collapse: collapse; width:100%;" border='1'>
+        <col style="width:200px">
         <tr>
             <th style="text-align:left">Remarks</th>
             <th style="text-align:left">{{order_details.remarks}}</th>
@@ -127,6 +130,7 @@
     </table>
 
     <table width="100%" style="position: absolute; margin-top:50px;">
+        
         <tr>
             <td style="text-align:left">Document Prepared By:</td>
             <td style="text-align:right">Document Approved By:</td>

@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}Reports{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / <b class="text-dark">Reports<b></li>
+{% endblock %}
+
+{% block head %}
+Reports    
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-3 mb-5">
+  <div class="row">
+    <div class="col-12">
+        <div class="row">
+            <div class="mb-3 col-4">
+                <label for="defaultSelect" class="form-label">Time Line</label>
+                <select id="time-line-select" class="form-select">
+                  <option>Default select</option>
+                  {% comment %} <option value="Yearly">Yearly</option> {% endcomment %}
+                  {% comment %} <option value="Monthly">Monthly</option> {% endcomment %}
+                  <option value="DAILY">Daily</option>
+                  <option value="TODAY">Today</option>
+                </select>
+            </div>
+            {% comment %} <div class="mb-3 col-4" id="report-type-select">
+                <label for="defaultSelect" class="form-label">Report Type</label>
+                <select id="defaultSelect" class="form-select">
+                  <option>Default select</option>
+                  <option value="Received">Received Item</option>
+                  <option value="Issued">Issued Item</option>
+                  <option value="All">Both</option>
+                  <option value="current">Current Stock</option>
+                </select>
+            </div> {% endcomment %}
+        </div>
+        {% comment %} <div class="row" id ="yearly-select">
+            <div class="mb-3 col-4">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting year</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="start-year-input" />
+                </div>
+            </div>
+            <div class="mb-3 col-4">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending year</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="end-year-input" />
+                </div>
+            </div>
+        </div>
+        <div class="row" id="monthly-select">
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Month</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="start-month-input" />
+                </div>
+            </div>
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending month</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="month" value="" id="end-month-input" />
+                </div>
+            </div>
+        </div> {% endcomment %}
+        <div class="row" id="custom-select">
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Date</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="date" value="" id="start-date-input" />
+                </div>
+            </div>
+            <div class="mb-3 col-4 row">
+                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending Date</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="date" value="" id="end-date-input" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="mb-3 col-4 row">
+            
+            <div class="col-md-10">
+              <butoon type="submit" id="get-report" class="btn btn-success ft-right">Submit</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card" id="report-card">
+        <div class="table-responsive text-nowrap">
+          <a href="" id="export-link"><button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button><a>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Part<br> No</th>
+                <th>Date-Time</th>
+                <th>Old-Stock</th>
+                <th>Issued</th>
+                <th>Received</th>
+                <th>Current Stock</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0" id="data-stock-body">
+              <tr>
+                <td colspan=7 align="center">No Data Availabel</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+  <div class="row container-fluid mt-2">
+ 
+    {% if products.paginator.num_pages > 1 %}    
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
+</div>
+</div>
+<div class="mt-5"></div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    $("#report-type-select").hide();
+    $("#yearly-select").hide();
+    $("#monthly-select").hide();
+    $("#custom-select").hide();
+    $('#inventory-menu').addClass('active open');
+    $('#stock-report').addClass('active')
+</script>
+<script>
+    $("#time-line-select").change(function () {
+        $("#report-type-select").hide();
+        $("#yearly-select").hide();
+        $("#monthly-select").hide();
+        $("#custom-select").hide();
+        var id = $(this).find(":selected").val();
+        if (id=="Yearly"){
+            $("#report-type-select").show();
+            $("#yearly-select").show();
+        }
+        else if (id == "Monthly"){
+            $("#report-type-select").show();
+            $("#monthly-select").show();
+        }
+        else if (id == "DAILY"){
+            $("#report-type-select").show();
+            $("#custom-select").show();
+        }
+        else if (id == "Today"){
+            $("#report-type-select").show();
+            $("#yearly-select").hide();
+            $("#monthly-select").hide();
+            $("#custom-select").hide();
+        }
+    })
+    $("#get-report").click(function(){
+
+      var select = document.getElementById("time-line-select");
+      var start = document.getElementById("start-date-input");
+      var end = document.getElementById("end-date-input");
+      var selectedOption = select.options[select.selectedIndex];
+      var selectedValue = selectedOption.value;
+      $('#export-link').attr('href', '/inventry/export-report/?start=' + start.value + "&end=" + end.value + "&category="+selectedValue)
+      $.ajax({
+        url: '/inventry/search-report/',
+        type: 'GET',
+        data: { 'start': start.value, "end":end.value, "category":selectedValue},
+        success: function (data) {
+            
+            $('#data-stock-body').html(data.data);
+        }
+    });
+    
+    
+    })
+    
+    
+</script>
+{% endblock js %}
