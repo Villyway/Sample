@@ -60,11 +60,9 @@ class SimpleStockUpdteManager(models.Manager):
             return False
 
     def today_report(self):
-        today = datetime.today()
-        year = today.year
-        month = today.month
-        day = today.day
-        return self.active().filter(created_at__day=day)
+        today = datetime.now().date()
+        print(today)
+        return self.active().filter(created_at__date=today)
     
     def date_to_date(self,dates):
         try:

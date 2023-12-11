@@ -5,7 +5,7 @@ from .views import (
                      Dashboard, CreateOrders, OrderList,
                      SingelOrderView, ChangeDispatchStatusOfOrderOfChild,
                      ChangeDeliveryStatus, OrderDispatchProcess, ExportDispatchNote, AddLRNo,
-                     ChangeOrderConfirmationStatus, OrderOfProductCancleation
+                     ChangeOrderConfirmationStatus, OrderOfProductCancleation, ExportData
                     )
 
 app_name = "orders"
@@ -22,5 +22,6 @@ urlpatterns = [
     path("pending-lr-details", login_required(AddLRNo.as_view()), name='pending-lr-details'),
     path("<slug:id>/change-order-confirmation", login_required(ChangeOrderConfirmationStatus.as_view()), name='change-order-confirmation'),
     path("<slug:id>/order-of-item-cancle", login_required(OrderOfProductCancleation.as_view()), name='order-item-cancle'),
+    path("export-report/", login_required(ExportData.as_view()), name='export-report'),
     
 ]

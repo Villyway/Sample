@@ -7,7 +7,7 @@ import operator
 from django.views.generic import View
 from django.contrib import messages
 from django.db import transaction
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 from utils.views import get_secured_url, is_ajax, generate_order_dispatch_no
 from customers.models import Customer
@@ -15,6 +15,7 @@ from products.models import Product
 from orders.models import OrderDetails, OrderOfProduct
 from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles
 from utils.models import Address
+from orders.resources import OrderReport
 
 from wkhtmltopdf.views import PDFTemplateResponse
 
@@ -24,6 +25,7 @@ class Dashboard(View):
     def get_top_10_products(self):
         # Aggregate the total quantity ordered for each product
         top_products = OrderOfProduct.objects.top_products()
+        print(top_products)
 
         # Order the products by total quantity ordered in descending order
         top_products = top_products.order_by('-total_quantity_ordered')[:10]
@@ -393,7 +395,23 @@ class OrderOfProductCancleation(View):
                         self.request) + self.request.META["HTTP_HOST"] + '/orders/'+ str(order_of_item.order.id) +'/order-details')
 
 
+class ExportData(View):
     
+    def get(self, request):
+        # start_date = request.GET.get("start", None)
+        # end_date = request.GET.get("end", None)
+        # category = request.GET.get("category", None)
+        
+        queryset = OrderOfProduct.objects.all()
+        print(queryset)
+        order_resourse = OrderReport()
+        
+        dataset = order_resourse.export(queryset)
+        response = HttpResponse(dataset.csv,content_type="text/csv")
+        time_name = datetime.now().strftime("%Y%m%d-%H%M%S")
+        response['Content-Disposition'] = 'attachment; filename="orders_report'+ time_name + '".csv"'
+        return response
+
     
 
 
