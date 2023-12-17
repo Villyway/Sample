@@ -8,6 +8,7 @@ from django.views.generic import View
 from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse, HttpResponse
+from django.template.loader import render_to_string
 
 from utils.views import get_secured_url, is_ajax, generate_order_dispatch_no
 from customers.models import Customer
@@ -394,6 +395,12 @@ class OrderOfProductCancleation(View):
         return redirect(get_secured_url(
                         self.request) + self.request.META["HTTP_HOST"] + '/orders/'+ str(order_of_item.order.id) +'/order-details')
 
+class OrdersReport(View):
+    template_name = "orders/report.html"
+
+    def get(self, request):
+        return render(request,self.template_name)
+    
 
 class ExportData(View):
     
@@ -403,7 +410,6 @@ class ExportData(View):
         # category = request.GET.get("category", None)
         
         queryset = OrderOfProduct.objects.all()
-        print(queryset)
         order_resourse = OrderReport()
         
         dataset = order_resourse.export(queryset)
@@ -412,6 +418,34 @@ class ExportData(View):
         response['Content-Disposition'] = 'attachment; filename="orders_report'+ time_name + '".csv"'
         return response
 
+
+class OrdersCustomReportResponse(View):
+    template_name = "components/search-report.html"
+
+    def get(self,request):
+        try:
+            start_date = request.GET.get("start", None)
+            end_date = request.GET.get("end", None)
+            category = request.GET.get("category", None)
+
+            if is_ajax(request):
+                products = OrderOfProduct.objects.get_pending_orders()
+
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"ordersofproducts": products}
+                )
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("products:list")
+        except Exception as e:
+            print(str(e))
+            return JsonResponse({"error": str(e)})
     
 
 

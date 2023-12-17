@@ -82,4 +82,7 @@ class OrderOfProductManager(models.Manager):
     def top_products(self):
         return self.active().values('product').annotate(total_quantity_ordered=Sum('order_qty'))
     
+    def get_pending_orders(self):
+        return self.active().filter(~Q(dispatch_status = DispatchStatus.DISPATCHED.value))
+    
     

@@ -1,0 +1,63 @@
+
+    {% regroup ordersofproducts by order.order_no as grouped_orders %}
+    {% for group in grouped_orders %}
+      {% for product in group.list %}
+        <tr>
+          {% if forloop.first %}
+            <th rowspan="{{ group.list|length }}">{{ forloop.parentloop.counter }}</th>
+            <th rowspan="{{ group.list|length }}">{{ group.grouper }}</th>
+            {% comment %} <th rowspan="{{ group.list|length }}">{{ product.created_at|date:"d M, Y" }}</th> {% endcomment %}
+            <th rowspan="{{ group.list|length }}">{{ product.order.customer.name }}</th>
+          {% endif %}
+          <td>{{ product.created_at|date:"d M, Y" }}</td>
+          <td>{{ product.product.code }}</td>
+          <td>{{ product.product.name }}</td>
+          <td>
+            {% if product.product.specification %}
+              {{ product.product.specification }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>{{ product.order_qty }}</td>
+          <td>{{ product.uom }}</td>
+          <td>{{ product.packing_type }}</td>
+          <td>
+            {% if product.order.order_confirmation == 'CONFIRMED' %}
+              {{ product.order.order_status }}
+            {% else %}
+              {{ product.order.order_confirmation }}
+            {% endif %}
+          </td>
+          <td>
+            {% if product.dispatch_status == "DISPATCHED"  %}
+              {{ product.dispatch_date }}
+            {% else %}
+              {{ product.dispatch_status }}
+            {% endif %}
+          </td>
+          <td>
+            {% if product.transport_compny %}
+              {{ product.transport_compny }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if product.lr_no %}
+              {{ product.lr_no }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if product.invoice_no %}
+              {{ product.invoice_no }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    {% endfor %}    
+

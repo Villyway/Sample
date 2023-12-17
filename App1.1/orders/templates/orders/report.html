@@ -10,7 +10,7 @@
 
 {% block next_page %}
 <li class="breadcrumb-item text-muted active" aria-current="page"><a
-  href="{% url 'inventry:inventry-dashboard' %}">Inventory</a> / <b class="text-dark">Reports<b></li>
+  href="{% url 'inventry:inventry-dashboard' %}">Orders</a> / <b class="text-dark">Reports<b></li>
 {% endblock %}
 
 {% block head %}
@@ -29,10 +29,15 @@ Reports
                   <option>Default select</option>
                   {% comment %} <option value="Yearly">Yearly</option> {% endcomment %}
                   {% comment %} <option value="Monthly">Monthly</option> {% endcomment %}
-                  <option value="DAILY">Daily</option>
+                  <option value="CUSTOM">Custom</option>
                   <option value="TODAY">Today</option>
                 </select>
             </div>
+            <div class="mb-3 col-4">
+              <label for="defaultSelect" class="form-label">Report Category</label>
+              
+          </div>
+          
             {% comment %} <div class="mb-3 col-4" id="report-type-select">
                 <label for="defaultSelect" class="form-label">Report Type</label>
                 <select id="defaultSelect" class="form-select">
@@ -101,17 +106,24 @@ Reports
       <div class="card" id="report-card">
         <div class="table-responsive text-nowrap">
           <a href="" id="export-link"><button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button><a>
-          <table class="table">
+          <table class="table text-center">
             <thead>
               <tr>
                 <th>No</th>
-                {% comment %} <th>Code</th> {% endcomment %}
-                <th>Part<br> No</th>
-                <th>Date-Time</th>
-                <th>Old-Stock</th>
-                <th>Issued</th>
-                <th>Received</th>
-                <th>Current Stock</th>
+                <th>Order<br> No</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Code</th>
+                <th>Product</th>
+                <th>Specification</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Packaging <br/>Type</th>
+                <th>Status/date</th>
+                <th>Dispatch/Date</th>
+                <th>Transport</th>
+                <th>Lr. No</th>
+                <th>Invoice. No</th> 
               </tr>
             </thead>
             <tbody class="table-border-bottom-0" id="data-stock-body">
@@ -121,7 +133,6 @@ Reports
             </tbody>
           </table>
         </div>
-        
       </div>
       <!--/ Basic Bootstrap Table -->
     </div>
@@ -143,8 +154,8 @@ Reports
     $("#yearly-select").hide();
     $("#monthly-select").hide();
     $("#custom-select").hide();
-    $('#inventory-menu').addClass('active open');
-    $('#stock-report').addClass('active')
+    $('#orders-menu').addClass('active open');
+    $('#order-report').addClass('active')
 </script>
 <script>
     $("#time-line-select").change(function () {
@@ -161,7 +172,7 @@ Reports
             $("#report-type-select").show();
             $("#monthly-select").show();
         }
-        else if (id == "DAILY"){
+        else if (id == "CUSTOM"){
             $("#report-type-select").show();
             $("#custom-select").show();
         }
@@ -181,7 +192,7 @@ Reports
       var selectedValue = selectedOption.value;
       $('#export-link').attr('href', '/inventry/export-report/?start=' + start.value + "&end=" + end.value + "&category="+selectedValue)
       $.ajax({
-        url: '/inventry/search-report/',
+        url: '/orders/search-report/',
         type: 'GET',
         data: { 'start': start.value, "end":end.value, "category":selectedValue},
         success: function (data) {

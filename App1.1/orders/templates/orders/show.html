@@ -174,8 +174,11 @@ Orders
 
             <!-- Basic Bootstrap Table -->
             <div class="card">
-              
-              
+                {% if order.order_confirmation == "CONFIRMED" %}
+                <div class="card-header">
+                    <button class="btn btn-primary float-end" onclick="generatePDF()">Production Intimation</button>
+                </div>
+                {% endif %}
               {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
               <div class="table-responsive text-nowrap" >
                 <table class="table">
@@ -195,6 +198,7 @@ Orders
                         <th>Dispatch<br/> Status</th>
                         <th>Order <br/> Status</th>
                         <th>Action</th>
+                        
                         
                     </tr>
                     
@@ -299,14 +303,17 @@ Orders
                         {% else %}
                         <td>-</td>
                         {% endif %}
-                        
+                        {% if product.status != 'DELIVERED' %}
                         <td>
+                            
                             {% if product.is_active %}
                             <a class="btn btn-warning" href="{% url 'orders:order-item-cancle' product.id %}">Cancle</a>
                             {% else %}
                                 Cancled
                             {% endif %}
+                            
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -326,7 +333,7 @@ Orders
   
   <!-- / Content -->
   <div class="col-12">
-    <div class="col-lg-4 col-md-6 float-end">
+    <div class="col-lg-4 col-md-6 float-end"></div>
         
         <div class="mt-3">
           <!-- Button trigger modal -->
@@ -438,6 +445,49 @@ Orders
         </div>
       </div>
 </div>
+<div class="container mt-5" style="display: none;">
+    <table class="table table-bordered" id="production">
+      <thead>
+        <tr>
+            <th colspan="6" class="text-center" style="font-size:20px;text-align:center">Production Intimation</th>
+            <th colspan="4">{% now "l, j F, Y g:i A" %}.</th>
+        </tr>
+        <tr>
+          <th scope="col">Sr No</th>
+          <th scope="col">Order Date</th>
+          <th scope="col">Order No</th>
+          <th scope="col">Customer Name</th>
+          <th scope="col">Product Code</th>
+          <th scope="col">Description</th>
+          <th scope="col">Specification</th>
+          <th scope="col">Qty</th>
+          <th scope="col">Unit</th>
+          <th scope="col">Packaging <br>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Sample data, replace with your actual data -->
+        {% for product in order.orderofproduct_set.all|dictsort:'created_at' %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{product.created_at|date:"d M, Y"}}</td>
+          <td>{{product.order.order_no}}</td>
+          <td>{{product.order.customer.name}}</td>
+          <td>{{product.product.code}}</td>
+          <td>{{product.product.name}}</td>
+          <td>{{product.product.specification}}</td>
+          <td>{{product.order_qty}}</td>
+          <td>{{product.uom}}</td>
+          <td>{{product.packing_type}} <input type="checkbox" id="" name="" value=""></td>
+        </tr>
+        {% endfor %}
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+
+    
+  </div>
+  
 {% endblock content %}
 
 {% block js %}
@@ -550,6 +600,140 @@ Orders
         }
     });
 </script>
+{% comment %} <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script> {% endcomment %}
+{% comment %} <script>
+    function generatePDF() {
+      var element = document.getElementById('production');
+
+      // Define the options for the PDF
+      var options = {
+        margin: 10,
+        filename: 'order_table.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // Generate the PDF
+      html2pdf(element, options);
+    }
+  </script> {% endcomment %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+<!-- Include jsPDF AutoTable plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+
+{% comment %} <script>
+  function generatePDF() {
+    // Ensure that jsPDF is accessible globally
+    const { jsPDF } = window.jspdf;
+
+    // Create a jsPDF instance
+    const doc = new jsPDF();
 
 
+    // Convert HTML table to PDF using AutoTable plugin
+    doc.autoTable(
+        { 
+            html: '#production' 
+        }
+    );
+
+    // Save the PDF
+    doc.save('table_to_pdf.pdf');
+  }
+</script> {% endcomment %}
+{% comment %} <script>
+    function generatePDF() {
+      // Ensure that jsPDF is accessible globally
+      const { jsPDF } = window.jspdf;
+  
+      // Create a jsPDF instance
+      const doc = new jsPDF();
+  
+      // Define title and header content (modify as needed)
+      const title = 'Krunal Industries';
+  
+      // Add title manually using didDrawPage event
+      doc.autoTable({
+        html: '#production',  // Specify the HTML table
+        didDrawPage: function (data) {
+          // Add title above the table
+          doc.setFontSize(18);
+          doc.text(title, data.settings.margin.left, 10);
+        }
+      });
+  
+      // Save the PDF
+      doc.save('table_with_title.pdf');
+    }
+  </script> {% endcomment %}
+  {% comment %} <script>
+    function generatePDF() {
+      // Ensure that jsPDF is accessible globally
+      const { jsPDF } = window.jspdf;
+  
+      // Create a jsPDF instance
+      const doc = new jsPDF();
+  
+      // Define titles and header content (modify as needed)
+      const title1 = 'Krunal Industries';
+      // const title2 = 'Table Title 2';
+      const header = [['Header 1', 'Header 2', 'Header 3']];
+  
+      // Add titles manually using didDrawPage event
+      doc.autoTable({
+        head: header,  // Add the header
+        html: '#production',  // Specify the HTML table
+        didDrawPage: function (data) {
+          // Add title1 centered above the table
+          doc.setFontSize(18);
+          const title1Width = doc.getStringUnitWidth(title1) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+          const xOffset1 = (doc.internal.pageSize.width - title1Width) / 2;
+          doc.text(title1, xOffset1, 10);
+  
+          // Add title2 above the table
+          doc.setFontSize(14);
+         // doc.text(title2, data.settings.margin.left, 20);
+        }
+      });
+  
+      // Save the PDF
+      doc.save('table_with_titles.pdf');
+    }
+  </script> {% endcomment %}
+
+  <script>
+    function generatePDF() {
+      // Ensure that jsPDF is accessible globally
+      const { jsPDF } = window.jspdf;
+  
+      // Create a jsPDF instance with landscape orientation
+      const doc = new jsPDF({ orientation: 'landscape' });
+  
+      // Define titles and header content (modify as needed)
+      const title1 = 'Krunal Industries';
+  
+      // Add titles manually using didDrawPage event
+      doc.autoTable({
+        html: '#production',  // Specify the HTML table
+        didDrawPage: function (data) {
+          // Add title1 centered above the table
+          doc.setFontSize(18);
+          const title1Width = doc.getStringUnitWidth(title1) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+          const xOffset1 = (doc.internal.pageSize.width - title1Width) / 2;
+          doc.text(title1, xOffset1, 10);
+  
+          // Add title2 above the table
+          doc.setFontSize(14);
+          // doc.text(title2, data.settings.margin.left, 20);
+        }
+        
+      });
+  
+      // Save the PDF
+      doc.save('table_with_titles_landscape.pdf');
+    }
+  </script>
+  
 {% endblock js %}
