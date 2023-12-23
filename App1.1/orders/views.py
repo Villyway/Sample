@@ -17,6 +17,7 @@ from orders.models import OrderDetails, OrderOfProduct
 from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles
 from utils.models import Address
 from orders.resources import OrderReport
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from wkhtmltopdf.views import PDFTemplateResponse
 
@@ -135,7 +136,24 @@ class OrderList(View):
         in_review_orders = OrderDetails.objects.orders_filtered_by_confirmation(OrderConfirmation.IN_REVIEW.value)
         # Holding_orders = OrderDetails.objects.orders_in_hold()
         orders = OrderDetails.objects.orders()
-        context = {"orders":orders,"confirm_status": [i.value for i in OrderConfirmation],}
+        results_per_page = 10
+        page = request.GET.get('page', 1)
+        paginator = Paginator(orders, results_per_page)
+        try:
+            orders = paginator.page(page)
+        except PageNotAnInteger:
+            orders = paginator.page(1)
+        except EmptyPage:
+            orders = paginator.page(paginator.num_pages)
+        
+            
+        context = {
+            "orders": orders,
+            "data" : [page,results_per_page],
+            "confirm_status": [i.value for i in OrderConfirmation],
+            "order_status": [i.value for i in OrderStatus],
+            "order_dispatch_status": [i.value for i in DispatchStatus],
+            }
         return render(request,self.template_name, context)
     
     def post(self,request):
@@ -409,12 +427,12 @@ class ExportData(View):
         # end_date = request.GET.get("end", None)
         # category = request.GET.get("category", None)
         
-        queryset = OrderOfProduct.objects.all()
+        queryset = OrderOfProduct.objects.get_pending_orders()
         order_resourse = OrderReport()
         
         dataset = order_resourse.export(queryset)
         response = HttpResponse(dataset.csv,content_type="text/csv")
-        time_name = datetime.now().strftime("%Y%m%d-%H%M%S")
+        time_name = datetime.now().strftime("%Y%m%d_%H_%M_%S")
         response['Content-Disposition'] = 'attachment; filename="orders_report'+ time_name + '".csv"'
         return response
 
@@ -447,6 +465,57 @@ class OrdersCustomReportResponse(View):
             print(str(e))
             return JsonResponse({"error": str(e)})
     
+
+# OrderSearch
+class OrderSearch(View):
+    template_name = "components/search-orders.html"
+
+    def get(self, request):
+        # try:
+        if is_ajax(request):
+            query = request.GET.get("query", None)
+            start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
+            end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
+            if start_date != '':
+                start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            else:
+                start_date = OrderDetails.objects.first().date
+            
+            if end_date != '':
+                end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            else:
+                end_date = OrderDetails.objects.last().date
+
+            dispatch_status = request.GET.get("dispatch_status", None)
+            order_status = request.GET.get("order_status", None)
+            orders = OrderDetails.objects.search(query, [start_date,end_date], dispatch_status, order_status)
+            results_per_page = 100
+            page = request.GET.get('page', 1)
+            paginator = Paginator(orders, results_per_page)
+            try:
+                orders = paginator.page(page)
+            except PageNotAnInteger:
+                orders = paginator.page(1)
+            except EmptyPage:
+                orders = paginator.page(paginator.num_pages)
+            html = render_to_string(
+                template_name=self.template_name,
+                context={"orders": orders}
+            )
+            data_dict = {
+                "data": html
+            }
+            return JsonResponse(data=data_dict, safe=False)
+
+            # if request.META.get('HTTP_REFERER'):
+                # return redirect(request.META.get('HTTP_REFERER'))
+            # else:
+                # return redirect("orders:orders-list")
+        # except Exception as e:
+            # return JsonResponse({"error": str(e)})
+
+
+
 
 
     # def post(self, request):

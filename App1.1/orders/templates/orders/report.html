@@ -27,56 +27,14 @@ Reports
                 <label for="defaultSelect" class="form-label">Time Line</label>
                 <select id="time-line-select" class="form-select">
                   <option>Default select</option>
-                  {% comment %} <option value="Yearly">Yearly</option> {% endcomment %}
-                  {% comment %} <option value="Monthly">Monthly</option> {% endcomment %}
                   <option value="CUSTOM">Custom</option>
                   <option value="TODAY">Today</option>
                 </select>
             </div>
             <div class="mb-3 col-4">
               <label for="defaultSelect" class="form-label">Report Category</label>
-              
           </div>
-          
-            {% comment %} <div class="mb-3 col-4" id="report-type-select">
-                <label for="defaultSelect" class="form-label">Report Type</label>
-                <select id="defaultSelect" class="form-select">
-                  <option>Default select</option>
-                  <option value="Received">Received Item</option>
-                  <option value="Issued">Issued Item</option>
-                  <option value="All">Both</option>
-                  <option value="current">Current Stock</option>
-                </select>
-            </div> {% endcomment %}
         </div>
-        {% comment %} <div class="row" id ="yearly-select">
-            <div class="mb-3 col-4">
-                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting year</label>
-                <div class="col-md-10">
-                  <input class="form-control" type="month" value="" id="start-year-input" />
-                </div>
-            </div>
-            <div class="mb-3 col-4">
-                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending year</label>
-                <div class="col-md-10">
-                  <input class="form-control" type="month" value="" id="end-year-input" />
-                </div>
-            </div>
-        </div>
-        <div class="row" id="monthly-select">
-            <div class="mb-3 col-4 row">
-                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Month</label>
-                <div class="col-md-10">
-                  <input class="form-control" type="month" value="" id="start-month-input" />
-                </div>
-            </div>
-            <div class="mb-3 col-4 row">
-                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending month</label>
-                <div class="col-md-10">
-                  <input class="form-control" type="month" value="" id="end-month-input" />
-                </div>
-            </div>
-        </div> {% endcomment %}
         <div class="row" id="custom-select">
             <div class="mb-3 col-4 row">
                 <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Date</label>
@@ -105,7 +63,7 @@ Reports
       <!-- Basic Bootstrap Table -->
       <div class="card" id="report-card">
         <div class="table-responsive text-nowrap">
-          <a href="" id="export-link"><button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button><a>
+          <a href="{% url 'orders:export-report' %}" id="export-link"><button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button><a>
           <table class="table text-center">
             <thead>
               <tr>
@@ -190,7 +148,7 @@ Reports
       var end = document.getElementById("end-date-input");
       var selectedOption = select.options[select.selectedIndex];
       var selectedValue = selectedOption.value;
-      $('#export-link').attr('href', '/inventry/export-report/?start=' + start.value + "&end=" + end.value + "&category="+selectedValue)
+      $('#export-link').attr('href', '/orders/export-report/?start=' + start.value + "&end=" + end.value + "&category="+selectedValue)
       $.ajax({
         url: '/orders/search-report/',
         type: 'GET',

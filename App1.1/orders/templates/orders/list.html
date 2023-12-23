@@ -33,9 +33,45 @@ All Orders
       </div>
     </div> {% endcomment %}
 
-    {% comment %} <div class="col-4">
-      <input type="text" class="form-control" id="id_search" name="search" placeholder="Search" />      
-    </div> {% endcomment %}
+    <div class="col-2">
+      <label>Start Date</label>
+      <input type="date" class="form-control mb-3" id="startDate" name="start_date" />      
+    </div>
+    <div class="col-2">
+      <label>End Date</label>
+      <input type="date" class="form-control mb-3" id="endDate" name="end_date" />      
+    </div>
+    
+    <div class="col-2">
+      <label>Order Dispatch Status</label>
+      <select class="form-select" id="OrderDispatchStatus">
+        <option value="choose" selected>Choose...</option>
+        {% for status in order_dispatch_status %}
+        <option value="{{status}}">{{status}}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-2">
+      <label>Order Status</label>
+      <select class="form-select" id="OrderStatus">
+        <option value="choose" selected>Choose...</option>
+        {% for status in order_status %}
+        <option value="{{status}}">{{status}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    
+
+    <div class="col-3">
+      <label>Search Input</label>
+      <input type="text" class="form-control mb-3" id="id_search" name="search" placeholder="Search" />      
+    </div>
+
+    <div class="col-1">
+      
+      <button type="submit" class="form-control mt-4 btn-success" id="btn-search" name="search" placeholder="Search" />Search</button>      
+    </div>
     
     <div class="col-12">
 
@@ -44,14 +80,14 @@ All Orders
         
         
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
-        <div class="table-responsive text-nowrap text-center" id="id_products_list">
+        <div class="table-responsive text-nowrap text-left">
           <table class="table">
             <thead>
               <tr>
                 <th>No</th>
                 {% comment %} <th>Code</th> {% endcomment %}
-                <th>Date</th>
                 <th>Order No</th>
+                <th>Date</th>
                 <th>Customer Name</th>
                 <th>Product</th>
                 {% comment %} <th>sales_challan</th> {% endcomment %}
@@ -61,7 +97,7 @@ All Orders
               </tr>
               
             </thead>
-            <tbody class="table-border-bottom-1">
+            <tbody class="table-border-bottom-1" id="id_products_list">
               {% for order in orders %}
               {% if order.order_confirmation == "IN REVIEW" %}
               <tr class=" alert-primary" >
@@ -74,8 +110,8 @@ All Orders
                 <td>
                 {{ forloop.counter }}
                 </td>
+                <td><a href="{% url 'orders:order-details' order.id %}">{{order.order_no}}</a></td>
                 <td>{{order.date|date:"d M, Y"}}</td>
-                <td>{{order.order_no}}</td>
                 <td>{{order.customer.name}}</td>
                 <td>
                   <div class="accordion-item">
@@ -157,6 +193,20 @@ All Orders
               {% endfor %}
 
             </tbody>
+            <tfoot>
+              <tr>
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                <th>Order No</th>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>Product</th>
+                {% comment %} <th>sales_challan</th> {% endcomment %}
+                <th>Status</th>              
+                <th>Confirmation <br>Status</th>                
+                <th>Action</th>
+              </tr>
+            </tfoot>
           </table>
           
         </div>
@@ -167,8 +217,8 @@ All Orders
   </div>
   <div class="row container-fluid mt-2">
  
-    {% if products.paginator.num_pages > 1 %}    
-    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% if orders.paginator.num_pages > 1 %}    
+    {% include 'components/pagination.html' with items=orders paginator=orders.paginator %}
     {% endif %}
 </div>
 </div>
@@ -235,21 +285,24 @@ All Orders
 </script>
 
 <script>
-  $(document).on("click", "#id_search", function () {
-    var select = document.getElementById("inputGroupSelect01");
-    var selectedOption = select.options[select.selectedIndex];
-    var selectedValue = selectedOption.value;
+  $(document).on("click", "#btn-search", function () {
+    var startDate = document.getElementById("startDate").value //endDate, OrderDispatchStatus, OrderStatus, id_search
+    var endDate = document.getElementById("endDate").value
+    var dispatchStatus = document.getElementById("OrderDispatchStatus")
+    var orderStatus = document.getElementById("OrderStatus")
+    var queryInput = document.getElementById("id_search").value
+    var selectDispatch = dispatchStatus.options[dispatchStatus.selectedIndex].value
+    var selectStatus = orderStatus.options[orderStatus.selectedIndex].value
+    console.log(selectStatus,selectDispatch)
     
-    var query = this.value;
-    // var category = $()
-    // $.ajax({
-    //     url: '/products/search/',
-    //     type: 'GET',
-    //     data: { 'query': query, "category":selectedValue},
-    //     success: function (data) {
-    //         $('#id_products_list').html(data.data);
-    //     }
-    // });
+    $.ajax({
+        url: '/orders/search/',
+        type: 'GET',
+        data: { 'query': queryInput, "dispatch_status":selectDispatch, "order_status":selectStatus, "start":startDate, "end":endDate},
+        success: function (data) {
+            $('#id_products_list').html(data.data);
+        }
+    });
 });
 </script>
 

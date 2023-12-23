@@ -5,7 +5,8 @@ from .views import (
                      Dashboard, CreateOrders, OrderList,
                      SingelOrderView, ChangeDispatchStatusOfOrderOfChild,
                      ChangeDeliveryStatus, OrderDispatchProcess, ExportDispatchNote, AddLRNo,
-                     ChangeOrderConfirmationStatus, OrderOfProductCancleation, ExportData, OrdersReport, OrdersCustomReportResponse
+                     ChangeOrderConfirmationStatus, OrderOfProductCancleation, ExportData, OrdersReport, OrdersCustomReportResponse,
+                     OrderSearch
                     )
 
 app_name = "orders"
@@ -25,6 +26,7 @@ urlpatterns = [
     path("export-report/", login_required(ExportData.as_view()), name='export-report'),
     path("report/", login_required(OrdersReport.as_view()), name='orders-report'),
     path("search-report/", login_required(OrdersCustomReportResponse.as_view()), name='search-report'),
+    path("search/", login_required(OrderSearch.as_view()), name='search-orders'),
 
     
 ]

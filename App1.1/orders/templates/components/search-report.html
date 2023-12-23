@@ -5,7 +5,7 @@
         <tr>
           {% if forloop.first %}
             <th rowspan="{{ group.list|length }}">{{ forloop.parentloop.counter }}</th>
-            <th rowspan="{{ group.list|length }}">{{ group.grouper }}</th>
+            <th rowspan="{{ group.list|length }}"><a href="{% url 'orders:order-details' product.order.id %}">{{ group.grouper }}</a></th>
             {% comment %} <th rowspan="{{ group.list|length }}">{{ product.created_at|date:"d M, Y" }}</th> {% endcomment %}
             <th rowspan="{{ group.list|length }}">{{ product.order.customer.name }}</th>
           {% endif %}
