@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'vendors.apps.VendorsConfig',
     'inventry.apps.InventryConfig',
-    # 'inventory.apps.InventoryConfig',
+    # 'inventory.apps.InventoryConfig', 
     'orders.apps.OrdersConfig',
     'customers.apps.CustomersConfig',
 ]
@@ -92,27 +92,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': os.environ.get('DB', 'Enventry'),
-        # 'NAME': os.environ.get('DB', 'inventory'),
-        'NAME': os.environ.get('DB', 'latestData'), #latestData, inventory1, Asia
-        # 'NAME': os.environ.get('DB', 'teste'),
-        'USER': os.environ.get('DBUSER', 'rupesh'),
-        'PASSWORD': os.environ.get('DBPASSWORD', 'Rupesh@123'),
-        'HOST': 'localhost',
+        'NAME': os.environ.get('DB', 'erp2'), #latestData, inventory1, Asia
+        'USER': os.environ.get('DBUSER', 'krunalind_db'),
+        'PASSWORD': os.environ.get('DBPASSWORD', '#Basuri$Krunal%123'),
+        'HOST': os.environ.get('HOSTURL', 'database-1.cpgc4m8awbs0.us-east-1.rds.amazonaws.com'),
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

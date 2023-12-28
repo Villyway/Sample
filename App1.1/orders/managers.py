@@ -19,6 +19,13 @@ class OrdersDetailsManager(models.Manager):
     def active(self):
         return self.filter(is_active=True)
     
+    def get_order(self,id):
+        try:
+            return self.get(id=id)
+        except:
+            return None
+        
+    
     def orders(self, count=False):
         if count:
             return self.active().count()
@@ -101,7 +108,7 @@ class OrdersDetailsManager(models.Manager):
             base_queryset = base_queryset.filter(q_objects)
 
         if dispatch_status != 'choose':
-            base_queryset = base_queryset.filter(dispatch_status=dispatch_status)
+            base_queryset = base_queryset.filter(Q(dispatch_status=dispatch_status) | Q(orderofproduct__dispatch_status=dispatch_status))
 
         if order_status != 'choose':
             base_queryset = base_queryset.filter(order_status=order_status)
@@ -185,5 +192,6 @@ class OrderOfProductManager(models.Manager):
     
     def get_pending_orders(self):
         return self.active().filter(~Q(status = OrderStatus.DELIVERED.value))
+    
     
     

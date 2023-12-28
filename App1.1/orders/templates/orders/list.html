@@ -366,6 +366,17 @@ All Orders
           $('.accordion-collapse').not($(this).next()).removeClass('show');
       });
   });
+  $("#OrderStatus").prop('disabled', true);
+  // Select of dishpatch_status 
+  $('#OrderDispatchStatus').on('change', function() {
+    if(this.value == "DISPATCHED"){
+      $("#OrderStatus").prop('disabled', false);
+    }else{
+      $("#OrderStatus").prop('disabled', true);
+      $("#OrderStatus").val("choose");
+    }
+    
+  });
 </script>
 
 {% endblock js %}

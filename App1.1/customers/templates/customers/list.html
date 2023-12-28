@@ -41,10 +41,10 @@ Customers
               {% for customer in customers %}
               <tr>
                 <td>{{forloop.counter}}</td>
-                <td>{{customer.name}}</td>
-                <td>{{customer.contect_person}}</td>
+                <td>{{customer.name|upper}}</td>
+                <td>{{customer.contect_person|upper}}</td>
                 <td>{{customer.mobile}}</td>
-                <td>{{customer.email}}</td>
+                <td>{{customer.email|lower}}</td>
                 <th>{{customer.orderdetails_set.count}}</th>
                 <td>
                   <a href="{% url 'customers:show-customer' customer.id %}"

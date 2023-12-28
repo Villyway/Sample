@@ -177,6 +177,7 @@ Orders
                 {% if order.order_confirmation == "CONFIRMED" %}
                 <div class="card-header">
                     <button class="btn btn-primary float-end" onclick="generatePDF()">Production Intimation</button>
+                    <a href="{% url 'orders:track-lr' order.id %}" class="btn btn-success " ><i class="fa-solid fa-location-crosshairs"></i></a>
                 </div>
                 {% endif %}
               {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}

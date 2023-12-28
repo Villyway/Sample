@@ -6,7 +6,7 @@ from .views import (
                      SingelOrderView, ChangeDispatchStatusOfOrderOfChild,
                      ChangeDeliveryStatus, OrderDispatchProcess, ExportDispatchNote, AddLRNo,
                      ChangeOrderConfirmationStatus, OrderOfProductCancleation, ExportData, OrdersReport, OrdersCustomReportResponse,
-                     OrderSearch
+                     OrderSearch, TrackLR
                     )
 
 app_name = "orders"
@@ -27,6 +27,7 @@ urlpatterns = [
     path("report/", login_required(OrdersReport.as_view()), name='orders-report'),
     path("search-report/", login_required(OrdersCustomReportResponse.as_view()), name='search-report'),
     path("search/", login_required(OrderSearch.as_view()), name='search-orders'),
+    path("<slug:id>/track-lr", login_required(TrackLR.as_view()), name='track-lr'),
 
     
 ]

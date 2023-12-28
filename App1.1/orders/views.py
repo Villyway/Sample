@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from datetime import datetime
 import operator
+import requests
 
 from django.views.generic import View
 from django.contrib import messages
@@ -505,6 +506,7 @@ class OrderSearch(View):
             data_dict = {
                 "data": html
             }
+            
             return JsonResponse(data=data_dict, safe=False)
 
             # if request.META.get('HTTP_REFERER'):
@@ -515,8 +517,40 @@ class OrderSearch(View):
             # return JsonResponse({"error": str(e)})
 
 
+class TrackLR(View):
+    
+    template_name = "orders/track.html"
 
-
+    def get(self,request,id):
+        
+        
+        order = OrderDetails.objects.get_order(id)
+        print(order)
+        lr_nos = []
+        if order:
+            order_of_products = order.orderofproduct_set.all()
+            
+            for i in order_of_products:
+                if i.lr_no not in lr_nos:
+                    lr_nos.append(i.lr_no)
+            print(lr_nos)
+        api_url = 'https://www.vrlgroup.in/track_consignment.aspx?lrtrack=1&lrno=' + lr_nos[0]
+        # try:
+            # Make a GET request to the API
+        response = requests.post(api_url)
+        # Check if the response status is OK (status code 200-299)
+        response.raise_for_status()
+        # Parse the JSON response
+        api_data = response.json()
+        # Do something with the API data
+        # ...
+        context = {
+            "data":api_data
+        }
+        return render(request,self.template_name,context)
+        # except requests.exceptions.RequestException as e:
+        #     # Handle any errors that occurred during the API call
+        #     return JsonResponse({'message': f'API call failed: {str(e)}'}, status=500)
 
     # def post(self, request):
     #     orderofproduct = OrderOfProduct.objects.get(id=id)
