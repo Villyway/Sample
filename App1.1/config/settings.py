@@ -98,7 +98,7 @@ DATABASES = {
         'NAME': os.environ.get('DB', 'erp2'), #latestData, inventory1, Asia
         'USER': os.environ.get('DBUSER', 'krunalind_db'),
         'PASSWORD': os.environ.get('DBPASSWORD', '#Basuri$Krunal%123'),
-        'HOST': os.environ.get('HOSTURL', 'database-1.cpgc4m8awbs0.us-east-1.rds.amazonaws.com'),
+        'HOST': os.environ.get('HOSTURL', 'basuriautomotive.cr8m4g28s5u1.ap-south-1.rds.amazonaws.com'),
         'PORT': '5432',
     }
 }
