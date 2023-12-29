@@ -30,7 +30,7 @@ class OrdersDetailsManager(models.Manager):
         if count:
             return self.active().count()
         else:
-            return self.active().order_by('-date')
+            return self.active().order_by('-order_no')
     
     def oders_filtered_by_status(self, status, count=False):
         if count:
