@@ -1,13 +1,15 @@
 from datetime import date, datetime
 
 from django import forms
+from django.core.validators import validate_email
 
 from .models import (Unit, Product,
                       Categories, PartQuality, BOMItem  )
-from vendors.models import Vendor
+from vendors.models import Vendor, PartyType
+from utils.models import City, State, Country
 
 class ProductForm(forms.Form):
-    code = forms.CharField(label="Item Code", widget=forms.TextInput(
+    code = forms.CharField(required=False,label="Item Code", widget=forms.TextInput(
         attrs={"class": "form-control"}))    
     name = forms.CharField(required=True, label="Item Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
@@ -56,13 +58,13 @@ class ProductForm(forms.Form):
             self.fields["image"].initial = None
 
     
-    def clean_code(self):
-        code = self.cleaned_data.get("code")
-        if self.edit == None:
-            if Product.objects.filter(code=code):
-                raise forms.ValidationError(
-                    "This item code is already registered, please use a different one.")
-        return code
+    # def clean_code(self):
+    #     code = self.cleaned_data.get("code")
+    #     if self.edit == None:
+    #         if Product.objects.filter(code=code):
+    #             raise forms.ValidationError(
+    #                 "This item code is already registered, please use a different one.")
+    #     return code
 
 
 class BomForm(forms.Form):
@@ -72,3 +74,58 @@ class BomForm(forms.Form):
         attrs={"class": "form-control form-select"}), required=True, label="Child Product", empty_label='--- Select Category ---')
     qty = forms.CharField(label="Quantity", widget=forms.TextInput(
         attrs={"class": "form-control","type":"number","value":"0"}))
+    
+
+# Entry of Price and vendor with product table
+class VendorWithProduct(forms.Form):    
+    comany_name = forms.CharField(required=False, label="Company Name", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
+    # primary_contect_name = forms.CharField(required=True, label="Primary Contact Name", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # secondary_contect_name = forms.CharField(required=True, label="Secondary Contect Name", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # type = forms.ModelChoiceField(queryset=PartyType.objects.filter(is_active=True), widget=forms.Select(
+    #     attrs={"class": "form-control form-select"}), required=False, label="Type", empty_label='--- Select Type ---')
+    # mobile = forms.CharField(
+    #     required=False, label="Phone/Whatsapp No.", widget=forms.TextInput(attrs={"class": "form-control"}))
+    # mobile1 = forms.CharField(
+    #     required=False, label="Phone/Whatsapp No.", widget=forms.TextInput(attrs={"class": "form-control"}))
+    # email = forms.EmailField(label='Email Address', widget=forms.EmailInput(
+    #     attrs={'class': 'form-control'}), required=False, validators=[validate_email])
+    # email1 = forms.EmailField(label='Email Address', widget=forms.EmailInput(
+    #     attrs={'class': 'form-control'}), required=False, validators=[validate_email])
+    # gst_no = forms.CharField(required=True, label="GST No.", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # msme_no = forms.CharField(required=True, label="MSME No.", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # bank_name = forms.CharField(required=True, label="Bank Name", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # bank_branch_name = forms.CharField(required=True, label="Branch Name", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # bank_isfc = forms.CharField(required=True, label="IFSC/MICR Code", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # bank_account_no = forms.CharField(required=True, label="Account No.", widget=forms.TextInput(
+    #     attrs={"class": "form-control"}))
+    # street = forms.CharField(required=True, label="Street 1",
+    #                          widget=forms.TextInput(attrs={"class": "form-control"}))
+    # street2 = forms.CharField(required=False, label="Street 2",
+    #                           widget=forms.TextInput(attrs={"class": "form-control"}))
+    # country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=forms.Select(
+    #     attrs={"class": "form-control form-select"}), required=True, label="Country", empty_label='--- Select Country ---')
+    # state = forms.ModelChoiceField(queryset=State.objects.all(), widget=forms.Select(
+    #     attrs={"class": "form-control form-select"}), required=True, label="State", empty_label='--- Select State ---')
+    
+    # city = forms.ModelChoiceField(queryset=City.objects.all(), widget=forms.Select(
+    #     attrs={"class": "form-control form-select"}), required=True, label="City", empty_label='--- Select City ---')
+
+    # pincode = forms.IntegerField(required=False, label="Pincode", widget=forms.NumberInput(
+    #     attrs={"class": "form-control"}))
+    
+    product = forms.CharField(required=False, label="Product Of Part No.",
+                              widget=forms.TextInput(attrs={"class": "form-control"}))
+    price = forms.CharField(required=False, label="Price",
+                              widget=forms.TextInput(attrs={"class": "form-control"}))
+    
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.active(), widget=forms.Select(
+        attrs={"class": "form-control form-select"}), required=False, label="Vendor", empty_label='--- Select Vendor ---')
+    

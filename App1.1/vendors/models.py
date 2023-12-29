@@ -8,7 +8,7 @@ from utils.constants.choices import State
 
 # Create slug by this Method
 def create_slug(instance, new_slug=None):
-    slug = slugify(instance.name)
+    slug = slugify(instance.comany_name)
     if new_slug is not None:
         slug = new_slug
     instance_model = type(instance)
@@ -50,15 +50,23 @@ class PartyType(Base):
 
 # Create your models here.
 class Vendor(Base):
-    code = models.CharField(max_length=30, unique=True, blank=True, null=True)
+    code = models.CharField(max_length=30, blank=True, null=True)  # KI000001
     type = models.ForeignKey(
         PartyType, on_delete=models.CASCADE, related_name='vendor_type', blank=True, null=True)
+    comany_name = models.CharField(max_length=150, null=True, blank=True)
     slug = models.SlugField(unique=True, editable=False)
-    name = models.CharField(max_length=150, null=True, blank=True)
-    mobile = models.CharField(max_length=50, null=True, blank=True)
-    country_code = models.CharField(max_length=4, default="91")
+    primary_contect_name = models.CharField(max_length=150, null=True, blank=True)
+    secondary_contect_name = models.CharField(max_length=150, null=True, blank=True)
+    mobile = models.CharField(max_length=15, null=True, blank=True)
+    mobile1 = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
-    gst_no = models.CharField(max_length=16, unique=True)
+    email1 = models.EmailField(null=True, blank=True)
+    gst_no = models.CharField(max_length=16, null=True, blank=True)
+    msme_no = models.CharField(max_length=15, null=True, blank=True)
+    bank_name = models.CharField(max_length=150, null=True, blank=True)
+    bank_branch_name = models.CharField(max_length=150, null=True, blank=True)
+    bank_isfc = models.CharField(max_length=15, null=True, blank=True)
+    bank_account_no = models.CharField(max_length=18, null=True, blank=True)
     address = models.ManyToManyField(Address, blank=True)
     is_approved = models.BooleanField(default=False)
     state = models.CharField(
@@ -67,7 +75,7 @@ class Vendor(Base):
     objects = VendorManager()
 
     def __str__(self):
-        return self.name
+        return str(self.comany_name)
     
 
 pre_save.connect(pre_save_slug_receiver, sender=Vendor)

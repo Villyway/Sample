@@ -13,13 +13,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 from .models import (Product, Attribute, ProductAttribute,
-                      Categories, PartQuality, BOMItem
+                      Categories, PartQuality, BOMItem, VendorWithProductData
                     )
-from .forms import ProductForm, BomForm
+from .forms import ProductForm, BomForm, VendorWithProduct
 from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfProductSerializer, ProductSerializer, ProductSerializerWithId
 from utils.views import generate_part_code, BarCode
 from .resources import ProductResource
+from vendors.models import Vendor
 
 
 # Product Dashboard
@@ -137,7 +138,6 @@ class CreateProduct(FormView):
         
         except Exception as e:
             data = {"error": str(e), "status": 403}
-            print(data)
             return JsonResponse(data)
 
 
@@ -162,7 +162,6 @@ class ProductEditView(FormView):
     
     def form_invalid(self, form):
         super(ProductEditView, self).form_invalid(form)
-        print(form.errors)
         messages.error(self.request,form.errors)
         return redirect(self.request.META['HTTP_REFERER'])
     
@@ -263,7 +262,6 @@ class ProductProperty(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -290,7 +288,6 @@ class RemoveProductProperty(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -337,7 +334,6 @@ class CreateCategories(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -364,7 +360,6 @@ class RemoveProductCategory(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -398,7 +393,6 @@ class CreateQuality(View):
     def post(self, request):
         try:
             data = json.loads(request.POST.get("data"))
-            print(data)
             if data["category"] != '' and data["code"] != '':
                 category = data["category"]
                 code = data["code"]
@@ -426,7 +420,6 @@ class CreateQuality(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -440,7 +433,7 @@ class BomItemList(View):
 
     def get(self,request):
         # products = BOMItem.objects.values_list('product__name','product__code', 'product__id','product__part_no').distinct()
-        products = Product.objects.active().filter(category=Categories.objects.get(id=1))
+        products = Product.objects.active().filter(category=Categories.objects.get(id=1), quality_type__code = 'D').order_by('id')
         results_per_page = 10
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)
@@ -465,11 +458,15 @@ class SingelBom(View):
     def get(self,request, id):
         product_a = Product.objects.by_code(id)
         bom = product_a.get_bom()
+        
         context={
+            "part_no": product_a.part_no,
             "name": product_a.name,
             "code":product_a.code,
             "image":product_a.image,
-            "components" : bom
+            "stock" : product_a.stock,
+            "components" : bom,
+            
         }
         
         return render(request, self.template_name,context)
@@ -500,7 +497,7 @@ class ExportData(View):
     
     def get(self, request):
         product_resourse = ProductResource()
-        queryset = Product.objects.all().order_by('id')
+        queryset = Product.objects.active().order_by('id')
         dataset = product_resourse.export(queryset)
         response = HttpResponse(dataset.csv,content_type="text/csv")
         response['Content-Disposition'] = 'attachment; filename="product.csv"'
@@ -553,7 +550,6 @@ class ProductSearch(View):
             if is_ajax(request):
                 query = request.GET.get("query", None)
                 category = request.GET.get("category", None)
-                print(category)
                 if category != '0':
 
                     item_category = Categories.objects.get(id=category)
@@ -589,3 +585,52 @@ class ProductSearch(View):
                 return redirect("products:list")
         except Exception as e:
             return JsonResponse({"error": str(e)})
+
+
+# Add Vendor
+class AddVendorOfProduct(View):
+
+    template_name = "products/add_vendor.html"
+    form_class = VendorWithProduct
+
+    def get(self,request,id):
+        product = Product.objects.by_part_no(id)
+
+        context = {
+            "product":product,
+            "form":self.form_class
+        }
+
+        return render(request,self.template_name,context)
+    
+    def post(self,request,id):
+        if is_ajax(self.request):
+            with transaction.atomic():
+                vendor = Vendor()
+                if request.POST.get('comany_name'):
+                    vendor.comany_name = request.POST.get('comany_name')
+                    vendor.save()
+                else:
+                    if Vendor.objects.filter(id = int(request.POST.get('vendor'))).exists:
+                         vendor = Vendor.objects.get(id = int(request.POST.get('vendor')))
+                
+
+                product = Product.objects.by_part_no(id)
+                obj = VendorWithProductData()
+                obj.vendor = vendor
+                obj.product = product
+                obj.price = request.POST.get('price')
+                obj.save()
+                messages.success(
+                    self.request, "Order added successfully.")
+            data = {
+                    'message': "Order added successfully.",
+                    'url': request.META.get('HTTP_REFERER')
+                }
+            return JsonResponse(data)
+        else:
+            return redirect("orders:orders-create")
+
+
+        
+

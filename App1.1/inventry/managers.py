@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+
 
 from itertools import chain
 
@@ -57,4 +58,18 @@ class SimpleStockUpdteManager(models.Manager):
             return self.filter(part = part_no)
         except:
             return False
+
+    def today_report(self):
+        today = datetime.now().date()
+        print(today)
+        return self.active().filter(created_at__date=today)
     
+    def date_to_date(self,dates):
+        try:
+            return self.active().filter(created_at__range = dates)
+        except:
+            return None
+        
+
+# meca = Meca.objects.filter(created_at__year=year, 
+# created_at__month=month, created_at__day=day)

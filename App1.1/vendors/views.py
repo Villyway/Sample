@@ -49,7 +49,6 @@ class VendorList(View):
         gst_no = Vendor.objects.filter(gst_no=request.POST.get('gst_no'))
         if gst_no:
             vendor = Vendor.objects.get(gst_no=request.POST.get('gst_no'))
-            print(vendor.id)
             return redirect("vendors:vendor-edit",vendor.id)
         else:
             messages.error(self.request,"This Vendor is not found, Please add the vendor.")
@@ -189,7 +188,6 @@ class CreateCategories(View):
     def post(self, request):
         try:
             data = json.loads(request.POST.get("data"))
-            print(data)
             if data["category"] != '':
                 category = data["category"]
                 obj, created = PartyType.objects.get_or_create(
@@ -214,7 +212,6 @@ class CreateCategories(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500
@@ -241,7 +238,6 @@ class RemoveVendorCategory(View):
             return JsonResponse(data=data_dict, safe=False)
 
         except Exception as e:
-            print(str(e))
             data = {
                 "error": str(e),
                 "status": 500

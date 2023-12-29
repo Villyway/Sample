@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+{% block title %}Customers{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'customers:dashboard' %}">Customers</a> / Create
+{% endblock %}
+
+{% block head %}
+Customers
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- Order Statistics -->
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h4><b>Customer Details</b></h4></div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <td>Name:</td>
+                        <td>{{customer.name}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-center bg-warning"><h5><b>Contect Information:- </b></h5></td>
+                    </tr>
+                    <tr>
+                        <td>Contect Person</td>
+                        <td>{{customer.contect_person}}</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile</td>
+                        <td>{{customer.mobile}}</td>
+                    </tr>
+                    <tr>
+                        <td>Alternative Mobile</td>
+                        <td>{{customer.mobile1}}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{customer.email}}</td>
+                    </tr>
+                    <tr>
+                        <td>GST No.</td>
+                        <td>{{customer.gst_no}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <a class="btn btn-warning" style="float: right;" id="edit-customer" href="{% url 'customers:edit-customer' customer.id %}">Edit</a>
+                            <a class="btn btn-success ml-2" style="float: right;"  href="{% url 'orders:orders-create' customer.id %}">New Order</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h5>Add Customer of Address</h5></div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form}}
+                <button type="submit" class="btn btn-success mt-3"  style="float: right;">Add</button>
+                </form>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-12 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h5>Customer Address List</h5></div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Contect Person</th>
+                            <th>Mobile</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if customer.address.all %}
+                        {% for address in customer.id|get_addresses %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{address.contect_person}}</td>
+                            <td>{{address.contect_phone}}</td>
+                            <td>{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</td>
+                            <td><a href="{% url 'utils:delete-address' address.id %}" class="btn btn-danger"><i class="fa-solid fa-trash text-white"></i></a></td>
+                        </tr>
+
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <th colspan="5" class="text-center">No Addresses Availabel<th>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+  $('#customers-menu').addClass('active open');
+  $('#customers-create').addClass('active')
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#id_state").change(function () {
+            $('#id_city').empty().append('<option>--- Select City ---</option>');
+            var id = $(this).find(":selected").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'utils:city' 1  %}".replace("1", id),
+                success: function (response) {
+                  console.log('hi')
+                    for (i in response.cities) {
+                        $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
+                    }
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        })
+  
+        $("#id_country").change(function () {
+            $('#id_state').empty().append('<option>--- Select State ---</option>');
+            var id = $(this).find(":selected").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'utils:state' 1  %}".replace("1", id),
+                success: function (response) {
+                    for (i in response.states) {
+                        $("#id_state").append("<option value='" + response.states[i].id + "'>" + response.states[i].name + "</option>");
+                    }
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        })
+  
+    });
+  </script>
+{% endblock js %}

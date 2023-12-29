@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+
+
+{% block css %}
+<title>Dispatch</title>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a href="{% url 'customers:dashboard' %}">Orders</a> /
+    Dispatch Process
+    {% endblock %}
+
+    {% block head %}
+    Orders
+    {% endblock %}
+
+    {% block content %}
+    <div class="content-wrapper">
+        <!-- Content -->
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row">
+                <div class="col-md-12 "><a class="btn btn-success float-end mb-2" href="{% url 'orders:order-dispatch-note' order_details.id %}">Export PDF</a></div>
+                <div class="col-md-12 order-0 mb-2">
+                    <div class="card h-100">
+                        <div class="row">
+                            <div class='col-md-12 card-body'>
+                                <div class="row">
+                                    <!-- Billed to and Shipped to -->
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+
+                                            <div class="col-md-12 table-bordered table-responsive " id="myDiv">
+                                                <table id="myTable">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
+                                                <table class="table table-bordered"
+                                                    style="border: 1px solid #ddd !important;" id="example">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="7" class="text-center">
+                                                                <h4>Krunal Industries</h4>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="7" class="text-center">
+                                                                <h5>DESPATCH NOTE</h5>
+                                                            </td>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                                <table class="table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td colspan="7" class="text-center">
+                                                                <h6>Customer Details</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+
+                                                            <td colspan="2">DN No.:</td>
+                                                            <td colspan="2">{{order_details.order_no}}</td>
+
+                                                            <td colspan="2">Date:</td>
+                                                            <td colspan="2">{% now "d-m-Y" %}</td>
+
+                                                        </tr>
+
+                                                        <tr class="bg-warning">
+
+                                                            <th><b>Name:</b></th>
+                                                            <th><b>Contect Person</b></th>
+                                                            <th><b>Mobile</b></th>
+                                                            <th><b>Email</b></th>
+                                                            <th colspan="4"><b>GST No.</b></th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{order_details.customer.name}}</td>
+                                                            <td>{{order_details.customer.contect_person}}</td>
+                                                            <td>{{order_details.customer.mobile}} /
+                                                                {{order_details.customer.mobile1}}</td>
+                                                            <td>{{order_details.customer.email}}</td>
+                                                            <td colspan="4">{{order_details.customer.gst_no}}</td>
+                                                        </tr>
+
+                                                </table>
+                                                <table class="table table-bordered">
+                                                    <tr class="bg-warning">
+                                                        <td colspan="4">Billing to</td>
+                                                        <td colspan="4">Shipped to</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Name</td>
+                                                        <td colspan="2">{{order_details.billing_add.contect_person}}
+                                                        </td>
+                                                        <td colspan="2">Name</td>
+                                                        <td colspan="2">{{order_details.shipped_add.contect_person}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Phone</td>
+                                                        <td colspan="2">{{order_details.billing_add.contect_phone}}</td>
+                                                        <td colspan="2">Phone</td>
+                                                        <td colspan="2">{{order_details.shipped_add.contect_phone}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Address/Street/Landmark</td>
+                                                        <td colspan="2">{{order_details.billing_add.street}},
+                                                            {{order_details.billing_add.street2}}</td>
+                                                        <td colspan="2">Address/Street/Landmark</td>
+                                                        <td colspan="2">{{order_details.shipped_add.street}},
+                                                            {{order_details.shipped_add.street2}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Pincode</td>
+                                                        <td colspan="2">{{order_details.billing_add.zip}}</td>
+                                                        <td colspan="2">Pincode</td>
+                                                        <td colspan="2">{{order_details.shipped_add.zip}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">State</td>
+                                                        <td colspan="2">{{order_details.billing_add.state.name}}</td>
+                                                        <td colspan="2">State</td>
+                                                        <td colspan="2">{{order_details.shipped_add.state.name}}</td>
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td colspan="2">Country</td>
+                                                        <td colspan="2">{{order_details.billing_add.country.name}}</td>
+
+                                                        <td colspan="2">Country</td>
+                                                        <td colspan="2">{{order_details.shipped_add.country.name}}</td>
+
+
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td colspan="2">GST NO.</td>
+                                                        <td colspan="2">{{order_details.customer.gst_no}}</td>
+
+                                                        <td colspan="2">GST NO.</td>
+                                                        <td colspan="2">{{order_details.customer.gst_no}}</td>
+
+
+                                                    </tr>
+                                                    <tr class="bg-warning">
+                                                        <td colspan="7"></td>
+
+
+                                                    </tr>
+                                                </table>
+                                                <table class="table">
+                                                    <tr>
+                                                        <td>Sr.No.</td>
+                                                        <td>Order Date</td>
+                                                        <td>Product Code</td>
+                                                        <td>Product Description</td>
+                                                        <td>Qty</td>
+                                                        <td>Transport</td>
+                                                        <td>Lr.No</td>
+                                                        <td>Invoice No</td>
+                                                        <td>Delivery Status </td>
+
+                                                    </tr>
+                                                    {% for i in products %}
+                                                    {% if i.dispatch_status == 'READY' %}
+                                                    <tr>
+                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{i.order.date|date:"d-m-Y"}}</td>
+                                                        <td>{{i.product.code}}</td>
+                                                        <td> {{i.product.name}} </td>
+                                                        <td>{{i.order_qty}} {{i.uom}}</td>
+                                                        <td>
+                                                            {% if i.transport_compny %}
+                                                            {{i.transport_compny}}
+                                                            {% else %}
+                                                            -
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if i.lr_no %}
+                                                            {{i.lr_no}}
+                                                            {% else %}
+                                                            -
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if i.invoice_no %}
+                                                            {{i.invoice_no}}
+                                                            {% else %}
+                                                            -
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{i.status}}</td>
+
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    </tbody>
+                                                    <tfooter>
+                                                        <tr>
+                                                            <td colspan="9">REMARKS: {{order_details.remarks}}</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td colspan="9"><b>Document Generated By: {{ user.name }}
+                                                            </td>
+
+                                                        </tr>
+                                                    </tfooter>
+                                                </table>
+                                            </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <div class="col-12">
+
+                                        <div class="mt-3 float-end">
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#basicModal">
+                                                Enter Dispatched Details
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel1">TransPort
+                                                                Details</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <form class="mt-3 " method="post"
+                                                                    enctype="multipart/form-data" action='.'
+                                                                    data-url='{{ request.build_absolute_uri|safe }}'
+                                                                    id="create-orders">
+                                                                    {% csrf_token %}
+                                                                    <div class="col mb-3">
+                                                                        <label for="nameBasic"
+                                                                            class="form-label">Transport Compny</label>
+                                                                        <input type="text" id="nameBasic"
+                                                                            class="form-control"
+                                                                            placeholder="Transport Compny"
+                                                                            name="transport_compny" />
+                                                                    </div>
+                                                            </div>
+                                                            <div class="row g-2">
+
+                                                                <div class="col mb-0">
+                                                                    <label for="dobBasic" class="form-label">Invoice
+                                                                        No</label>
+                                                                    <input type="text" id="nameBasic"
+                                                                        class="form-control" placeholder="Invoice No"
+                                                                        name="invoice_no" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-outline-secondary"
+                                                                data-bs-dismiss="modal">
+                                                                Close
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary">Save
+                                                                changes</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+    $('#orders-menu').addClass('active open');
+    $('#orders-add').addClass('active')
+</script>
+<script>
+    $(document).ready(function () {
+        var $myForm = $('#create-orders')
+        $myForm.on("submit", function (event) {
+            event.preventDefault()
+            $('#submit-button').prop('disabled', true);
+            var formData = $(this).serialize()
+            console.log(formData)
+            var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
+            option = {
+                method: "POST",
+                url: $thisURL,
+                data: formData,
+                success: function (data) {
+                    if (data.error) {
+                        var message = "";
+                        $("#error-message").html(message);
+                        $('.toast').toast('show');
+                    }
+                    else {
+                        location.replace(data.url)
+                        $('#basicModal').modal('hide');
+                    }
+                },
+                error: function (data) {
+                    $(".print_error").text("")
+                    $("#code").text("")
+                    $("#image").text("")
+                    $(".print_error").text()
+                    $("#code").text(data.responseJSON.code)
+                    $("#image").text(data.responseJSON.image)
+                    $("#image").text(data.responseJSON.exception)
+                },
+                complete: function () {
+                    // Enable the submit button when the submission is complete
+                    $('#submit-button').prop('disabled', false);
+                },
+            }
+            $myForm.ajaxSubmit(option)
+        })
+    })
+</script>
+<script src="https://rawcdn.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script>
+    function generatePDF() {
+        var element = document.getElementById('myTable');
+        
+        // Specify options
+        var options = {
+            margin: 10,
+            filename: 'table_document.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }  // Set orientation to 'landscape'
+        };
+
+        html2pdf().from(element).set(options).save();
+    }
+</script>
+{% endblock js %}

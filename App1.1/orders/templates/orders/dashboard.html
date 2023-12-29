@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://unpkg.com/@adminkit/core@latest/dist/css/app.css">
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'inventry:inventry-dashboard' %}">Orders</a> / Dashboard
+{% endblock %}
+
+{% block head %}
+Orders
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Hold Orders</h5>
+                <p class="card-text">{{hold_orders}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Confirmed Orders</h5>
+                <p class="card-text">{{confirm_orders}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Today's Orders</h5>
+                <p class="card-text"> {{today_orders}} </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">New Orders</h5>
+                <p class="card-text">25</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-6 mt-4">
+      <div class="card">
+        <div class="row row-bordered g-0">
+          <div class="col-md-12">
+            <h5 class="card-header m-0 me-2 pb-3"> Best-Selling List</h5>
+          </div>
+          <table class="table">
+            <tr>
+              <td>Sr. No</td>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Selling Qty</th>
+            </tr>
+            {% for i in top_10_products %}
+            <tr>
+              <td> {{forloop.counter}} </td>
+              <td>{{i.code}}</td>
+              <td>{{i.name}}</td>
+              <td>{{i.total_quantity_ordered}}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 col-md-6 mt-4 mb-5 ">
+      <div class="card">
+        <div class="row row-bordered g-0">
+          <div class="col-md-12">
+            <h5 class="card-header m-0 me-2 pb-3">Customers Orders</h5>
+          </div>
+          <canvas id="chartjs-pie" width="909" height="300" style="display: block; width: 909px; height: 300px;" class="chartjs-render-monitor p-3">
+
+          </canvas>
+          
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- Add more similar cards for other order statuses -->
+
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script src="https://unpkg.com/@adminkit/core@latest/dist/js/app.js"></script>
+<script>
+  new Chart(document.getElementById("chartjs-pie"), {
+    type: "pie",
+    data: {
+      labels: {{ customers|safe }},
+      datasets: [{
+        data: {{ orders }},
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#FF9800", "#36A2EB"],
+        borderColor: "transparent"
+      }]
+    },
+    options: {
+      maintainAspectRatio: true,
+      cutoutPercentage: 70,
+      legend: {
+        display: true,
+        position: 'left',
+      },
+    }
+  });
+</script>
+<script>
+  $('#orders-menu').addClass('active open');
+  $('#orders-dashboard').addClass('active')
+</script>
+{% endblock js %}

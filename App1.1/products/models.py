@@ -6,6 +6,7 @@ from base.models import Base
 from .managers import ProductManager, AttributeManager
 from utils.views import upload_file
 from utils.constants.choices import State
+from vendors.models import Vendor
 
 
 # Create slug by this Method
@@ -111,6 +112,7 @@ class Product(Base):
             bom['qty'] = quantity
             bom['part_no'] = component_part_no
             bom['code'] = component_code
+            bom['stock'] = bom_item.component.stock
             components.append(bom)
             a = a + quantity
         components.append(
@@ -120,6 +122,7 @@ class Product(Base):
                 'qty' : a,
                 'part_no': "",
                 'code' : "",
+                'stock':"",
             }
         )
 
@@ -157,5 +160,14 @@ class BOMItem(models.Model):
     def __str__(self):
         return str(self.id)
         # return f"{self.quantity} {self.component.name} for {self.product.name}"
+
+
+class VendorWithProductData(Base):
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return str(self.id)
 
 pre_save.connect(pre_save_slug_receiver, sender=Categories)

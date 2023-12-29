@@ -18,6 +18,8 @@ from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfBillWiseProductSerializer, StockHistorySerializer
 from products.models import Product, Categories
 from utils.constants import StockTransection
+from utils.constants import ReportTimeLine, InventryReportType
+from inventry.resources import StockUpdateReport
 
 
 # Create your views here.
@@ -190,7 +192,6 @@ class SimpleAddStock(FormView):
         response = super(SimpleAddStock, self).form_valid(form)     
         if is_ajax(self.request):
             form_data = form.cleaned_data
-            print(form_data)
             with transaction.atomic():
                 part = Product.objects.by_part_no(form_data['part_no'])
                 stock = SimpleStockUpdte()
@@ -199,8 +200,19 @@ class SimpleAddStock(FormView):
                 stock.received_by = form_data['receive_by']
                 stock.received_qty = form_data['qty']
                 if form_data['transection_type'] == StockTransection.DR.value:
-                    stock.transection_type = StockTransection.DR.value
-                    stock.quantity_on_hand = part.stock - int(form_data['qty'])
+                    if part.stock > int(stock.received_qty):
+                        stock.transection_type = StockTransection.DR.value
+                        stock.quantity_on_hand = part.stock - int(form_data['qty'])
+                    else:
+                        messages.error(
+                        self.request, part.part_no + "-"+ part.name +" of issued quantity is greater then availabel stock quantity.")
+                        data = {
+                            'error':part.part_no + "-"+ part.name +" of issued quantity is greater then availabel stock quantity.",
+                            "status": 403
+                        }
+                        return JsonResponse(data)
+                        
+
                 else:
                     stock.transection_type = StockTransection.CR.value
                     stock.quantity_on_hand = part.stock + int(form_data['qty'])
@@ -243,6 +255,7 @@ class StockHistoriesList(View):
     template_name = "inward/histories.html"
 
     def get(self, request):
+         
         products = SimpleStockUpdte.objects.active()
         results_per_page = 15
         page = request.GET.get('page', 1)
@@ -261,6 +274,65 @@ class StockHistoriesList(View):
         return render(request, self.template_name, context)
 
 
+class InventryReport(View):
+
+    template_name = "inventry/report.html"
+
+    def get(self, request):
+        # print([(e.name,e.value) for e in ReportTimeLine])
+        return render(request, self.template_name)
 
 
+class InventryReportStock(View):
+    template_name = "components/report-stock.html"
+
+    def get(self,request):
+        try:
+            start_date = request.GET.get("start", None)
+            end_date = request.GET.get("end", None)
+            category = request.GET.get("category", None)
+
+            if is_ajax(request):
+                if category == ReportTimeLine.TODAY.value:
+                    products = SimpleStockUpdte.objects.today_report()
+                else:
+                    products = SimpleStockUpdte.objects.date_to_date([start_date,end_date])
+
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"products": products}
+                )
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("products:list")
+        except Exception as e:
+            print(str(e))
+            return JsonResponse({"error": str(e)})
+
+
+
+
+
+class ExportData(View):
+    
+    def get(self, request):
+        start_date = request.GET.get("start", None)
+        end_date = request.GET.get("end", None)
+        category = request.GET.get("category", None)
+        if category == ReportTimeLine.TODAY.value:
+            queryset = SimpleStockUpdte.objects.today_report()
+        else:
+            queryset = SimpleStockUpdte.objects.date_to_date([start_date,end_date])
+        product_resourse = StockUpdateReport()
+        # queryset = SimpleStockUpdte.objects.today_report()
+        dataset = product_resourse.export(queryset)
+        response = HttpResponse(dataset.csv,content_type="text/csv")
+        time_name = datetime.now().strftime("%Y%m%d-%H%M%S")
+        response['Content-Disposition'] = 'attachment; filename="stock_report'+ time_name + '".csv"'
+        return response
         

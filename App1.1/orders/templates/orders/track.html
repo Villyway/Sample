@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}All Orders{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a href="{% url 'orders:orders-list' %}">Orders</a> /
+  <b class="text-dark">All<b></li>
+{% endblock %}
+
+{% block head %}
+Track Order
+{% endblock %}
+
+{% block content %}
+Status: {{data.LrStatus}}
+<div class="col-lg-12 accordion" id="accordionExample" style="padding-left:10px; border:0px solid #0000ff">
+  <div class="card">
+    <div class="card-header" id="headingBooking">
+      <h2 class="mb-0"><button
+          style=""
+          class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseBooking"
+          aria-expanded="true" aria-controls="collapseBooking">Booking Details</button></h2>
+    </div>
+    <div id="collapseBooking" class="collapse show" aria-labelledby="headingBooking" data-parent="#accordionExample">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-2"><b>Booking Date</b> <br>{{data.BookingDetails.0.bkdate}}</div>
+          <div class="col-lg-3"><b>From</b> <br>{{data.BookingDetails.0.bookingfrom}}</div>
+          <div class="col-lg-3"><b>To</b> <br>{{data.BookingDetails.0.destination}}</div>
+          <div class="col-lg-2"><b>Packages</b> <br>{{data.BookingDetails.0.noa}}</div>
+          <div class="col-lg-2"><b>Delivery Type</b> <br>Door Delivery</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingDelivery">
+      <h2 class="mb-0"><button
+          style=""
+          class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseDelivery"
+          aria-expanded="true" aria-controls="collapseDelivery">Delivery Details</button></h2>
+    </div>
+    <div id="collapseDelivery" class="collapse show" aria-labelledby="headingDelivery" data-parent="#accordionExample">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-3"><b>Consignment At</b> <br>{{data.DeliveryDetails.0.dlyat}}</div>
+          <div class="col-lg-3"><b>Reached Date</b> <br>{{data.DeliveryDetails.0.intsdate}}</div>
+          <div class="col-lg-3"><b>Delivery Status</b> <br>{{data.DeliveryDetails.0.dlystatus}}</div>
+          <div class="col-lg-3"><b>Date</b> <br>{{data.DeliveryDetails.0.crdate}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTransit">
+      <h2 class="mb-0"><button
+          style=""
+          class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseTransit"
+          aria-expanded="true" aria-controls="collapseDelivery">Transit Details</button></h2>
+    </div>
+    <div id="collapseTransit" class="collapse show" aria-labelledby="headingTransit" data-parent="#accordionExample">
+      <div class="card-body">
+        {% for i in data.TsDetails %}
+        <div class="row" style="padding-bottom:10px">
+          <div class="col-lg-3"><b>From </b> <br>{{i.tstpt}}</div>
+          <div class="col-lg-3"><b>To </b> <br>{{i.tpt}}</div>
+          <div class="col-lg-3"><b>Date</b> <br>{{i.loaddate}}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#orders-menu').addClass('active open');
+  $('#orders-list').addClass('active')
+</script>
+
+{% endblock js %}

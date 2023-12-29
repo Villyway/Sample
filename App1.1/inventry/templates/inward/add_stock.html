@@ -54,7 +54,7 @@ Stock Transection
                         <label class="form-label" for="basic-default-inword-grn_no">{{form.qty.label}}</label>
                         <span class="text-danger">*</span>
                         {{form.qty}}
-                        <span class="text-danger print_error" id="grn_no"></span>
+                        <span class="text-danger print_error" id="error-qty"></span>
                     </div>
                     <button type="submit" class="btn btn-success btn-circle" title="Add">Submit</button>
                 </form>
@@ -147,19 +147,13 @@ Stock Transection
                 url: $thisURL,
                 data: formData,
                 success: function (data) {
-                    console.log(data)
                     if (data.error) {
-                        var message = "<div class='bs-toast toast fade show bg-{{message.tags}} toast-placement-ex m-2 top-0 end-0' role='alert' aria-live='assertive' aria-atomic='true' style='float:right'>" +
-                            "<div class='toast-header bg-danger'>" +
-                            "<strong class='mr-auto text-white'>Error</strong>" +
-                            "<button type='button' class='ml-2 mb-1 close' data-dismiss='toast'>&times;</button>" +
-                            "</div><div class='toast-body'>Error please check logs" +
-                            "</div></div>";
-                        $("#error-message").html(message);
-                        $('.toast').toast('show');
+                        $("#error-qty").text(data.error)
                     }
                     else {
                         var partNo = $("#part-no").val()
+                        $("#id_qty").val('');
+                        $("#id_receive_by").val('');
                         // location.replace(data.url)
                         $.ajax({
                             type: 'GET',

@@ -1,0 +1,30 @@
+
+        {% for product in products %}
+        <tr >
+          <td>
+          {{ forloop.counter}}
+          </td>
+          <td>{{product.part.part_no}}</td>
+          <td>
+              {{product.created_at}}
+          </td>
+          <td>{{product.old_stock}}</td>
+          <td>
+              {% if product.transection_type == "DR" %}
+                - {{product.received_qty}}
+              {% else %}
+                -
+              {% endif %}
+          </td>
+          <td>
+            {% if product.transection_type == "CR" %}
+                + {{product.received_qty}}
+              {% else %}
+                -
+              {% endif %}
+          </td>
+          <td>{{product.quantity_on_hand}}</td>               
+        </tr>
+        {% endfor %}
+
+      

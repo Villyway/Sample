@@ -37,7 +37,6 @@ class UserManager(AbstractUserManager):
                 Q(username=username) | Q(email=username) | Q(mobile=username))
             return user
         else:
-            print('hi')
             return None
 
     def user_selected_fields(self, fields, qs=None):

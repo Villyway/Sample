@@ -15,6 +15,7 @@ class Roles(Enum):
     OPERATOR = "OPERATOR"  # Can approve websites
     CUSTOMER = "CUSTOMER" #Customer
     STORE_EXECUTIVE = "STORE EXECUTIVE"
+    ACCOUNTANT = "ACCOUNTANT" 
 
     @classmethod
     def choices(cls):
@@ -103,6 +104,89 @@ class CustomerType(Enum):
 class StockTransection(Enum):
     CR = "CR"
     DR = "DR"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)
+
+
+class ReportTimeLine(Enum):
+    YEARLY = "YEARLY"
+    MONTHLY = "MONTHLY"
+    DAILY = "DAILY"
+    TODAY = "TODAY"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+    
+
+class InventryReportType(Enum):
+    ISSUED_ITEM = "ISSUED ITEM"
+    RECEIVED_ITEM = "RECEIVED ITEM"
+    BOTH = "BOTH"
+    CURRENT_STOCK = "CURRENT_STOCK"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+    
+
+class OrderStatus(Enum):
+    DELIVERED = "DELIVERED"
+    PENDING = "PENDING"
+    IN_TRANSPORT = "IN TRANSPORT"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+    
+
+class PackingType(Enum):
+    BOX = "BOX"
+    LOOSE = "LOOSE"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+
+
+class OrderUOM(Enum):
+    NOS = "NOS"
+    SET = "SET"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name,i.value) for i in cls)
+    
+
+class DispatchStatus(Enum):
+
+    READY = "READY"
+    DISPATCHED = "DISPATCHED"
+    UNDER_PROCESS = "UNDER PROCESS"
+    PENDING = "PENDING"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)
+    
+
+class OrdersType(Enum):
+    DOMESTIC = "DOMESTIC"
+    ECOMMERCE = "ECOMMERCE"
+    EXPORT = "EXPORT"
+    DIRECT = "DIRECT"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)
+
+
+class OrderConfirmation(Enum):
+    CONFIRMED = "CONFIRMED"
+    IN_REVIEW = "IN REVIEW"
+    HOLD = "HOLD"
 
     @classmethod
     def choices(cls):

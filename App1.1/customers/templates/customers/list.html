@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Customers{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'customers:dashboard' %}">Customers</a> / List
+{% endblock %}
+
+{% block head %}
+Customers
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- Order Statistics -->
+      <div class="col-md-6 col-lg-4 col-xl-12 order-0 mb-4">
+        <div class="card h-100">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Contect Person</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>orders</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for customer in customers %}
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{customer.name|upper}}</td>
+                <td>{{customer.contect_person|upper}}</td>
+                <td>{{customer.mobile}}</td>
+                <td>{{customer.email|lower}}</td>
+                <th>{{customer.orderdetails_set.count}}</th>
+                <td>
+                  <a href="{% url 'customers:show-customer' customer.id %}"
+                                class="btn btn-primary btn-circle " title="Show details"><i class=" text-white fa-solid fa-eye"></i></i></a>
+                                <a href="{% url 'orders:orders-create' customer.id %}"
+                                class="btn btn-success btn-circle " title="Create Order"><i class="fa-solid fa-store"></i></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfooter>
+              <th>No</th>
+                <th>Name</th>
+                <th>Contect Person</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>orders</th>
+                <th>Action</th>
+            </tfooter>
+          </table>    
+        </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  <!-- / Content -->
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#customers-menu').addClass('active open');
+  $('#customers-dashboard').addClass('active')
+</script>
+{% endblock js %}

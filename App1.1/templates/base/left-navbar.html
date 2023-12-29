@@ -14,6 +14,13 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
+
+      <li class="menu-item " id = "dashboard">
+        <a href="{% url 'base:dashboard' %}" class="menu-link ">
+          <i class="menu-icon tf-icons fa-solid fa-home"></i>
+          <div data-i18n="Layouts">Dashboard</div>
+        </a>
+      </li>
       {% comment %} <!-- Dashboard -->
       <li class="menu-item" id="dashboard-menu" >
         <a href="{% url 'base:dashboard' %}" class="menu-link">
@@ -22,6 +29,7 @@
         </a>
       </li> {% endcomment %}
       {% comment %} Products {% endcomment %}
+      {% if user.role != "ACCOUNTANT" %}
       <li class="menu-item " id = "product-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
@@ -104,23 +112,14 @@
               <div data-i18n="Without menu">Stock Histories</div>
             </a>
           </li>
-          {% comment %} <li class="menu-item" id="sub-all-inward">
-            <a href="{% url 'inventry:inward' %}" class="menu-link">
-              <div data-i18n="Without menu">In-Ward</div><i class=""></i>
+          <li class="menu-item" id="stock-report">
+            <a href="{% url 'inventry:stock-report' %}" class="menu-link">
+              <div data-i18n="Without menu">Reports</div>
             </a>
-          </li> {% endcomment %}
-          {% comment %} <li class="menu-item" id = "inventory-outward">
-            <a href="{% url 'inventry:outward' %}" class="menu-link">
-              <div data-i18n="Container">Out-Ward</div>
-            </a>
-          </li> {% endcomment %}
-          {% comment %} <li class="menu-item" id = "inventory-qc">
-            <a href="{% url 'inventry:qc-list' %}" class="menu-link">
-              <div data-i18n="Container">In-Ward-QC</div>
-            </a>
-          </li> {% endcomment %}
+          </li>
         </ul>
       </li>
+      {% if user.role != "MANAGER" %}
       <li class="menu-item " id = "vendor-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-shop"> </i>
@@ -149,7 +148,65 @@
             </a>
           </li>
         </ul>
-        
+      </li>
+      {% endif %}
+      {% endif %}
+      <li class="menu-item " id = "customers-menu">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-person-military-pointing"></i>
+          <div data-i18n="Layouts">Customers</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="customers-dashboard">
+            <a href="{% url 'customers:dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">List</div>
+            </a>
+          </li>
+          <li class="menu-item" id="customers-create">
+            <a href="{% url 'customers:create-customer' %}" class="menu-link">
+              <div data-i18n="Without menu">Add</div>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="menu-item " id = "orders-menu">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-clipboard"></i>
+          <div data-i18n="Layouts">Orders</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="orders-dashboard">
+            <a href="{% url 'orders:orders-dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
+          <li class="menu-item" id="orders-list">
+            <a href="{% url 'orders:orders-list' %}" class="menu-link">
+              <div data-i18n="Without menu">List</div>
+            </a>
+          </li>
+
+          {% comment %} <li class="menu-item" id="orders-confirmation-list">
+            <a href="{% url 'orders:orders-list' %}" class="menu-link">
+              <div data-i18n="Without menu">Order Confirmation</div>
+            </a>
+          </li> {% endcomment %}
+
+          <li class="menu-item" id="orders-of-lr-list">
+            <a href="{% url 'orders:pending-lr-details' %}" class="menu-link">
+              <div data-i18n="Without menu">Pending LR</div>
+            </a>
+          </li>
+                    
+          <li class="menu-item" id="order-report">
+            <a href="{% url 'orders:orders-report' %}" class="menu-link">
+              <div data-i18n="Without menu">Reports</div>
+            </a>
+          </li>
+        </ul>
       </li>
 
       <li class="menu-item " id = "settings">
@@ -172,6 +229,7 @@
         </ul>
         
       </li>
+      
 
       {% comment %} <li class="menu-item " id = "inventory-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">

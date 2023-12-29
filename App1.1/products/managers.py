@@ -7,7 +7,6 @@ from django.db.models import Q
 from django.db.models import Sum
 
 
-
 class ProductManager(models.Manager):
 
     def get_queryset(self):
@@ -57,6 +56,9 @@ class ProductManager(models.Manager):
             qs = self.active().filter(Q(name__icontains=query) | Q(
                 code__icontains=query) | Q(category__name__icontains=query) | Q(part_no__icontains=query))
         return qs
+    
+    def finished_product(self):
+        return self.active().filter(category__slug = "finish-goods")
         
 
 class AttributeManager(models.Manager):

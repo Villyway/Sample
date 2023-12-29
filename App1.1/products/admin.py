@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export.admin import ExportActionMixin
 
 # Register your models here.
-from .models import Product, Attribute, ProductAttribute, Unit, PartQuality, BOMItem, Categories
+from .models import Product, Attribute, ProductAttribute, Unit, PartQuality, BOMItem, Categories, VendorWithProductData
 
 @admin.register(Product)
 class ProductAdmin(ExportActionMixin, admin.ModelAdmin):
@@ -38,3 +38,9 @@ class CategoriesAdmin(admin.ModelAdmin):
 class BOMItemAdmin(admin.ModelAdmin):
     list = ["product__name"]
     search_fields = ['product__code']
+
+
+#VendorWithProductData
+@admin.register(VendorWithProductData)
+class VendorWithProductDataAdmin(admin.ModelAdmin):
+    list = ["vendor","product","price"]

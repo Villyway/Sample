@@ -1,0 +1,740 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+{% block title %}Orders{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'customers:dashboard' %}">Orders</a> /{{order.order_no}} 
+{% endblock %}
+
+{% block head %}
+Orders
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    
+    <div class="row">
+    
+      <!-- Order Statistics -->
+      {% if order.order_confirmation == "IN REVIEW" %}
+      <div class="col-12 alert alert-primary">This Order currently in {{order.order_confirmation}} </div>
+      {% elif order.order_confirmation == "HOLD" %}
+      <div class="col-12 alert alert-danger">This Order ON {{order.order_confirmation}} <b>Reason:</b> {{order.order_confirmation_remark}}</div>
+      {% endif %}
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2 ">
+        <div class="card h-100">
+            <div class="card-header"><h4><b>Customer Details</b></h4></div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{order.customer.name}}<td>
+                    </tr>
+                    <tr>
+                        <th>Contect Person</th>
+                        <td>{{order.customer.contect_person}}<td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>{{order.customer.mobile}}<td>
+                    </tr>
+                    <tr>
+                        <th>Alternative Phone:</th>
+                        <td>{{order.customer.mobile1}}<td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{order.customer.email}}<td>
+                    </tr>
+                    <tr>
+                        <th>GST No.</th>
+                        <td>{{order.customer.gst_no}}<td>
+                    </tr>
+                    <tr>
+                        <th>Remark</th>
+                        <td>{{order.remarks}}<td>
+                    </tr>
+                    <tr>
+                        <th>Order Dispatch Status</th>
+                        <td>{{order.dispatch_status}}</td>
+                    </tr>
+                    {% if order.dispatch_status == "DISPATCHED" %}
+                    <tr>
+                        <th>Order sales_challan No.</th>
+                        <td>{{order.sales_challan}}</td>
+                    </tr>
+                    <tr>
+                        <th>Order Lr. No.</th>
+                        <td>{{order.lr_no}}</td>
+                    </tr>
+                    {% endif %}
+
+                    {% if order.dispatch_status == "DISPATCHED" %}
+                    <tr>
+                        <th>Order Dispatched Date</th>
+                        <td>{{order.dispatch_date}}</td>
+                    </tr>
+                    {% endif %}
+
+                    <tr>
+                        <th>Order Status</th>
+                        <td>{{order.order_status}}</td>
+                    </tr>
+
+                    {% if order_status == "DELIVERED" %}
+                    <tr>
+                        <th>Order Delivered Date </th>
+                        <td>{{order.pickup_by_party_date}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if dn %}
+                    <tr>
+                        <td></td>
+                        <td><a class="btn btn-success" href="{% url 'orders:order-dispatch-process' order.id %}">Dispatch Note</a></td>
+                    </tr>
+                    {% endif %}
+                </table>
+                
+            </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
+        <div class="card h-100">
+            {% if order.order_status != "DELIVERED" %}
+            <div class="card-header"><h5>Address Details</h5> <button
+                type="button"
+                class="btn btn-warning float-end "
+                data-bs-toggle="modal"
+                data-bs-target="#basicModal"
+              >
+                Edit order Details
+              </button>
+            </div>
+            
+            {% endif %}
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th colspan="2" class="bg-warning">Billing To.</th>
+                    </tr>
+                    <tr>
+                        <th>Contect Person</th>
+                        <td>{{order.billing_add.contect_person}}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{order.billing_add.contect_phone}}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>
+                            {{order.billing_add.street}}, {{order.billing_add.street2}}<br/> 
+                            {{order.billing_add.city}}, {{order.billing_add.state}}, {{order.billing_add.country}},
+                            <br/> -{{order.billing_add.zip}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="bg-warning">shipped To.</th>
+                    </tr>
+                    <tr>
+                        <th>Contect Person</th>
+                        <td>{{order.shipped_add.contect_person}}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{order.shipped_add.contect_phone}}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>
+                            {{order.shipped_add.street}}, {{order.shipped_add.street2}}<br/> 
+                            {{order.shipped_add.city}}, {{order.shipped_add.state}}, {{order.shipped_add.country}},
+                            <br/> -{{order.shipped_add.zip}}
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+      </div>
+      <div class="col-12">
+        
+      </div>
+      <div class="col-xl-12 order-0 mb-2">
+        <div class="col-12">
+
+            <!-- Basic Bootstrap Table -->
+            <div class="card">
+                {% if order.order_confirmation == "CONFIRMED" %}
+                <div class="card-header">
+                    <button class="btn btn-primary float-end" onclick="generatePDF()">Production Intimation</button>
+                    <a href="{% url 'orders:track-lr' order.id %}" class="btn btn-success " ><i class="fa-solid fa-location-crosshairs"></i></a>
+                </div>
+                {% endif %}
+              {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+              <div class="table-responsive text-nowrap" >
+                <table class="table">
+                  <thead>
+                    <tr>
+                        <th>Sr No</th>
+                        
+                        <th>Date</th>
+                        <th>Product<br/>Code</th>
+                        <th>Product<br/>Description</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Packaging<br/>Type</th>
+                        <td>Transport</td>
+                        <td>Lr.No</td>
+                        <td>Invoice No</td>
+                        <th>Dispatch<br/> Status</th>
+                        <th>Order <br/> Status</th>
+                        <th>Action</th>
+                        
+                        
+                    </tr>
+                    
+                  </thead>
+                  <tbody class="">
+                    {% for product in order.orderofproduct_set.all|dictsort:'created_at' %}
+                    {% if order.order_confirmation == "CONFIRMED" %}
+                    {% if product.dispatch_status == 'DISPATCHED' and product.status == 'DELIVERED' %}
+                    <tr>
+                    {% elif product.dispatch_status == 'DISPATCHED' and product.status == 'IN TRANSPORT' %}
+                    <tr class="bg-primary text-white">
+                    {% elif product.dispatch_status == 'UNDER PROCESS' %}
+                    <tr class="bg-warning">
+                    {% elif product.dispatch_status == 'READY' %}
+                    <tr class="bg-success">
+                    {% elif product.dispatch_status == 'PENDING' %}
+                    <tr class="bg-danger text-white">
+                    {% endif %}
+                    {% else %}
+                        <tr>
+                    {% endif %}
+                    
+                        <td>{{forloop.counter}}</td>
+                        
+                        <td>{{product.created_at|date:"d M, Y"}}</td>
+                        <td>{{product.product.code}}</td>
+                        <td>{{product.product.name}}</td>
+                        <td>{{product.order_qty}}</td>
+                        <td>{{product.uom}}</td>
+                        <td>{{product.packing_type}}</td>
+                        <td>
+                            {% if product.transport_compny %}
+                            {{product.transport_compny}}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if product.lr_no %}
+                            {{product.lr_no}}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if product.invoice_no %}
+                            {{product.invoice_no}}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {% if order.order_confirmation == "CONFIRMED" %}
+                            {% if product.dispatch_status != 'DISPATCHED' %}
+                            <select name="dispatch" class="form-control form-select" autofocus="" id="dispatch" onchange="location = this.value;">
+                                {% for i in dispatch_status %}
+                                {% if i == product.dispatch_status %}
+                                    <option value="" selected="">{{ product.dispatch_status }}</option>
+                                {% else %}
+                                    <option value="{% url 'orders:change-order-dispatch-status' product.id %}?status={{ i }}">{{ i }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% else %}
+                            {{product.dispatch_status}}
+                            {% endif %}
+                            {% else %}
+                                -
+                            {% endif %}
+                            
+                        </td>
+                        <!---->
+                        {% if order.order_confirmation == "CONFIRMED" %}
+                        {% if product.status != 'DELIVERED'  %}
+                        {% if product.dispatch_status != 'DISPATCHED' %}
+                        <td>{{product.status}}</td>
+                        {% else %}
+                        <td>
+                            
+                        <select name="status" class="form-control form-select" autofocus="" id="status" onchange="location = this.value;">
+                            {% for i in order_status %}
+                            {% if i == product.status %}
+                            <option value="{{i}}" selected=""> {{i}} </option>
+                            {% else %}
+                            {% if product.dispatch_status == "DISPATCHED" %}
+                                {% if i != "PENDING" %}
+                                <option value="{% url 'orders:change-order-delivery-status' product.id %}?status={{i}}">{{i}}</option>
+                                {% endif %}
+                            {%else%}
+                            <option value="{% url 'orders:change-order-delivery-status' product.id %}?status={{i}}">{{i}}</option>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        
+                        </td>
+                        {% endif %}
+                        {% else %}
+                        <td>{{product.status}}</td>
+                        {% endif %}
+                        {% else %}
+                        <td>-</td>
+                        {% endif %}
+                        {% if product.status != 'DELIVERED' %}
+                        <td>
+                            
+                            {% if product.is_active %}
+                            <a class="btn btn-warning" href="{% url 'orders:order-item-cancle' product.id %}">Cancle</a>
+                            {% else %}
+                                Cancled
+                            {% endif %}
+                            
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+              
+            </div>
+            <!--/ Basic Bootstrap Table -->
+          </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  
+  <!-- / Content -->
+  <div class="col-12">
+    <div class="col-lg-4 col-md-6 float-end"></div>
+        
+        <div class="mt-3">
+          <!-- Button trigger modal -->
+          
+          <!-- Modal -->
+          <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel1">Edit Address Details & Add Extra Products</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                    <form class="mt-3 " method="post" enctype="multipart/form-data" action='.'
+                                    data-url='{{ request.build_absolute_uri|safe }}' id="create-orders">
+                        {% csrf_token %}
+                        <div class="row">
+                          <div class="form-group col mb-3">
+                              <label for="billedTo">Billing to:</label>
+                              <select name="billingto" class="form-control form-select" autofocus="" id="billingTo" required="">
+                                  <option value="" selected="">--- Select Address ---</option>
+                                  {% for address in order.customer.id|get_addresses %}
+                                  {% if address.id == order.billing_add.id %}
+                                  <option value="{{address.id}}" selected="">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                  {% else %}
+                                  <option value="{{address.id}}">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                  {% endif %}
+                                  {% endfor %}
+                              </select>
+                          </div>
+                          <div class="col mb-3">
+                              <label for="shippedTo">Shipped to:</label>
+                              <select name="shippedto" class="form-control form-select" autofocus="" id="shippedTo" required="">
+                                  <option value="" >--- Select Address ---</option>
+                                  {% for address in order.customer.id|get_addresses %}
+                                  {% if address.id == order.shipped_add.id %}
+                                  <option value="{{address.id}}" selected="">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                  {% else %}
+                                  <option value="{{address.id}}">{{address.street}},{{address.street2}}<br/>{{address.city}},{{address.state}},{{address.country}} -{{address.zip}}</option>
+                                  {% endif %}
+                                  {% endfor %}
+                              </select>
+                          </div>
+                          <div class="col mb-3">
+                            <label for="shippedTo">Remark:</label>
+                            <textarea id="w3review" name="remark" class="form-control" rows="4" cols="50">{{order.remarks}}</textarea>
+                        </div>
+                        </div>
+                        <div class="row">
+                          <div id="billingFields" class="mt-4">
+                              <div class="row billing-entry">
+                                  <div class="form-group col-md-2">
+                                      <label for="productCode">Product Code:</label>
+                                      <input type="text" class="form-control" name="productCode[]" >
+                                  </div>
+                                  <div class="form-group col-md-2">
+                                      <label for="quantity">Quantity:</label>
+                                      <input type="text" class="form-control" name="quantity[]" >
+                                  </div>
+                                  <div class="form-group col-md-2">
+                                      <label for="unit">Unit:</label>
+                                      <select name="unit[]" class="form-control form-select" autofocus="" id="billingTo" >
+                                          <option value="" selected="">--- Select Unit ---</option>
+                                          {% for i in unit %}
+                                          <option value="{{i}}">{{i}}</option>
+                                          {% endfor %}
+                                      </select>
+                                      {% comment %} <input type="text" class="form-control" name="unit[]" required> {% endcomment %}
+                                  </div>
+                                  <div class="form-group col-md-2">
+                                      <label for="packagingType">Packaging Type:</label>
+                                      <select name="packagingType[]" class="form-control form-select" autofocus="" id="billingTo" >
+                                          <option value="" selected="">Select Packaging Type ---</option>
+                                          {% for i in packaging_type %}
+                                          <option value="{{i}}">{{i}}</option>
+                                          {% endfor %}
+                                      </select>
+                                      {% comment %} <input type="text" class="form-control" name="packagingType[]" required> {% endcomment %}
+                                  </div>
+                                  <div class="form-group col-md-2">
+                                      <button type="button" class="btn btn-danger remove-billing mt-4">Remove</button>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div class="col-2">
+                            
+                              <button type="button" class="btn btn-primary mt-3" id="add-row">Add Product</button>
+                            
+                          <div>
+                        </div>
+                    </form>
+                        
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+<div class="container mt-5" style="display: none;">
+    <table class="table table-bordered" id="production">
+      <thead>
+        <tr>
+            <th colspan="6" class="text-center" style="font-size:20px;text-align:center">Production Intimation</th>
+            <th colspan="4">{% now "l, j F, Y g:i A" %}.</th>
+        </tr>
+        <tr>
+          <th scope="col">Sr No</th>
+          <th scope="col">Order Date</th>
+          <th scope="col">Order No</th>
+          <th scope="col">Customer Name</th>
+          <th scope="col">Product Code</th>
+          <th scope="col">Description</th>
+          <th scope="col">Specification</th>
+          <th scope="col">Qty</th>
+          <th scope="col">Unit</th>
+          <th scope="col">Packaging <br>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Sample data, replace with your actual data -->
+        {% for product in order.orderofproduct_set.all|dictsort:'created_at' %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{product.created_at|date:"d M, Y"}}</td>
+          <td>{{product.order.order_no}}</td>
+          <td>{{product.order.customer.name}}</td>
+          <td>{{product.product.code}}</td>
+          <td>{{product.product.name}}</td>
+          <td>{{product.product.specification}}</td>
+          <td>{{product.order_qty}}</td>
+          <td>{{product.uom}}</td>
+          <td>{{product.packing_type}} <input type="checkbox" id="" name="" value=""></td>
+        </tr>
+        {% endfor %}
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+
+    
+  </div>
+  
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+  $('#orders-menu').addClass('active open');
+  $('#orders-create').addClass('active')
+</script>
+
+<!--This is script for add multiple field-->
+<script>
+    
+    $(document).ready(function () {
+        var $myForm = $('#create-orders')
+        $myForm.on("submit", function (event) {
+            console.log()
+            event.preventDefault()
+            var formData = $(this).serialize()
+            console.log(formData)
+            var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
+            option = {
+                method: "POST",
+                url: $thisURL,
+                data: formData,
+                success: function (data) {
+                    if (data.error) {
+                        var message = "";
+                        $("#error-message").html(message);
+                        $('.toast').toast('show');
+                    }
+                    else {
+                        location.replace(data.url)
+                    }
+                },
+                error: function (data) {
+                    $(".print_error").text("")
+                    $("#code").text("")
+                    $("#image").text("")
+                    $(".print_error").text()
+                    $("#code").text(data.responseJSON.code)
+                    $("#image").text(data.responseJSON.image)
+                    $("#image").text(data.responseJSON.exception)
+                },
+            }
+            $myForm.ajaxSubmit(option)
+        })
+    })
+</script>
+
+<script>
+    // Add Billing Field
+    //document.getElementById("").addEventListener("click", function() {
+    $("#add-row").click(function(){
+        
+        const billingFieldsDiv = document.getElementById("billingFields");
+        const billingCount = billingFieldsDiv.querySelectorAll(".billing-entry").length + 1;
+
+        const billingEntry = document.createElement("div");
+        billingEntry.className = "form-row billing-entry";
+
+        billingEntry.innerHTML = `
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label for="productCode${billingCount}">Product Code:</label>
+                <input type="text" class="form-control" name="productCode[]" required>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="quantity${billingCount}">Quantity:</label>
+                <input type="text" class="form-control" name="quantity[]" >
+            </div>
+            <div class="form-group col-md-2">
+                <label for="unit${billingCount}">Unit:</label>
+                <select name="unit[]" class="form-control form-select" autofocus="" id="billingTo" >
+                    <option value="" selected="">--- Select Unit ---</option>
+                    {% for address in unit %}
+                    <option value="{{address}}">{{address}}</option>
+                    {% endfor %}
+                </select>
+                {% comment %} <input type="text" class="form-control" name="unit[]" required> {% endcomment %}
+            </div>
+            <div class="form-group col-md-2">
+                <label for="packagingType${billingCount}">Packaging Type:</label>
+                <select name="packagingType[]" class="form-control form-select" autofocus="" id="billingTo" >
+                    <option value="" selected="">Select Packaging Type ---</option>
+                    {% for address in packaging_type %}
+                    <option value="{{address}}">{{address}}</option>
+                    {% endfor %}
+                </select>
+                
+            </div>
+            <div class="form-group col-md-2">
+                <button type="button" class="btn btn-danger remove-billing mt-4">Remove</button>
+            </div>
+        </div>
+        `;
+
+        billingFieldsDiv.appendChild(billingEntry);
+
+        // Add an event listener to the new remove button
+        const newRemoveButton = billingEntry.querySelector(".remove-billing");
+        newRemoveButton.addEventListener("click", function() {
+            billingEntry.remove();
+        });
+    });
+
+    // Remove Billing Field
+    document.getElementById("billingFields").addEventListener("click", function(e) {
+        if (e.target && e.target.className == "btn btn-danger remove-billing") {
+            e.target.parentElement.parentElement.remove();
+        }
+    });
+</script>
+{% comment %} <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script> {% endcomment %}
+{% comment %} <script>
+    function generatePDF() {
+      var element = document.getElementById('production');
+
+      // Define the options for the PDF
+      var options = {
+        margin: 10,
+        filename: 'order_table.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // Generate the PDF
+      html2pdf(element, options);
+    }
+  </script> {% endcomment %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+<!-- Include jsPDF AutoTable plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+
+{% comment %} <script>
+  function generatePDF() {
+    // Ensure that jsPDF is accessible globally
+    const { jsPDF } = window.jspdf;
+
+    // Create a jsPDF instance
+    const doc = new jsPDF();
+
+
+    // Convert HTML table to PDF using AutoTable plugin
+    doc.autoTable(
+        { 
+            html: '#production' 
+        }
+    );
+
+    // Save the PDF
+    doc.save('table_to_pdf.pdf');
+  }
+</script> {% endcomment %}
+{% comment %} <script>
+    function generatePDF() {
+      // Ensure that jsPDF is accessible globally
+      const { jsPDF } = window.jspdf;
+  
+      // Create a jsPDF instance
+      const doc = new jsPDF();
+  
+      // Define title and header content (modify as needed)
+      const title = 'Krunal Industries';
+  
+      // Add title manually using didDrawPage event
+      doc.autoTable({
+        html: '#production',  // Specify the HTML table
+        didDrawPage: function (data) {
+          // Add title above the table
+          doc.setFontSize(18);
+          doc.text(title, data.settings.margin.left, 10);
+        }
+      });
+  
+      // Save the PDF
+      doc.save('table_with_title.pdf');
+    }
+  </script> {% endcomment %}
+  {% comment %} <script>
+    function generatePDF() {
+      // Ensure that jsPDF is accessible globally
+      const { jsPDF } = window.jspdf;
+  
+      // Create a jsPDF instance
+      const doc = new jsPDF();
+  
+      // Define titles and header content (modify as needed)
+      const title1 = 'Krunal Industries';
+      // const title2 = 'Table Title 2';
+      const header = [['Header 1', 'Header 2', 'Header 3']];
+  
+      // Add titles manually using didDrawPage event
+      doc.autoTable({
+        head: header,  // Add the header
+        html: '#production',  // Specify the HTML table
+        didDrawPage: function (data) {
+          // Add title1 centered above the table
+          doc.setFontSize(18);
+          const title1Width = doc.getStringUnitWidth(title1) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+          const xOffset1 = (doc.internal.pageSize.width - title1Width) / 2;
+          doc.text(title1, xOffset1, 10);
+  
+          // Add title2 above the table
+          doc.setFontSize(14);
+         // doc.text(title2, data.settings.margin.left, 20);
+        }
+      });
+  
+      // Save the PDF
+      doc.save('table_with_titles.pdf');
+    }
+  </script> {% endcomment %}
+
+  <script>
+    function generatePDF() {
+      // Ensure that jsPDF is accessible globally
+      const { jsPDF } = window.jspdf;
+  
+      // Create a jsPDF instance with landscape orientation
+      const doc = new jsPDF({ orientation: 'landscape' });
+  
+      // Define titles and header content (modify as needed)
+      const title1 = 'Krunal Industries';
+  
+      // Add titles manually using didDrawPage event
+      doc.autoTable({
+        html: '#production',  // Specify the HTML table
+        didDrawPage: function (data) {
+          // Add title1 centered above the table
+          doc.setFontSize(18);
+          const title1Width = doc.getStringUnitWidth(title1) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+          const xOffset1 = (doc.internal.pageSize.width - title1Width) / 2;
+          doc.text(title1, xOffset1, 10);
+  
+          // Add title2 above the table
+          doc.setFontSize(14);
+          // doc.text(title2, data.settings.margin.left, 20);
+        }
+        
+      });
+  
+      // Save the PDF
+      doc.save('table_with_titles_landscape.pdf');
+    }
+  </script>
+  
+{% endblock js %}

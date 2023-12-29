@@ -41,13 +41,11 @@ class Login(View):
                 if user.is_deactivated:
                     messages.error(
                         request, "Your account has been blocked, Please contact BasuriAutomotive Team to activate that.")
-                    print('Your account has been blocked, Please contact BasuriAutomotive Team to activate that.')
                     return redirect("login")
                 if user.is_active:
                     login(request, user)
                     messages.success(
                         request, "Logged In!")
-                    print("base:dashboard")
                     return redirect("base:dashboard")
                 else:
                     if user.email != None and user.email != "":
@@ -69,7 +67,6 @@ class Login(View):
                         request, "You are not an active user, please activate your account.")
                     return redirect("base:otp-verification")
             else:
-                print("There is no user with this credentials.")
                 messages.error(
                     request, "There is no user with this credentials.")
                 return redirect("login")
@@ -137,7 +134,6 @@ class UserRegister(FormView):
                     }
                     return JsonResponse(data, status=200)
         except Exception as e:
-            print(str(e))
             data = {"message": str(e)}
             return JsonResponse(data, status=500)
         
