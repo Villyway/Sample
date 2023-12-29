@@ -174,8 +174,13 @@ All Orders
                 <td>
                   {% if order.order_confirmation == 'CONFIRMED' %}
                   {{order.order_confirmation}}
+                  
                   {% else %}
+                  {% if user.role == 'ACCOUNTANT' or user.role == 'SUPER_ADMIN' %}
                   <button class="btn btn-warning status-btn" data-order-id="{{ order.order_no }}">Confirmed</button>
+                  {% else %}
+                  {{order.order_confirmation}}
+                  {% endif %}
                 {% endif %}
                 </td>                
                 <td>
