@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.cache import never_cache
+from django.views.generic.base import TemplateView
 
 from base.views import Login
 
@@ -33,6 +34,7 @@ urlpatterns = [
     path('inventry/', include('inventry.urls', namespace='inventry')),
     path('orders/', include('orders.urls', namespace='orders')),
     path('customers/', include('customers.urls', namespace='customers')),
+    path("robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),  #add the robots.txt file
     
 ]
 
