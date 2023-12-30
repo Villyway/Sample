@@ -171,18 +171,19 @@ All Orders
                   {% endif %}
                   
                 </td>
+                {% if user.role != 'STORE_EXECUTIVE' %}
                 <td>
                   {% if order.order_confirmation == 'CONFIRMED' %}
                   {{order.order_confirmation}}
-                  
                   {% else %}
-                  {% if user.role == 'ACCOUNTANT' or user.role == 'SUPER_ADMIN' %}
                   <button class="btn btn-warning status-btn" data-order-id="{{ order.order_no }}">Confirmed</button>
-                  {% else %}
-                  {{order.order_confirmation}}
                   {% endif %}
-                {% endif %}
-                </td>                
+                </td>
+                {% else %}
+                <td>
+                {{order.order_confirmation}}
+                </td>
+                {% endif %}    
                 <td>
                   <a href="{% url 'orders:order-details' order.id %}" class="btn btn-success btn-circle " title="Publish"><i class="fa-regular fa-eye"></i></a>
                   {% comment %} <a href="{% url 'products:product-property' product.id %}"
