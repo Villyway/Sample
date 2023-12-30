@@ -60,11 +60,28 @@
             <!-- Bread crumb and right sidebar toggle -->
             <!-- ============================================================== -->
             <div class="container-fluid">
+              
+              
+                  <div class="d-flex float-end">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar avatar-online">
+                        <img src="{% static 'assets/img/avatars/1.webp' %}" alt class="w-px-40 h-auto rounded-circle" />
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <span class="fw-semibold d-block">{{user.name}}</span>
+                      <small class="text-muted">{{user.role|title}}</small>
+                    </div>
+                  </div>
+              
+              
+              
               <div class="page-breadcrumb mt-5">
                   <div class="row">
                       <div class="col-7 align-self-center">
                           <h3 class="page-title text-truncate text-dark font-weight-medium mb-1">
                               {% block head %}{% endblock %}</h3>
+                              
                           <div class="d-flex align-items-center">
                               <nav aria-label="breadcrumb">
                                   <ol class="breadcrumb m-0 p-0">
