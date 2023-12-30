@@ -352,7 +352,7 @@ class ExportDispatchNote(View):
             filename='output.pdf',
             context=context_data,
             show_content_in_browser=False,
-            cmd_options={'margin-top': 10},  # Optional: Set additional wkhtmltopdf options
+            cmd_options={'margin-top': 10, 'orientation': 'Landscape'},# Optional: Set additional wkhtmltopdf options
         )
 
         return response

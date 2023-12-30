@@ -252,6 +252,19 @@ Orders
                             {% endif %}
                         </td>
                         
+                        {% if user.role == 'SUPER_ADMIN' %}
+                        <td>
+                          <select name="dispatch" class="form-control form-select" autofocus="" id="dispatch" onchange="location = this.value;">
+                            {% for i in dispatch_status %}
+                            {% if i == product.dispatch_status %}
+                                <option value="" selected="">{{ product.dispatch_status }}</option>
+                            {% else %}
+                                <option value="{% url 'orders:change-order-dispatch-status' product.id %}?status={{ i }}">{{ i }}</option>
+                            {% endif %}
+                            {% endfor %}
+                          </select>
+                        </td>
+                        {% else %}
                         <td>
                             {% if order.order_confirmation == "CONFIRMED" %}
                             {% if product.dispatch_status != 'DISPATCHED' %}
@@ -272,7 +285,23 @@ Orders
                             {% endif %}
                             
                         </td>
-                        <!---->
+                        {% endif %}
+<!--Order Status-->
+                        {% if user.role == 'SUPER_ADMIN'  %}
+                        <td>
+                          <select name="status" class="form-control form-select" autofocus="" id="status" onchange="location = this.value;">
+                            {% for i in order_status %}
+                            {% if i == product.status %}
+                            <option value="{{i}}" selected=""> {{i}} </option>
+                            {% else %}
+                            
+                            <option value="{% url 'orders:change-order-delivery-status' product.id %}?status={{i}}">{{i}}</option>
+                            
+                            {% endif %}
+                            {% endfor %}
+                        </select>  
+                        </td>
+                        {% else %}        
                         {% if order.order_confirmation == "CONFIRMED" %}
                         {% if product.status != 'DELIVERED'  %}
                         {% if product.dispatch_status != 'DISPATCHED' %}
@@ -304,7 +333,9 @@ Orders
                         {% else %}
                         <td>-</td>
                         {% endif %}
+                        {% endif %}
                         {% if product.status != 'DELIVERED' %}
+                        
                         <td>
                             
                             {% if product.is_active %}
