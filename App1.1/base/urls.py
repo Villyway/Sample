@@ -13,7 +13,7 @@ from .views import (UserRegister,
 app_name = "base"
 
 urlpatterns = [
-    path("register/", UserRegister.as_view(), name="register"),
+    # path("register/", UserRegister.as_view(), name="register"),
     path("dashboard/", login_required(Dashboard.as_view()), name="dashboard"),
     path("logout/", login_required(Logout.as_view()), name="logout"),
     path("otp-verification/", VerifyOtp.as_view(), name="otp_verify"),
