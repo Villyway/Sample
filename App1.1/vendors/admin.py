@@ -5,7 +5,7 @@ from .models import Vendor, PartyType
 
 @admin.register(Vendor)
 class VendorAdmin(admin.ModelAdmin):
-    list_display = ['code']
+    list_display = ['comany_name','gst_no']
 
 
 # @admin.register(PartyType)

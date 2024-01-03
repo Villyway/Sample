@@ -61,7 +61,7 @@ class Vendor(Base):
     mobile1 = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     email1 = models.EmailField(null=True, blank=True)
-    gst_no = models.CharField(max_length=16, null=True, blank=True)
+    gst_no = models.CharField(max_length=18, null=True, blank=True)
     msme_no = models.CharField(max_length=15, null=True, blank=True)
     bank_name = models.CharField(max_length=150, null=True, blank=True)
     bank_branch_name = models.CharField(max_length=150, null=True, blank=True)

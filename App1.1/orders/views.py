@@ -28,7 +28,6 @@ class Dashboard(View):
     def get_top_10_products(self):
         # Aggregate the total quantity ordered for each product
         top_products = OrderOfProduct.objects.top_products()
-        print(top_products)
 
         # Order the products by total quantity ordered in descending order
         top_products = top_products.order_by('-total_quantity_ordered')[:10]
@@ -418,7 +417,13 @@ class OrdersReport(View):
     template_name = "orders/report.html"
 
     def get(self, request):
-        return render(request,self.template_name)
+        context = {
+            "confirm_status": [i.value for i in OrderConfirmation],
+            "order_status": [i.value for i in OrderStatus],
+            "order_dispatch_status": [i.value for i in DispatchStatus],
+            }
+
+        return render(request,self.template_name,context)
     
 
 class ExportData(View):
@@ -535,70 +540,23 @@ class TrackLR(View):
                     lr_nos.append(i.lr_no)
             print(lr_nos)
         api_url = 'https://www.vrlgroup.in/track_consignment.aspx?lrtrack=1&lrno=' + lr_nos[0]
-        # try:
+        try:
             # Make a GET request to the API
-        response = requests.post(api_url)
-        # Check if the response status is OK (status code 200-299)
-        response.raise_for_status()
-        # Parse the JSON response
-        api_data = response.json()
-        # Do something with the API data
-        # ...
-        context = {
-            "data":api_data
-        }
-        return render(request,self.template_name,context)
-        # except requests.exceptions.RequestException as e:
-        #     # Handle any errors that occurred during the API call
-        #     return JsonResponse({'message': f'API call failed: {str(e)}'}, status=500)
+            response = requests.post(api_url)
+            # Check if the response status is OK (status code 200-299)
+            response.raise_for_status()
+            # Parse the JSON response
+            api_data = response.json()
+            # Do something with the API data
+            # ...
+            context = {
+                "data":api_data
+            }
+            return render(request,self.template_name,context)
+        except requests.exceptions.RequestException as e:
+            # Handle any errors that occurred during the API call
+            return JsonResponse({'message': f'API call failed: {str(e)}'}, status=500)
 
-    # def post(self, request):
-    #     orderofproduct = OrderOfProduct.objects.get(id=id)
-    #     orderofproduct.lr_no = request.POST.get('lr_no')
-    #     return redirect('orders:order-details', id = orderofproduct.order.id)
     
 
     
-# class CreateOrders1(FormView):
-    
-#     template_name = "orders/create.html"
-#     form_class = OrdersForm
-#     success_url = "/orders/dashboard/"
-
-#     def form_invalid(self, form):
-#         response = super(CreateOrders, self).form_invalid(form)
-#         if is_ajax(self.request):
-#             data = form.errors
-#             return JsonResponse(data, status=400)
-#         else:
-#             return redirect('/redirect-success/')
-
-#     def form_valid(self, form):
-#         response = super(CreateOrders, self).form_valid(form)
-#         try:
-#             if is_ajax(self.request):
-#                 form_data = form.cleaned_data
-#                 with transaction.atomic():
-#                     products = self.request.POST.getlist('product[]')
-#                     quantities = self.request.POST.getlist('quantity[]')
-
-#                     for product_name, quantity_value in zip(products, quantities):
-#                         print(product_name, quantity_value)
-
-                    
-#                     messages.success(
-#                         self.request, "Product added successfully.")
-#                 data = {
-#                         'message': "Product added successfully.",
-#                         'url': get_secured_url(
-#                             self.request) + self.request.META["HTTP_HOST"] + '/products/' + str(1) + '/product-property/'
-#                     }
-#                 return JsonResponse(data)
-#             else:
-#                 return response
-        
-#         except Exception as e:
-#             data = {"error": str(e), "status": 403}
-#             return JsonResponse(data)
-
-

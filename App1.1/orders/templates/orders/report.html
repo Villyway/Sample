@@ -23,39 +23,45 @@ Reports
   <div class="row">
     <div class="col-12">
         <div class="row">
-            <div class="mb-3 col-4">
-                <label for="defaultSelect" class="form-label">Time Line</label>
-                <select id="time-line-select" class="form-select">
-                  <option>Default select</option>
-                  <option value="CUSTOM">Custom</option>
-                  <option value="TODAY">Today</option>
-                </select>
-            </div>
-            <div class="mb-3 col-4">
-              <label for="defaultSelect" class="form-label">Report Category</label>
+          <div class="col-2">
+            <label>Start Date</label>
+            <input type="date" class="form-control mb-3" id="startDate" name="start_date" />      
           </div>
-        </div>
-        <div class="row" id="custom-select">
-            <div class="mb-3 col-4 row">
-                <label for="html5-date-input" class="col-md-2 col-form-label"> Starting Date</label>
-                <div class="col-md-10">
-                  <input class="form-control" type="date" value="" id="start-date-input" />
-                </div>
-            </div>
-            <div class="mb-3 col-4 row">
-                <label for="html5-date-input" class="col-md-2 col-form-label"> Ending Date</label>
-                <div class="col-md-10">
-                  <input class="form-control" type="date" value="" id="end-date-input" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
-          <div class="mb-3 col-4 row">
+          <div class="col-2">
+            <label>End Date</label>
+            <input type="date" class="form-control mb-3" id="endDate" name="end_date" />      
+          </div>
+          
+          <div class="col-2">
+            <label>Order Dispatch Status</label>
+            <select class="form-select" id="OrderDispatchStatus">
+              <option value="choose" selected>Choose...</option>
+              {% for status in order_dispatch_status %}
+              <option value="{{status}}">{{status}}</option>
+              {% endfor %}
+            </select>
+          </div>
+      
+          <div class="col-2">
+            <label>Order Status</label>
+            <select class="form-select" id="OrderStatus">
+              <option value="choose" selected>Choose...</option>
+              {% for status in order_status %}
+              <option value="{{status}}">{{status}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          
+      
+          <div class="col-3">
+            <label>Search Input</label>
+            <input type="text" class="form-control mb-3" id="id_search" name="search" placeholder="Search" />      
+          </div>
+      
+          <div class="col-1">
             
-            <div class="col-md-10">
-              <butoon type="submit" id="get-report" class="btn btn-success ft-right">Submit</button>
-            </div>
-        </div>
+            <button type="submit" class="form-control mt-4 btn-success" id="btn-search" name="search" placeholder="Search" />Search</button>      
+          </div>
         </div>
     </div>
     <div class="col-12">
@@ -108,60 +114,24 @@ Reports
 
 {% block js %}
 <script>
-    $("#report-type-select").hide();
-    $("#yearly-select").hide();
-    $("#monthly-select").hide();
-    $("#custom-select").hide();
-    $('#orders-menu').addClass('active open');
-    $('#order-report').addClass('active')
-</script>
-<script>
-    $("#time-line-select").change(function () {
-        $("#report-type-select").hide();
-        $("#yearly-select").hide();
-        $("#monthly-select").hide();
-        $("#custom-select").hide();
-        var id = $(this).find(":selected").val();
-        if (id=="Yearly"){
-            $("#report-type-select").show();
-            $("#yearly-select").show();
-        }
-        else if (id == "Monthly"){
-            $("#report-type-select").show();
-            $("#monthly-select").show();
-        }
-        else if (id == "CUSTOM"){
-            $("#report-type-select").show();
-            $("#custom-select").show();
-        }
-        else if (id == "Today"){
-            $("#report-type-select").show();
-            $("#yearly-select").hide();
-            $("#monthly-select").hide();
-            $("#custom-select").hide();
-        }
-    })
-    $("#get-report").click(function(){
-
-      var select = document.getElementById("time-line-select");
-      var start = document.getElementById("start-date-input");
-      var end = document.getElementById("end-date-input");
-      var selectedOption = select.options[select.selectedIndex];
-      var selectedValue = selectedOption.value;
-      $('#export-link').attr('href', '/orders/export-report/?start=' + start.value + "&end=" + end.value + "&category="+selectedValue)
-      $.ajax({
-        url: '/orders/search-report/',
+  $(document).on("click", "#btn-search", function () {
+    var startDate = document.getElementById("startDate").value //endDate, OrderDispatchStatus, OrderStatus, id_search
+    var endDate = document.getElementById("endDate").value
+    var dispatchStatus = document.getElementById("OrderDispatchStatus")
+    var orderStatus = document.getElementById("OrderStatus")
+    var queryInput = document.getElementById("id_search").value
+    var selectDispatch = dispatchStatus.options[dispatchStatus.selectedIndex].value
+    var selectStatus = orderStatus.options[orderStatus.selectedIndex].value
+    console.log(selectStatus,selectDispatch)
+    
+    $.ajax({
+        url: '/orders/search/',
         type: 'GET',
-        data: { 'start': start.value, "end":end.value, "category":selectedValue},
+        data: { 'query': queryInput, "dispatch_status":selectDispatch, "order_status":selectStatus, "start":startDate, "end":endDate},
         success: function (data) {
-            
-            $('#data-stock-body').html(data.data);
+            $('#id_products_list').html(data.data);
         }
     });
-    
-    
-    })
-    
-    
+});
 </script>
 {% endblock js %}
