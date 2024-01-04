@@ -17,24 +17,90 @@ Edit Vendor
 {% endblock %}
 
 {% block content %}
-<div class="row">
-        <div class="col-md-12 mt-3">
-                <div class="card mb-4">
-                  <h5 class="card-header">Edit Vendor</h5>
-                  <div class="card-body">
-                        <form method="post">
-                                {% csrf_token %}
-                                {{form}}
-                                <button class="btn btn-success mt-3" type="submit">Edit</button>
-                        </form>
-                      
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6 mt-3">
+            <div class="card mb-4">
+                <h5 class="card-header">Vendor General Details</h5>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="{{form.comany_name.label}}" class="form-label">{{form.comany_name.label}}</label>
+                        {{form.comany_name}}
                     </div>
-                  </div>
+                    <div class="mb-3">
+                        <label for="{{form.type.label}}" class="form-label">{{form.type.label}}</label>
+                        {{form.type}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.primary_contect_name.label}}" class="form-label">{{form.primary_contect_name.label}}</label>
+                        {{form.primary_contect_name}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.mobile1.label}}" class="form-label">{{form.mobile1.label}}</label>
+                        {{form.mobile1}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.email1.label}}" class="form-label">{{form.email1.label}}</label>
+                        {{form.email1}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.secondary_contect_name.label}}" class="form-label">{{form.secondary_contect_name.label}}</label>
+                        {{form.secondary_contect_name}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.mobile2.label}}" class="form-label">{{form.mobile2.label}}</label>
+                        {{form.mobile2}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.email2.label}}" class="form-label">{{form.email2.label}}</label>
+                        {{form.email2}}
+                    </div>
                 </div>
-              </div>
-</div>
-{% endblock %}
+            </div>
+        </div>
+        <div class="col-md-6 mt-3">
+            <div class="card mb-4">
+                <h5 class="card-header">Vendor Address</h5>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="{{form.gst_no.label}}" class="form-label">{{form.gst_no.label}}</label>
+                        {{form.gst_no}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.street.label}}" class="form-label">{{form.street.label}}</label>
+                        {{form.street}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.street2.label}}" class="form-label">{{form.street2.label}}</label>
+                        {{form.street2}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.country.label}}" class="form-label">{{form.country.label}}</label>
+                        {{form.country}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.state.label}}" class="form-label">{{form.state.label}}</label>
+                        {{form.state}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.city.label}}" class="form-label">{{form.city.label}}</label>
+                        {{form.city}}
+                    </div>
 
+                    <div class="mb-3">
+                        <label for="{{form.pincode.label}}" class="form-label">{{form.pincode.label}}</label>
+                        {{form.pincode}}
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success mt-3 float-end" type="submit">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
 {% block js %}
 <script>
         $(document).ready(function () {

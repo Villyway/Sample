@@ -7,7 +7,6 @@ from django.db import transaction
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
-from django.core import serializers
 from django.template.loader import render_to_string
 
 from .forms import VendorForm
@@ -30,7 +29,7 @@ class VendorList(View):
     template_name = "vendors/list.html"
 
     def get(self, request):
-        vendors = Vendor.objects.active()
+        vendors = Vendor.objects.active().order_by('-created_at')
         page = request.GET.get('page', 1)
         paginator = Paginator(vendors, 10)
         try:
@@ -61,6 +60,7 @@ class CreateVendor(FormView):
 
     def form_invalid(self, form):
         super(CreateVendor, self).form_invalid(form)
+        print(self.request,form.errors)
         messages.error(self.request,form.errors)
         return redirect("vendors:vendor-create")
 
@@ -69,14 +69,16 @@ class CreateVendor(FormView):
         try:
             with transaction.atomic():
                 vendor = Vendor.objects.create(
-                    #code = form_data["code"],
-                    name = form_data["name"],
-                    mobile = form_data["mobile"],
-                    email = form_data["email"],
-                    gst_no = form_data["gst_no"],
-                    type =  form_data["type"],
+                    type = form_data['type'],
+                    comany_name = form_data['comany_name'],
+                    primary_contect_name = form_data['primary_contect_name'],
+                    secondary_contect_name = form_data['secondary_contect_name'],
+                    mobile = form_data['mobile1'],
+                    mobile1 = form_data['mobile2'],
+                    email = form_data['email1'],
+                    email1 = form_data['mobile2'],
+                    gst_no = form_data['gst_no'],
                     created_by = self.request.user.id
-
                 )
                 address = Address()
                 address.street = form_data["street"]
@@ -113,18 +115,32 @@ class VendorEditView(FormView):
         try:
             with transaction.atomic():
                 vendor = Vendor.objects.single_vendor(id = self.kwargs['id'])
-                if vendor.name != form_data['name']:
-                    vendor.name = form_data['name']
-                if vendor.mobile != form_data['mobile']:
-                    vendor.mobile = form_data['mobile']
-                if vendor.email != form_data['email']:
-                    vendor.email = form_data['email']
+                if vendor.type != form_data['type']:
+                    vendor.type = form_data['type']
+
+                if vendor.comany_name != form_data['comany_name']:
+                    vendor.comany_name = form_data['comany_name']
+
+                if vendor.primary_contect_name != form_data['primary_contect_name']:
+                    vendor.primary_contect_name = form_data['primary_contect_name']
+
+                if vendor.secondary_contect_name != form_data['secondary_contect_name']:
+                    vendor.secondary_contect_name = form_data['secondary_contect_name']
+
+                if vendor.mobile != form_data['mobile1']:
+                    vendor.mobile = form_data['mobile1']
+
+                if vendor.mobile1 != form_data['mobile2']:
+                    vendor.mobile1 = form_data['mobile2']
+
+                if vendor.email != form_data['email1']:
+                    vendor.email = form_data['email1']
+
+                if vendor.email1 != form_data['mobile2']:
+                    vendor.email1 = form_data['mobile2']
 
                 if vendor.gst_no != form_data['gst_no']:
                     vendor.gst_no = form_data['gst_no']
-
-                if vendor.type != form_data['type']:
-                    vendor.type = form_data["type"]
 
                 vendor.updated_by = self.request.user.id
                 vendor.save()

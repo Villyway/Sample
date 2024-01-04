@@ -18,8 +18,14 @@ class Command(BaseCommand):
             data = json.load(f)
             
             for i in data:
-                print(len(i['gst_no']))
-                # v, created = Vendor.objects.get_or_create(gst_no=i.get('gst_no', ''))
+                # print(i)
+                if i['gst_no']:
+                    if Vendor.objects.filter(gst_no=i['gst_no']).exists():
+                       pass
+                    else:
+                        print(i)
+                        Vendor.objects.create(gst_no=str(i['gst_no']))
+
                 # v.comany_name = i.get('name', '')
 
                 # if isinstance(i.get('contect'), str):

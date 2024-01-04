@@ -8,8 +8,8 @@
 {% endblock css %}
 
 {% block next_page %}
-<li class="breadcrumb-item text-muted active" aria-current="page"><a
-        href="{% url 'vendors:vendor-list' %}">Vendors</a> / <b class="text-dark">Add<b></li>
+<li class="breadcrumb-item text-muted active" aria-current="page"><a href="{% url 'vendors:vendor-list' %}">Vendors</a>
+    / <b class="text-dark">Add<b></li>
 {% endblock %}
 
 {% block head %}
@@ -17,65 +17,134 @@ New Vendor
 {% endblock %}
 
 {% block content %}
-<div class="row">
-        <div class="col-md-12 mt-3">
-                <div class="card mb-4">
-                  <h5 class="card-header">New Vendor</h5>
-                  <div class="card-body">
-                        <form method="post">
-                                {% csrf_token %}
-                                {{form}}
-                                <button class="btn btn-success mt-3" type="submit">Add</button>
-                        </form>
-                      
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6 mt-3">
+            <div class="card mb-4">
+                <h5 class="card-header">Vendor General Details</h5>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="{{form.comany_name.label}}" class="form-label">{{form.comany_name.label}}</label>
+                        {{form.comany_name}}
                     </div>
-                  </div>
+                    <div class="mb-3">
+                        <label for="{{form.type.label}}" class="form-label">{{form.type.label}}</label>
+                        {{form.type}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.primary_contect_name.label}}" class="form-label">{{form.primary_contect_name.label}}</label>
+                        {{form.primary_contect_name}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.mobile1.label}}" class="form-label">{{form.mobile1.label}}</label>
+                        {{form.mobile1}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.email1.label}}" class="form-label">{{form.email1.label}}</label>
+                        {{form.email1}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.secondary_contect_name.label}}" class="form-label">{{form.secondary_contect_name.label}}</label>
+                        {{form.secondary_contect_name}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.mobile2.label}}" class="form-label">{{form.mobile2.label}}</label>
+                        {{form.mobile2}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.email2.label}}" class="form-label">{{form.email2.label}}</label>
+                        {{form.email2}}
+                    </div>
                 </div>
-              </div>
-</div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-3">
+            <div class="card mb-4">
+                <h5 class="card-header">Vendor Address</h5>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="{{form.gst_no.label}}" class="form-label">{{form.gst_no.label}}</label>
+                        {{form.gst_no}}
+                        {{form.gst_no.error}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.street.label}}" class="form-label">{{form.street.label}}</label>
+                        {{form.street}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.street2.label}}" class="form-label">{{form.street2.label}}</label>
+                        {{form.street2}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.country.label}}" class="form-label">{{form.country.label}}</label>
+                        {{form.country}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.state.label}}" class="form-label">{{form.state.label}}</label>
+                        {{form.state}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{form.city.label}}" class="form-label">{{form.city.label}}</label>
+                        {{form.city}}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{form.pincode.label}}" class="form-label">{{form.pincode.label}}</label>
+                        {{form.pincode}}
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success mt-3 float-end" type="submit">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 {% endblock %}
 
 {% block js %}
 <script>
-        $(document).ready(function () {
-            $("#id_state").change(function () {
-                $('#id_city').empty().append('<option>--- Select City ---</option>');
-                var id = $(this).find(":selected").val();
-                $.ajax({
-                    type: 'GET',
-                    url: "{% url 'utils:city' 1  %}".replace("1", id),
-                    success: function (response) {
-                        for (i in response.cities) {
-                            $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error)
+    $(document).ready(function () {
+        $("#id_state").change(function () {
+            $('#id_city').empty().append('<option>--- Select City ---</option>');
+            var id = $(this).find(":selected").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'utils:city' 1  %}".replace("1", id),
+                success: function (response) {
+                    for (i in response.cities) {
+                        $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
                     }
-                })
+                },
+                error: function (error) {
+                    console.log(error)
+                }
             })
-    
-            $("#id_country").change(function () {
-                $('#id_state').empty().append('<option>--- Select State ---</option>');
-                var id = $(this).find(":selected").val();
-                $.ajax({
-                    type: 'GET',
-                    url: "{% url 'utils:state' 1  %}".replace("1", id),
-                    success: function (response) {
-                        for (i in response.states) {
-                            $("#id_state").append("<option value='" + response.states[i].id + "'>" + response.states[i].name + "</option>");
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error)
+        })
+
+        $("#id_country").change(function () {
+            $('#id_state').empty().append('<option>--- Select State ---</option>');
+            var id = $(this).find(":selected").val();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'utils:state' 1  %}".replace("1", id),
+                success: function (response) {
+                    for (i in response.states) {
+                        $("#id_state").append("<option value='" + response.states[i].id + "'>" + response.states[i].name + "</option>");
                     }
-                })
+                },
+                error: function (error) {
+                    console.log(error)
+                }
             })
-    
-        });
-    </script>
-    <script>
-        $('#vendor-menu').addClass('active open');
-        $('#add-vendor').addClass('active')
-      </script>
+        })
+    });
+</script>
+<script>
+    $('#vendor-menu').addClass('active open');
+    $('#add-vendor').addClass('active')
+</script>
 {% endblock %}
