@@ -429,13 +429,21 @@ class OrdersReport(View):
 class ExportData(View):
     
     def get(self, request):
-        # start_date = request.GET.get("start", None)
-        # end_date = request.GET.get("end", None)
-        # category = request.GET.get("category", None)
-        
-        queryset = OrderOfProduct.objects.get_pending_orders()
+        query = request.GET.get("query", None)
+        start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
+        end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
+        if start_date != '':
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        else:
+            start_date = OrderDetails.objects.first().date
+        if end_date != '':
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        else:
+            end_date = OrderDetails.objects.last().date
+        dispatch_status = request.GET.get("dispatch_status", None)
+        order_status = request.GET.get("order_status", None)
+        queryset = OrderOfProduct.objects.search(query, [start_date,end_date], dispatch_status, order_status)
         order_resourse = OrderReport()
-        
         dataset = order_resourse.export(queryset)
         response = HttpResponse(dataset.csv,content_type="text/csv")
         time_name = datetime.now().strftime("%Y%m%d_%H_%M_%S")
@@ -448,13 +456,24 @@ class OrdersCustomReportResponse(View):
 
     def get(self,request):
         try:
-            start_date = request.GET.get("start", None)
-            end_date = request.GET.get("end", None)
-            category = request.GET.get("category", None)
-
             if is_ajax(request):
-                products = OrderOfProduct.objects.get_pending_orders()
+                query = request.GET.get("query", None)
+                start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
+                end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
 
+                if start_date != '':
+                    start_date = datetime.strptime(start_date, '%Y-%m-%d')
+                else:
+                    start_date = OrderDetails.objects.first().date
+
+                if end_date != '':
+                    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+                else:
+                    end_date = OrderDetails.objects.last().date
+                dispatch_status = request.GET.get("dispatch_status", None)
+                order_status = request.GET.get("order_status", None)
+
+                products = OrderOfProduct.objects.search(query, [start_date,end_date], dispatch_status, order_status)
                 html = render_to_string(
                     template_name=self.template_name,
                     context={"ordersofproducts": products}
@@ -463,12 +482,11 @@ class OrdersCustomReportResponse(View):
                     "data": html
                 }
                 return JsonResponse(data=data_dict, safe=False)
-            if request.META.get('HTTP_REFERER'):
-                return redirect(request.META.get('HTTP_REFERER'))
-            else:
-                return redirect("products:list")
+            # if request.META.get('HTTP_REFERER'):
+            #     return redirect(request.META.get('HTTP_REFERER'))
+            # else:
+            #     return redirect("products:list")
         except Exception as e:
-            print(str(e))
             return JsonResponse({"error": str(e)})
     
 
@@ -477,49 +495,49 @@ class OrderSearch(View):
     template_name = "components/search-orders.html"
 
     def get(self, request):
-        # try:
-        if is_ajax(request):
-            query = request.GET.get("query", None)
-            start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
-            end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
-            if start_date != '':
-                start_date = datetime.strptime(start_date, '%Y-%m-%d')
-            else:
-                start_date = OrderDetails.objects.first().date
-            
-            if end_date != '':
-                end_date = datetime.strptime(end_date, '%Y-%m-%d')
-            else:
-                end_date = OrderDetails.objects.last().date
+        try:
+            if is_ajax(request):
+                query = request.GET.get("query", None)
+                start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
+                end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
+                if start_date != '':
+                    start_date = datetime.strptime(start_date, '%Y-%m-%d')
+                else:
+                    start_date = OrderDetails.objects.first().date
 
-            dispatch_status = request.GET.get("dispatch_status", None)
-            order_status = request.GET.get("order_status", None)
-            orders = OrderDetails.objects.search(query, [start_date,end_date], dispatch_status, order_status)
-            results_per_page = 100
-            page = request.GET.get('page', 1)
-            paginator = Paginator(orders, results_per_page)
-            try:
-                orders = paginator.page(page)
-            except PageNotAnInteger:
-                orders = paginator.page(1)
-            except EmptyPage:
-                orders = paginator.page(paginator.num_pages)
-            html = render_to_string(
-                template_name=self.template_name,
-                context={"orders": orders}
-            )
-            data_dict = {
-                "data": html
-            }
-            
-            return JsonResponse(data=data_dict, safe=False)
+                if end_date != '':
+                    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+                else:
+                    end_date = OrderDetails.objects.last().date
 
-            # if request.META.get('HTTP_REFERER'):
-                # return redirect(request.META.get('HTTP_REFERER'))
-            # else:
-                # return redirect("orders:orders-list")
-        # except Exception as e:
-            # return JsonResponse({"error": str(e)})
+                dispatch_status = request.GET.get("dispatch_status", None)
+                order_status = request.GET.get("order_status", None)
+                orders = OrderDetails.objects.search(query, [start_date,end_date], dispatch_status, order_status)
+                results_per_page = 100
+                page = request.GET.get('page', 1)
+                paginator = Paginator(orders, results_per_page)
+                try:
+                    orders = paginator.page(page)
+                except PageNotAnInteger:
+                    orders = paginator.page(1)
+                except EmptyPage:
+                    orders = paginator.page(paginator.num_pages)
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"orders": orders}
+                )
+                data_dict = {
+                    "data": html
+                }
+
+                return JsonResponse(data=data_dict, safe=False)
+
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("orders:orders-list")
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
 
 
 class TrackLR(View):
@@ -530,7 +548,6 @@ class TrackLR(View):
         
         
         order = OrderDetails.objects.get_order(id)
-        print(order)
         lr_nos = []
         if order:
             order_of_products = order.orderofproduct_set.all()
@@ -538,7 +555,6 @@ class TrackLR(View):
             for i in order_of_products:
                 if i.lr_no not in lr_nos:
                     lr_nos.append(i.lr_no)
-            print(lr_nos)
         api_url = 'https://www.vrlgroup.in/track_consignment.aspx?lrtrack=1&lrno=' + lr_nos[0]
         try:
             # Make a GET request to the API

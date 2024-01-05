@@ -311,7 +311,6 @@ class InventryReportStock(View):
             else:
                 return redirect("products:list")
         except Exception as e:
-            print(str(e))
             return JsonResponse({"error": str(e)})
 
 

@@ -69,7 +69,7 @@ Reports
       <!-- Basic Bootstrap Table -->
       <div class="card" id="report-card">
         <div class="table-responsive text-nowrap">
-          <a href="{% url 'orders:export-report' %}" id="export-link"><button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button><a>
+          <a href="" id="export-link"><button style="float:right;margin-right:20px;" class="btn btn-success mt-2" type="submit" id="data-export-btn">Export</button></a>
           <table class="table text-center">
             <thead>
               <tr>
@@ -122,16 +122,19 @@ Reports
     var queryInput = document.getElementById("id_search").value
     var selectDispatch = dispatchStatus.options[dispatchStatus.selectedIndex].value
     var selectStatus = orderStatus.options[orderStatus.selectedIndex].value
-    console.log(selectStatus,selectDispatch)
-    
+    var currentURL = window.location.href;
+    var modifiedURL = currentURL.replace('orders/report/', "");
     $.ajax({
-        url: '/orders/search/',
+        url: '/orders/search-report/',
         type: 'GET',
         data: { 'query': queryInput, "dispatch_status":selectDispatch, "order_status":selectStatus, "start":startDate, "end":endDate},
         success: function (data) {
-            $('#id_products_list').html(data.data);
+          
+          $('#export-link').attr('href', modifiedURL+'orders/export-report/?query=' + queryInput + '&dispatch_status='+ selectDispatch +'&order_status='+ selectStatus +'&start='+ startDate +'&end='+endDate)
+          $('#data-stock-body').html(data.data);
         }
     });
 });
 </script>
+
 {% endblock js %}

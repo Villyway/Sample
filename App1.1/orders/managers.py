@@ -193,5 +193,25 @@ class OrderOfProductManager(models.Manager):
     def get_pending_orders(self):
         return self.active().filter(~Q(status = OrderStatus.DELIVERED.value))
     
-    
+    def search(self, query=None, dates=None, dispatch_status=None, order_status=None):
+        if dates is None:
+            raise ValueError("Dates must be provided.")
+
+        base_queryset = self.filter(created_at__range=dates)
+
+        if dispatch_status == 'choose' and order_status == 'choose':
+            return base_queryset
+
+        q_objects = Q(customer__name__icontains=query)
+
+        if query:
+            base_queryset = base_queryset.filter(q_objects)
+
+        if dispatch_status != 'choose':
+            base_queryset = base_queryset.filter(Q(dispatch_status=dispatch_status))
+
+        if order_status != 'choose':
+            base_queryset = base_queryset.filter(status=order_status)
+
+        return base_queryset.distinct()
     

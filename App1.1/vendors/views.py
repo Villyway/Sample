@@ -60,7 +60,6 @@ class CreateVendor(FormView):
 
     def form_invalid(self, form):
         super(CreateVendor, self).form_invalid(form)
-        print(self.request,form.errors)
         messages.error(self.request,form.errors)
         return redirect("vendors:vendor-create")
 

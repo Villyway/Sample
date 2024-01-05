@@ -23,7 +23,6 @@ class Command(BaseCommand):
                     if Vendor.objects.filter(gst_no=i['gst_no']).exists():
                        pass
                     else:
-                        print(i)
                         Vendor.objects.create(gst_no=str(i['gst_no']))
 
                 # v.comany_name = i.get('name', '')

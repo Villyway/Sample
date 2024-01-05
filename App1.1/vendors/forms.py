@@ -72,15 +72,21 @@ class VendorForm(forms.Form):
     
     def clean_gst_no(self):
         gst_no = self.cleaned_data.get("gst_no")
-        print(gst_no)
-        if Vendor.objects.all().count == 0:
-            return gst_no
-        else:
-            if Vendor.objects.get(gst_no=gst_no):
-                raise forms.ValidationError(
+        
+        if Vendor.objects.filter(gst_no=gst_no).exists():
+            raise forms.ValidationError(
                         "This Vendor is Already registerd.")
-            else:
-                return gst_no
+        else:
+            return gst_no
+        
+        # if Vendor.objects.all().count == 0:
+        #     return gst_no
+        # else:
+        #     if Vendor.objects.get(gst_no=gst_no):
+        #         raise forms.ValidationError(
+        #                 "This Vendor is Already registerd.")
+        #     else:
+        #         return gst_no
         
 
     

@@ -28,7 +28,7 @@ SECURE_SSL_REDIRECT = True
 SECRET_KEY = 'django-insecure-kr46md$hx%45b*j#o(!0hcxs4u2w0r*1bv5qp^757-#^lsjt%x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
