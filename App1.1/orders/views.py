@@ -562,18 +562,23 @@ class TrackLR(View):
             for i in order_of_products:
                 if i.lr_no not in lr_nos:
                     lr_nos.append(i.lr_no)
-        api_url = 'https://www.vrlgroup.in/track_consignment.aspx?lrtrack=1&lrno=' + lr_nos[0]
+
+        api_url = 'https://www.vrlgroup.in/track_consignment.aspx?lrtrack=1&lrno=' 
         try:
-            # Make a GET request to the API
-            response = requests.post(api_url)
-            # Check if the response status is OK (status code 200-299)
-            response.raise_for_status()
-            # Parse the JSON response
-            api_data = response.json()
-            # Do something with the API data
-            # ...
+            track_details = []
+            for i in lr_nos:
+                if i:
+                    # Make a GET request to the API
+                    response = requests.post(api_url + i)
+                    # Check if the response status is OK (status code 200-299)
+                    response.raise_for_status()
+                    # Parse the JSON response
+                    api_data = response.json()
+                    track_details.append(api_data)
+                    # Do something with the API data
+                    # ...
             context = {
-                "data":api_data
+                "data":track_details
             }
             return render(request,self.template_name,context)
         except requests.exceptions.RequestException as e:
