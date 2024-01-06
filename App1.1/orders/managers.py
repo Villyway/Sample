@@ -194,10 +194,11 @@ class OrderOfProductManager(models.Manager):
         return self.active().filter(~Q(status = OrderStatus.DELIVERED.value))
     
     def search(self, query=None, dates=None, dispatch_status=None, order_status=None):
+        print(dispatch_status,order_status)
         if dates is None:
-            raise ValueError("Dates must be provided.")
-
-        base_queryset = self.filter(created_at__range=dates)
+            base_queryset = self.active()
+        else:
+            base_queryset = self.active().filter(created_at__range=dates)
 
         if dispatch_status == 'choose' and order_status == 'choose':
             return base_queryset
@@ -212,6 +213,9 @@ class OrderOfProductManager(models.Manager):
 
         if order_status != 'choose':
             base_queryset = base_queryset.filter(status=order_status)
+        
+        if order_status != 'choose' and dispatch_status != 'choose':
+            base_queryset = base_queryset.filter(status=order_status,dispatch_status=dispatch_status)
 
         return base_queryset.distinct()
     

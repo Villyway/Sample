@@ -24,7 +24,7 @@
           <td>{{ product.packing_type }}</td>
           <td>
             {% if product.order.order_confirmation == 'CONFIRMED' %}
-              {{ product.order.order_status }}
+              {{ product.status }}
             {% else %}
               {{ product.order.order_confirmation }}
             {% endif %}

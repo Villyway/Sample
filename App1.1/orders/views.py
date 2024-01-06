@@ -459,21 +459,28 @@ class OrdersCustomReportResponse(View):
             if is_ajax(request):
                 query = request.GET.get("query", None)
                 start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
-                end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
+                end_date = request.GET.get("end", OrderDetails.objects.last().date)
 
                 if start_date != '':
                     start_date = datetime.strptime(start_date, '%Y-%m-%d')
                 else:
-                    start_date = OrderDetails.objects.first().date
+                    start_date = None
 
                 if end_date != '':
                     end_date = datetime.strptime(end_date, '%Y-%m-%d')
                 else:
-                    end_date = OrderDetails.objects.last().date
+                    end_date = None
+                    
+                if start_date != None and end_date != None:
+                    dates = [start_date,end_date]
+                else:
+                    dates = None
+                    
+
                 dispatch_status = request.GET.get("dispatch_status", None)
                 order_status = request.GET.get("order_status", None)
 
-                products = OrderOfProduct.objects.search(query, [start_date,end_date], dispatch_status, order_status)
+                products = OrderOfProduct.objects.search(query, dates, dispatch_status, order_status)
                 html = render_to_string(
                     template_name=self.template_name,
                     context={"ordersofproducts": products}
@@ -499,7 +506,7 @@ class OrderSearch(View):
             if is_ajax(request):
                 query = request.GET.get("query", None)
                 start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
-                end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
+                end_date = request.GET.get("end", OrderDetails.objects.all().last().date)
                 if start_date != '':
                     start_date = datetime.strptime(start_date, '%Y-%m-%d')
                 else:

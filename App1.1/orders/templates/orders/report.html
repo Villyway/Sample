@@ -114,6 +114,31 @@ Reports
 
 {% block js %}
 <script>
+  $('#orders-menu').addClass('active open');
+  $('#order-report').addClass('active')
+</script>
+<script>
+  $(document).ready(function () {
+      // Handle accordion behavior
+      $('.accordion-button').on('click', function () {
+          // Collapse all other accordion items
+          $('.accordion-button').not(this).addClass('collapsed');
+          $('.accordion-collapse').not($(this).next()).removeClass('show');
+      });
+  });
+  $("#OrderStatus").prop('disabled', true);
+  // Select of dishpatch_status 
+  $('#OrderDispatchStatus').on('change', function() {
+    if(this.value == "DISPATCHED"){
+      $("#OrderStatus").prop('disabled', false);
+    }else{
+      $("#OrderStatus").prop('disabled', true);
+      $("#OrderStatus").val("choose");
+    }
+    
+  });
+</script>
+<script>
   $(document).on("click", "#btn-search", function () {
     var startDate = document.getElementById("startDate").value //endDate, OrderDispatchStatus, OrderStatus, id_search
     var endDate = document.getElementById("endDate").value
