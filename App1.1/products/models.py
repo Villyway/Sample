@@ -91,7 +91,7 @@ class Product(Base):
         self.save()
         return True
     
-    def get_bom(self):
+    def get_bom(self,qty=None):
         # Query the BOMItems related to this product
         bom_items = BOMItem.objects.filter(product=self)
         components = []
@@ -113,6 +113,9 @@ class Product(Base):
             bom['part_no'] = component_part_no
             bom['code'] = component_code
             bom['stock'] = bom_item.component.stock
+            if qty:
+                bom['total_req'] = quantity * qty
+                bom['availabel'] = bom_item.component.stock - quantity * qty
             components.append(bom)
             a = a + quantity
         components.append(
