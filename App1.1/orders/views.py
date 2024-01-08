@@ -50,6 +50,9 @@ class Dashboard(View):
         customers,orders = Customer.objects.customer_wise_total_orders()
         top_10_products = self.get_top_10_products()
 
+        table_rows, table_data = OrderOfProduct.objects.get_monthly_order_of_product_with_total_qty()
+        months = sorted(set(month for data in table_rows.values() for month in data))
+
         #Order of products.       
         context = {
             "hold_orders":hold_orders,
@@ -58,6 +61,8 @@ class Dashboard(View):
             "customers":customers,
             "orders" : orders,
             "top_10_products" :top_10_products,
+            'table_rows': table_data,
+            'months': months,
             
         }
         return render(request,self.template_name,context)
@@ -431,20 +436,30 @@ class ExportData(View):
     def get(self, request):
         query = request.GET.get("query", None)
         start_date = request.GET.get("start", OrderDetails.objects.all().first().date)
-        end_date = request.GET.get("end", OrderDetails.objects.all().last().date.strftime("%Y-%m-%d"))
+        end_date = request.GET.get("end", OrderDetails.objects.last().date)
+
         if start_date != '':
             start_date = datetime.strptime(start_date, '%Y-%m-%d')
         else:
-            start_date = OrderDetails.objects.first().date
+            start_date = None
+
         if end_date != '':
             end_date = datetime.strptime(end_date, '%Y-%m-%d')
         else:
-            end_date = OrderDetails.objects.last().date
+            end_date = None
+                        
+        if start_date != None and end_date != None:
+            dates = [start_date,end_date]
+        else:
+            dates = None
+
         dispatch_status = request.GET.get("dispatch_status", None)
         order_status = request.GET.get("order_status", None)
-        queryset = OrderOfProduct.objects.search(query, [start_date,end_date], dispatch_status, order_status)
+
+        products = OrderOfProduct.objects.search(query, dates, dispatch_status, order_status)
+
         order_resourse = OrderReport()
-        dataset = order_resourse.export(queryset)
+        dataset = order_resourse.export(products)
         response = HttpResponse(dataset.csv,content_type="text/csv")
         time_name = datetime.now().strftime("%Y%m%d_%H_%M_%S")
         response['Content-Disposition'] = 'attachment; filename="orders_report'+ time_name + '".csv"'
@@ -475,12 +490,12 @@ class OrdersCustomReportResponse(View):
                     dates = [start_date,end_date]
                 else:
                     dates = None
-                    
 
                 dispatch_status = request.GET.get("dispatch_status", None)
                 order_status = request.GET.get("order_status", None)
 
                 products = OrderOfProduct.objects.search(query, dates, dispatch_status, order_status)
+
                 html = render_to_string(
                     template_name=self.template_name,
                     context={"ordersofproducts": products}
@@ -495,7 +510,7 @@ class OrdersCustomReportResponse(View):
             #     return redirect("products:list")
         except Exception as e:
             return JsonResponse({"error": str(e)})
-    
+
 
 # OrderSearch
 class OrderSearch(View):

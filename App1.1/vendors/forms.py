@@ -12,6 +12,12 @@ class VendorForm(forms.Form):
     #     attrs={"class": "form-control"}))
     comany_name = forms.CharField(required=True, label="Company Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
+    other_city = forms.CharField(required=False, label="Other City", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
+    other_state = forms.CharField(required=False, label="Other State", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
+    other_country = forms.CharField(required=False, label="Other Country", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
     type = forms.ModelChoiceField(queryset=PartyType.objects.filter(is_active=True), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=False, label="Vendor Type", empty_label='--- Select Type ---')
     primary_contect_name = forms.CharField(required=False, label="Primary Contect Person", widget=forms.TextInput(

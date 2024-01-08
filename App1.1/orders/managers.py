@@ -2,6 +2,8 @@ import datetime
 
 from itertools import chain
 
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
 from django.db import models
 from django.db.models import Q
 from django.db.models import Sum, Count
@@ -219,3 +221,35 @@ class OrderOfProductManager(models.Manager):
 
         return base_queryset.distinct()
     
+    def get_monthly_order_of_product_with_total_qty(self):
+      
+        table_data = {}
+        monthly_product_totals = self.active().filter(
+            order__created_at__isnull=False  # Assuming 'OrderDetails' has a 'created_at' field
+            ).annotate(
+            month=TruncMonth('order__created_at')
+            ).values(
+                'month',
+                'product__name',
+                'product__code',  # Assuming 'Product' has a 'name' field
+            ).annotate(
+                total_qty=Sum('order_qty')
+            ).order_by('month', 'product__name')
+        
+        monthly_totals_dict = {item['month']: item['total_qty'] for item in monthly_product_totals}
+        print(monthly_totals_dict)
+
+        for entry in monthly_product_totals:
+            product_name = entry['product__code']+ " - " + entry['product__name']            
+            month = entry['month']
+            total_qty = entry['total_qty']
+
+            if product_name not in table_data:
+                table_data[product_name] = {}
+            table_data[product_name][month] = total_qty
+            
+
+        table_rows = [{'product_name': product_name, 'monthly_data': data} for product_name, data in table_data.items()]
+        return table_data, table_rows
+
+        # return self.active().filter(order__created_at__isnull=False).annotate(month=TruncMonth('order__created_at')).values('month').annotate(total_qty=Sum('order_qty')).order_by('month')

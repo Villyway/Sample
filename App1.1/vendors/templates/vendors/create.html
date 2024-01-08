@@ -5,6 +5,9 @@
 
 {% block css %}
 <link rel="stylesheet" href="https://basuriautomotive.com/assets/css/aiz-core.css">
+<style>
+   
+</style>
 {% endblock css %}
 
 {% block next_page %}
@@ -77,17 +80,31 @@ New Vendor
                         <label for="{{form.street2.label}}" class="form-label">{{form.street2.label}}</label>
                         {{form.street2}}
                     </div>
+
                     <div class="mb-3">
                         <label for="{{form.country.label}}" class="form-label">{{form.country.label}}</label>
                         {{form.country}}
+
                     </div>
+                    <div class="mb-3">
+                        {{form.other_country}}
+                    </div>
+
                     <div class="mb-3">
                         <label for="{{form.state.label}}" class="form-label">{{form.state.label}}</label>
                         {{form.state}}
                     </div>
                     <div class="mb-3">
+                        {{form.other_state}}
+                    </div>
+
+                    <div class="mb-3">
                         <label for="{{form.city.label}}" class="form-label">{{form.city.label}}</label>
                         {{form.city}}
+                    </div>
+
+                    <div class="mb-3">
+                        {{form.other_city}}
                     </div>
 
                     <div class="mb-3">
@@ -107,42 +124,86 @@ New Vendor
 
 {% block js %}
 <script>
+
+    
+
     $(document).ready(function () {
+
+        $("#id_country").append("<option value='other'>Other</option>");
+        var otherCityContainer = document.getElementById("id_other_city");
+        otherCityContainer.style.display = "none";
+
+        var otherStateContainer = document.getElementById("id_other_state");
+        otherStateContainer.style.display = "none";
+
+        var otherCountryContainer = document.getElementById("id_other_country");
+        otherCountryContainer.style.display = "none";
+
         $("#id_state").change(function () {
             $('#id_city').empty().append('<option>--- Select City ---</option>');
             var id = $(this).find(":selected").val();
-            $.ajax({
-                type: 'GET',
-                url: "{% url 'utils:city' 1  %}".replace("1", id),
-                success: function (response) {
-                    for (i in response.cities) {
-                        $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
+
+            if(id === "other"){
+                otherStateContainer.style.display = "block"
+                otherCityContainer.style.display = "block"
+            }else{
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'utils:city' 1  %}".replace("1", id),
+                    success: function (response) {
+                        for (i in response.cities) {
+                            $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
+                        }
+                        $("#id_city").append("<option value='other'>Other</option>");
+                    },
+                    error: function (error) {
+                        console.log(error)
                     }
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            })
+                })
+            }
+            
         })
 
         $("#id_country").change(function () {
             $('#id_state').empty().append('<option>--- Select State ---</option>');
             var id = $(this).find(":selected").val();
-            $.ajax({
-                type: 'GET',
-                url: "{% url 'utils:state' 1  %}".replace("1", id),
-                success: function (response) {
-                    for (i in response.states) {
-                        $("#id_state").append("<option value='" + response.states[i].id + "'>" + response.states[i].name + "</option>");
+            if (id === 'other'){
+                otherCountryContainer.style.display = "block"
+                otherStateContainer.style.display = "block"
+                otherCityContainer.style.display = "block"
+            }
+            else{
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'utils:state' 1  %}".replace("1", id),
+                    success: function (response) {
+                        for (i in response.states) {
+                            $("#id_state").append("<option value='" + response.states[i].id + "'>" + response.states[i].name + "</option>");
+                        }
+                        $("#id_state").append("<option value='other'>Other</option>");
+    
+                    },
+                    error: function (error) {
+                        console.log(error)
                     }
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            })
+                })
+            }
         })
     });
+
+    
+
+    document.getElementById("id_city").addEventListener("change", function () {
+        // Check if the selected value is "Other"
+        if (this.value === "other") {
+            otherCityContainer.style.display = "block";
+        } else {
+            otherCityContainer.style.display = "none";
+        }
+    });
 </script>
+
+
 <script>
     $('#vendor-menu').addClass('active open');
     $('#add-vendor').addClass('active')
