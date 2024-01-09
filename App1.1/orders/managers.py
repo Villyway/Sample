@@ -236,20 +236,30 @@ class OrderOfProductManager(models.Manager):
                 total_qty=Sum('order_qty')
             ).order_by('month', 'product__name')
         
-        monthly_totals_dict = {item['month']: item['total_qty'] for item in monthly_product_totals}
-        print(monthly_totals_dict)
+        all_months = set(item['month'] for item in monthly_product_totals)
+        all_months = sorted(all_months)
+        
+        # monthly_totals_dict = {item['month']: item['total_qty'] for item in monthly_product_totals}
+        table_data = {}
 
         for entry in monthly_product_totals:
-            product_name = entry['product__code']+ " - " + entry['product__name']            
+            product_name = entry['product__code'] + " - " + entry['product__name']
             month = entry['month']
             total_qty = entry['total_qty']
-
+        
             if product_name not in table_data:
                 table_data[product_name] = {}
+        
             table_data[product_name][month] = total_qty
-            
+        
+        # Ensure all months are included in the data with quantity 0 for products that didn't sell
+        for product_name in table_data:
+            for month in all_months:
+                if month not in table_data[product_name]:
+                    table_data[product_name][month] = 0
+        
+        table_rows = [{'product_name': product_name, 'monthly_data': dict(sorted(data.items()))} for product_name, data in table_data.items()]
 
-        table_rows = [{'product_name': product_name, 'monthly_data': data} for product_name, data in table_data.items()]
         return table_data, table_rows
 
         # return self.active().filter(order__created_at__isnull=False).annotate(month=TruncMonth('order__created_at')).values('month').annotate(total_qty=Sum('order_qty')).order_by('month')

@@ -457,7 +457,7 @@ class SingelBom(View):
 
     def get(self,request, id):
         product_a = Product.objects.by_code(id)
-        bom = product_a.get_bom()
+        bom = product_a.get_bom(60)
         
         context={
             "part_no": product_a.part_no,

@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}MRP{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'orders:orders-list' %}">Purchase</a> / <b class="text-dark">MRP</b></li>
+{% endblock %}
+
+{% block head %}
+MRP(Matrial Requirement Planing)
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3 mb-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Matrial Requirement Planing</h5>
+                </div>
+                <div class="card-body">
+                    <form class="mt-3 " method="post" enctype="multipart/form-data" action='.'
+                                        data-url='{{ request.build_absolute_uri|safe }}' id="create-orders">
+                        {% csrf_token %}
+                        <div id="billingFields" class="mt-4">
+                            <div class="row billing-entry">
+                                <div class="form-group col-md-4">
+                                    <label for="productCode">Product Code:</label>
+                                    <input type="text" class="form-control" name="productCode[]" required>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="quantity">Quantity:</label>
+                                    <input type="text" class="form-control" name="quantity[]" required>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <button type="button" class="btn btn-danger remove-billing mt-4"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-primary mt-3" id="add-row"><i class="fa-solid fa-plus"></i></button>
+                            <button type="submit" class="btn btn-success mt-3" id="add-row">Run</button>
+                            {% comment %} <button type="button" id="export-csv" class="btn btn-success mt-3" id="add-row"><i class="fa-solid fa-file-export"></i></button> {% endcomment %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% comment %} <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Requirements</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table" id="example">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Item</th>
+                                <th>QTY</th>
+                                <th>Current Stock</td>
+                                <th>Availabel stock</th>
+                                <th>Requirement</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-mrp">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> {% endcomment %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+  $('#purchase-menu').addClass('active open');
+  $('#purchase-mrp').addClass('active')
+</script>
+
+<script>
+    // Add Billing Field
+    //document.getElementById("").addEventListener("click", function() {
+    $("#add-row").click(function(){
+        console.log('hi')
+        const billingFieldsDiv = document.getElementById("billingFields");
+        const billingCount = billingFieldsDiv.querySelectorAll(".billing-entry").length + 1;
+
+        const billingEntry = document.createElement("div");
+        billingEntry.className = "form-row billing-entry";
+
+        billingEntry.innerHTML = `
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="productCode${billingCount}">Product Code:</label>
+                <input type="text" class="form-control" name="productCode[]" required>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="quantity${billingCount}">Quantity:</label>
+                <input type="text" class="form-control" name="quantity[]" required>
+            </div>
+            
+            <div class="form-group col-md-4">
+                <button type="button" class="btn btn-danger remove-billing mt-4"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        </div>
+        `;
+
+        billingFieldsDiv.appendChild(billingEntry);
+
+        // Add an event listener to the new remove button
+        const newRemoveButton = billingEntry.querySelector(".remove-billing");
+        newRemoveButton.addEventListener("click", function() {
+            billingEntry.remove();
+        });
+    });
+
+    // Remove Billing Field
+    document.getElementById("billingFields").addEventListener("click", function(e) {
+        if (e.target && e.target.className == "btn btn-danger remove-billing") {
+            e.target.parentElement.parentElement.remove();
+        }
+    });
+</script>
+
+{% comment %} <script>
+    $(document).ready(function () {
+        var $dataMrp = $('#data-mrp');
+        var $myForm = $('#create-orders')
+        $myForm.on("submit", function (event) {
+            event.preventDefault()
+            var formData = $(this).serialize()
+            var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
+            option = {
+                method: "POST",
+                url: $thisURL,
+                data: formData,
+                success: function (data) {
+                    if (data.csv_data) {
+                        // Convert CSV data to a Blob
+                        var blob = new Blob([data.csv_data], { type: 'text/csv' });
+        
+                        // Create a temporary link element
+                        var link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'requirements.csv';
+        
+                        // Append the link to the document and trigger a click
+                        document.body.appendChild(link);
+                        link.click();
+        
+                        // Remove the link from the document
+                        document.body.removeChild(link);
+                    } else {
+                        // Handle cases where CSV data is not present in the response
+                        console.error('CSV data not found in the response');
+                    }
+                    
+                    $dataMrp.empty();
+                    // Add new data to the table
+                    $.each(JSON.parse(data.data), function (index, item) {
+                        $dataMrp.append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${item.name}</td>
+                                <td>${item.qty}</td>
+                                <td>${item.current_stock}</td>
+                                <td>${item.available_stock}</td>
+                                <td>${item.requirement}</td>
+                            </tr>
+                        `);
+                    });
+                    // document.getElementById("data-mrp").innerHTML = ""
+                    // document.getElementById("data-mrp").innerHTML += data.data
+                    
+                },
+                error: function (data) {
+                    $(".print_error").text("")
+                    
+                },
+            }
+            $myForm.ajaxSubmit(option)
+        })
+
+        
+        
+    })
+</script>
+
+<script>
+    $("#export-csv").click(function () {
+        var formData = $('create-orders').serialize()
+        console.log(formData)
+        console.log(document.getElementsByName("productCode[]"))
+        $.ajax({
+            type: "GET",
+            url: "/mrp-export",
+            data: formData,
+            success: function (data) {
+                // Handle success
+                console.log(data);
+    
+                // Check if the response is CSV data
+                if (data.data.startsWith('"ID","Name","Quantity","Current Stock","Requirement","Available Stock"')) {
+                    // Convert CSV data to a Blob
+                    var blob = new Blob([data.data], { type: 'text/csv' });
+    
+                    // Create a temporary link element
+                    var link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'requirements.csv';
+    
+                    // Append the link to the document and trigger a click
+                    document.body.appendChild(link);
+                    link.click();
+    
+                    // Remove the link from the document
+                    document.body.removeChild(link);
+                } else {
+                    // Handle other responses
+                }
+            },
+            error: function (data) {
+                // Handle error
+                console.log(data);
+            }
+        });
+    });
+</script> {% endcomment %}
+
+
+
+{% endblock js %}

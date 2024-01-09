@@ -96,7 +96,7 @@ Orders
               <td>Sr. No</td>
               <th>Name</th>
               {% for month in months %}
-                <th>{{ month }}</th>
+                <th>{{ month|date:"M-Y" }}</th>
               {% endfor %}
               
             </tr>

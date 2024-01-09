@@ -1,0 +1,16 @@
+{% load product_extras %}
+
+{% for product, quantity in mrps.items %}
+<tr>
+    <td>{{forloop.counter}}</td>
+    <td>{{product}}</td>
+    <td>{{quantity}}</td>
+    <td>{{product.stock}}</td>
+    <td>
+        {{product.stock | subtract:quantity}}
+    </td>
+    <td>
+        {{product.stock | get_requirement:quantity}}
+    </td>
+</tr>
+{% endfor %}

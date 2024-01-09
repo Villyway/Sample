@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}Purchase{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'purchase:purchase-dashboard' %}"><b class="text-dark">Purchase</b></a> 
+{% endblock %}
+
+{% block head %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#purchase-menu').addClass('active open');
+  $('#purchase-dashboard').addClass('active')
+</script>
+{% endblock js %}

@@ -18,7 +18,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,7 +28,7 @@ SECURE_SSL_REDIRECT = True
 SECRET_KEY = 'django-insecure-kr46md$hx%45b*j#o(!0hcxs4u2w0r*1bv5qp^757-#^lsjt%x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 

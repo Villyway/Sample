@@ -32,7 +32,7 @@
       {% if user.role != "ACCOUNTANT" %}
       <li class="menu-item " id = "product-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
+          <i class=" menu-icon tf-icons fa-brands fa-product-hunt"></i>
           <div data-i18n="Layouts">Item Master</div>
         </a>
 
@@ -89,10 +89,28 @@
           </li>
         </ul>
       </li>
+      <li class="menu-item " id = "purchase-menu">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
+          <div data-i18n="Layouts">Purchase Master</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="purchase-dashboard">
+            <a href="{% url 'purchase:purchase-dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
+          <li class="menu-item" id="purchase-mrp">
+            <a href="{% url 'purchase:purchase-mrp' %}" class="menu-link">
+              <div data-i18n="Without menu">MRP</div>
+            </a>
+          </li>
+        </ul>
+      </li>
       <li class="menu-item " id = "inventory-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-warehouse"></i>
-          
           <div data-i18n="Layouts">Inventory</div>
         </a>
 

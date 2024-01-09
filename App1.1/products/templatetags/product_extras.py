@@ -43,3 +43,17 @@ def get_customer_address(customer):
     if customer_obj.address:
         return customer_obj.address.filter(is_active = True)
     return "-"
+
+@register.filter
+def subtract(value, arg):
+    if 0 < value - arg:
+        return value - arg
+    else:
+        return 0
+
+@register.filter
+def get_requirement(value, arg):
+    if 0 > value - arg:
+        return value - arg
+    else:
+        return 0
