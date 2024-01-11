@@ -303,7 +303,7 @@ class VendorDetails(View):
         price = request.POST.getlist('quantity[]')
 
         for product_name, price in zip(products, price):
-
             product = Product.objects.get(part_no = product_name)
             VendorWithProductData.objects.create(vendor=vendor, product=product, price=price)
-        return redirect("vendor:vendor-details",vendor.id)
+            
+        return redirect("vendors:vendor-details",vendor.id)
