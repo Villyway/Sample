@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Vendor Details{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'vendors:vendor-list' %}">Vendors</a> / <b class="text-dark">{{vendor.comany_name}}<b></li>
+{% endblock %}
+
+{% block head %}
+Vendor Details
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- Order Statistics -->
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h4><b>Details</b></h4></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3">
+                        Name:
+                    </div>
+                    <div class="col-8">
+                        {{vendor.comany_name}}
+                    </div>
+                    <div class="col-3">
+                        Contect Person:
+                    </div>
+                    <div class="col-8">
+                        {{vendor.primary_contect_name}}
+                    </div>
+                    <div class="col-3">
+                        Mobile:
+                    </div>
+                    <div class="col-8">
+                        {{vendor.mobile}}
+                    </div>
+                    <div class="col-3">
+                        Email:
+                    </div>
+                    <div class="col-8">
+                        {% if vendor.email %}
+                        {{vendor.email}}
+                        {% else %}
+                        -
+                        {% endif %}
+                        
+                    </div>
+                    <div class="col-3">
+                        GST NO:
+                    </div>
+                    <div class="col-8">
+                        {% if vendor.gst_no %}
+                        {{vendor.gst_no}}
+                        {% else %}
+                        -
+                        {% endif %}
+                        
+                    </div>
+                    {% if vendor.secondary_contect_name %}
+                        <div class="col-3">
+                            Contect Person 2:
+                        </div>
+                        <div class="col-8">
+                            {{vendor.secondary_contect_name}}
+                        </div>
+                    {% endif %}
+                    {% if vendor.mobile1 %}
+                        <div class="col-3">
+                            Alternative Mobile:
+                        </div>
+                        <div class="col-8">
+                            {{vendor.mobile1}}
+                        </div>
+                    {% endif %}
+
+                    {% if vendor.email1 %}
+                        <div class="col-3">
+                            Alternative Email:
+                        </div>
+                        <div class="col-8">
+                            {{vendor.email1}}
+                        </div>
+                    {% endif %}
+                    <hr>
+                    <div class="col-3">
+                        Address:
+                    </div>
+                    <div class="col-8">
+                        {{address.street}}, {{address.street2}}, {{address.city.name}}, {{address.state.name}}, {{address.country}},  - {{address.zip}}
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-6 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h5>Connect Products</h5></div>
+            <div class="card-body">
+                <form class="mt-3 " method="post" enctype="multipart/form-data" action='.'
+                                        data-url='{{ request.build_absolute_uri|safe }}' id="create-orders">
+                        {% csrf_token %}
+                        <div id="billingFields" class="mt-4">
+                            <div class="row billing-entry">
+                                <div class="form-group col-md-4">
+                                    <label for="productCode">Part No.:</label>
+                                    <input type="text" class="form-control" name="productCode[]" required>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="quantity">Price:</label>
+                                    <input type="text" class="form-control" name="quantity[]" required>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <button type="button" class="btn btn-danger remove-billing mt-4"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-primary mt-3" id="add-row"><i class="fa-solid fa-plus"></i></button>
+                            <button type="submit" class="btn btn-success mt-3" id="add-row">Add</button>
+                            {% comment %} <button type="button" id="export-csv" class="btn btn-success mt-3" id="add-row"><i class="fa-solid fa-file-export"></i></button> {% endcomment %}
+                        </div>
+                    </form>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-12 order-0 mb-2">
+        <div class="card h-100">
+            <div class="card-header"><h5>Products Details</h5></div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>No.</th>
+                        <th>Part No</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                    </tr>
+                    {% for i in vendor.vendorwithproductdata_set.all %}
+                    <tr>
+                        <td>
+                            {{forloop.counter}}
+                        </td>
+                        <td>{{i.product.part_no}}</td>
+                        <td> {{i.product.name}} </td>
+                        <td> {{i.price}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+      </div>
+      <!--/ Order Statistics -->
+
+      
+    </div>
+  </div>
+  <!-- / Content -->
+{% endblock content %}
+
+
+{% block js %}
+<script>
+  $('#vendor-menu').addClass('active open');
+</script>
+
+<script>
+    // Add Billing Field
+    //document.getElementById("").addEventListener("click", function() {
+    $("#add-row").click(function(){
+        console.log('hi')
+        const billingFieldsDiv = document.getElementById("billingFields");
+        const billingCount = billingFieldsDiv.querySelectorAll(".billing-entry").length + 1;
+
+        const billingEntry = document.createElement("div");
+        billingEntry.className = "form-row billing-entry";
+
+        billingEntry.innerHTML = `
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="productCode${billingCount}">Part No.:</label>
+                <input type="text" class="form-control" name="productCode[]" required>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="quantity${billingCount}">Price:</label>
+                <input type="text" class="form-control" name="quantity[]" required>
+            </div>
+            
+            <div class="form-group col-md-4">
+                <button type="button" class="btn btn-danger remove-billing mt-4"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        </div>
+        `;
+
+        billingFieldsDiv.appendChild(billingEntry);
+
+        // Add an event listener to the new remove button
+        const newRemoveButton = billingEntry.querySelector(".remove-billing");
+        newRemoveButton.addEventListener("click", function() {
+            billingEntry.remove();
+        });
+    });
+
+    // Remove Billing Field
+    document.getElementById("billingFields").addEventListener("click", function(e) {
+        if (e.target && e.target.className == "btn btn-danger remove-billing") {
+            e.target.parentElement.parentElement.remove();
+        }
+    });
+</script>
+
+{% endblock js %}

@@ -14,6 +14,7 @@ from .models import Vendor, PartyType
 from utils.models import Address, Country, State, City
 from utils.views import decode_data
 from .serializers import VendorDetailSerializer
+from products.models import Product, VendorWithProductData
 
 
 
@@ -121,76 +122,71 @@ class VendorEditView(FormView):
         kwargs.update({"vendor": vendor, "edit": True})
         return kwargs
     
+    def form_invalid(self, form):
+        vendor = Vendor.objects.single_vendor(
+            id= self.kwargs["id"])
+        super(VendorEditView, self).form_invalid(form)
+        messages.error(self.request,form.errors)
+        return redirect("vendors:vendor-edit",vendor.id)
+    
     def form_valid(self, form):
         form_data = form.cleaned_data
-        try:
-            with transaction.atomic():
-                vendor = Vendor.objects.single_vendor(id = self.kwargs['id'])
-                if vendor.type != form_data['type']:
-                    vendor.type = form_data['type']
-
-                if vendor.comany_name != form_data['comany_name']:
-                    vendor.comany_name = form_data['comany_name']
-
-                if vendor.primary_contect_name != form_data['primary_contect_name']:
-                    vendor.primary_contect_name = form_data['primary_contect_name']
-
-                if vendor.secondary_contect_name != form_data['secondary_contect_name']:
-                    vendor.secondary_contect_name = form_data['secondary_contect_name']
-
-                if vendor.mobile != form_data['mobile1']:
-                    vendor.mobile = form_data['mobile1']
-
-                if vendor.mobile1 != form_data['mobile2']:
-                    vendor.mobile1 = form_data['mobile2']
-
-                if vendor.email != form_data['email1']:
-                    vendor.email = form_data['email1']
-
-                if vendor.email1 != form_data['mobile2']:
-                    vendor.email1 = form_data['mobile2']
-
-                if vendor.gst_no != form_data['gst_no']:
-                    vendor.gst_no = form_data['gst_no']
-
-                vendor.updated_by = self.request.user.id
-                vendor.save()
-
-                address = vendor.address.first()
-                if address.street != form_data["street"]:
-                    address.street = form_data["street"]
-
-                if address.street2 != form_data["street2"]:
-                    address.street2 = form_data["street2"]
-
-                if address.country != form_data["country"]:
-                    if form_data["country"].name == 'Other':
-                        address.country = Country.objects.crate_country(form_data["other_country"])
-                    else:
-                        address.country = form_data["country"]
-
-                if address.state != form_data["state"]:
-                    if form_data["state"].name == 'Other':
-                        address.state = State.objects.create_state(form_data["other_state"], address.country)
-                    else:
-                        address.state = form_data["state"]
-
-                if address.city != form_data["city"]:
-                    if form_data["city"].name == 'Other':
-                        address.city = City.objects.create_city(form_data["other_city"], address.state)
-                    else:
-                        address.city = form_data["city"]
-
-                if address.zip != form_data["pincode"]:
-                    address.zip = form_data["pincode"]
-                address.updated_by = self.request.user.id
-                address.save()
-                messages.success(self.request,"Vendor Successfully Updated!!")
-                return redirect('vendors:vendor-list')
+        print(form_data)
+        # try:
+        with transaction.atomic():
             
-        except Exception as e:
-            messages.error(self.request, str(e))
-            return redirect(self.request.META['HTTP_REFERER'])
+            vendor = Vendor.objects.single_vendor(id = self.kwargs['id'])
+            if vendor.type != form_data['type']:
+                vendor.type = form_data['type']
+            if vendor.comany_name != form_data['comany_name']:
+                vendor.comany_name = form_data['comany_name']
+            if vendor.primary_contect_name != form_data['primary_contect_name']:
+                vendor.primary_contect_name = form_data['primary_contect_name']
+            if vendor.secondary_contect_name != form_data['secondary_contect_name']:
+                vendor.secondary_contect_name = form_data['secondary_contect_name']
+            if vendor.mobile != form_data['mobile1']:
+                vendor.mobile = form_data['mobile1']
+            if vendor.mobile1 != form_data['mobile2']:
+                vendor.mobile1 = form_data['mobile2']
+            if vendor.email != form_data['email1']:
+                vendor.email = form_data['email1']
+            if vendor.email1 != form_data['mobile2']:
+                vendor.email1 = form_data['mobile2']
+            if vendor.gst_no != form_data['gst_no']:
+                vendor.gst_no = form_data['gst_no']
+            vendor.updated_by = self.request.user.id
+            vendor.save()
+            address = vendor.address.first()
+            if address.street != form_data["street"]:
+                address.street = form_data["street"]
+            if address.street2 != form_data["street2"]:
+                address.street2 = form_data["street2"]
+            if address.country != form_data["country"]:
+                if form_data["country"].name == 'Other':
+                    address.country = Country.objects.crate_country(form_data["other_country"])
+                else:
+                    address.country = form_data["country"]
+            if address.state != form_data["state"]:
+                if form_data["state"].name == 'Other':
+                    address.state = State.objects.create_state(form_data["other_state"], address.country)
+                else:
+                    address.state = form_data["state"]
+            if address.city != form_data["city"]:
+                if form_data["city"].name == 'Other':
+                    address.city = City.objects.create_city(form_data["other_city"], address.state)
+                else:
+                    address.city = form_data["city"]
+            if address.zip != form_data["pincode"]:
+                address.zip = form_data["pincode"]
+            address.updated_by = self.request.user.id
+            address.save()
+            messages.success(self.request,"Vendor Successfully Updated!!")
+            return redirect('vendors:vendor-list')
+            
+        # except Exception as e:
+            # messages.error(self.request, str(e))
+            # print(str(e))
+            # return redirect(self.request.META['HTTP_REFERER'])
 
 
 class VendorDelete(View):
@@ -284,3 +280,30 @@ class RemoveVendorCategory(View):
                 "status": 500
             }
             return JsonResponse(data)
+
+
+
+class VendorDetails(View):
+
+    template_name = "vendors/show.html"
+
+    def get(self, request, id):
+        vendor = Vendor.objects.get(id=id)
+        address = vendor.address.first()
+        
+        context = {
+            "vendor":vendor,
+            "address":address
+        }
+        return render(request,self.template_name,context)
+    
+    def post(self, request, id):
+        vendor = Vendor.objects.get(id=id)
+        products = request.POST.getlist('productCode[]')
+        price = request.POST.getlist('quantity[]')
+
+        for product_name, price in zip(products, price):
+
+            product = Product.objects.get(part_no = product_name)
+            VendorWithProductData.objects.create(vendor=vendor, product=product, price=price)
+        return redirect("vendor:vendor-details",vendor.id)
