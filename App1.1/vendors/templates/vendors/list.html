@@ -64,7 +64,7 @@ All Vendors
               <tr>
                 <td>{{forloop.counter}}</td>
                 {% comment %} <td>{{vendor.code}}</td> {% endcomment %}
-                <td>{{vendor.comany_name}}</td>
+                <td> <a href="{% url 'vendors:vendor-details' vendor.id %}">{{vendor.comany_name}}</a></td>
                 <td>{{vendor.mobile}}</td>
                 <td>{{vendor.email}}</td>
                 <td>{{vendor.gst_no}}</td>
