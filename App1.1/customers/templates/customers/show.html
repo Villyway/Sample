@@ -130,14 +130,32 @@ Customers
 
 <script>
     $(document).ready(function () {
+
+        var otherCityContainer = document.getElementById("id_other_city");
+        otherCityContainer.style.display = "none";
+
+        var otherStateContainer = document.getElementById("id_other_state");
+        otherStateContainer.style.display = "none";
+
+        var otherCountryContainer = document.getElementById("id_other_country");
+        otherCountryContainer.style.display = "none";
+
         $("#id_state").change(function () {
             $('#id_city').empty().append('<option>--- Select City ---</option>');
             var id = $(this).find(":selected").val();
+
+            if($(this).find(":selected").text() === 'Other'){
+                otherStateContainer.style.display = "block"
+            }
+            else{
+                otherStateContainer.style.display = "none"
+                otherCityContainer.style.display = "none";
+            }
+                
             $.ajax({
                 type: 'GET',
                 url: "{% url 'utils:city' 1  %}".replace("1", id),
                 success: function (response) {
-                  console.log('hi')
                     for (i in response.cities) {
                         $("#id_city").append("<option value='" + response.cities[i].id + "'>" + response.cities[i].name + "</option>");
                     }
@@ -146,11 +164,31 @@ Customers
                     console.log(error)
                 }
             })
+            
         })
-  
+
+        $("#id_city").change(function () {
+            
+            // Check if the selected value is "Other"
+            if ($(this).find(":selected").text() === 'Other') {
+                otherCityContainer.style.display = "block";
+            } else {
+                otherCityContainer.style.display = "none";
+            }
+        });
+
         $("#id_country").change(function () {
             $('#id_state').empty().append('<option>--- Select State ---</option>');
             var id = $(this).find(":selected").val();
+            
+            if ($(this).find(":selected").text() === 'Other'){
+                otherCountryContainer.style.display = "block"
+            }
+            else{
+                otherCountryContainer.style.display = "none"
+                otherCityContainer.style.display = "none";
+                otherStateContainer.style.display = "none"
+            }
             $.ajax({
                 type: 'GET',
                 url: "{% url 'utils:state' 1  %}".replace("1", id),
@@ -163,8 +201,8 @@ Customers
                     console.log(error)
                 }
             })
+            
         })
-  
     });
-  </script>
+</script>
 {% endblock js %}

@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 
 from .forms import VendorForm
 from .models import Vendor, PartyType
-from utils.models import Address
+from utils.models import Address, Country, State, City
 from utils.views import decode_data
 from .serializers import VendorDetailSerializer
 
@@ -82,9 +82,21 @@ class CreateVendor(FormView):
                 address = Address()
                 address.street = form_data["street"]
                 address.street2 = form_data["street2"]
-                address.city = form_data["city"]
-                address.state = form_data["state"]
-                address.country = form_data["country"]
+                if form_data["country"].name == 'Other':
+                    address.country = Country.objects.crate_country(form_data["other_country"])
+                else:
+                    address.country = form_data["country"]
+                
+                if form_data["state"].name == 'Other':
+                    address.state = State.objects.create_state(form_data["other_state"], address.country)
+                else:
+                    address.state = form_data["state"]
+                
+                if form_data["city"].name == 'Other':
+                    address.city = City.objects.create_city(form_data["other_city"], address.state)
+                else:
+                    address.city = form_data["city"]
+                
                 address.zip = form_data["pincode"]
                 address.save()
                 vendor.address.add(address)
@@ -147,14 +159,28 @@ class VendorEditView(FormView):
                 address = vendor.address.first()
                 if address.street != form_data["street"]:
                     address.street = form_data["street"]
+
                 if address.street2 != form_data["street2"]:
                     address.street2 = form_data["street2"]
+
                 if address.country != form_data["country"]:
-                    address.country = form_data["country"]
+                    if form_data["country"].name == 'Other':
+                        address.country = Country.objects.crate_country(form_data["other_country"])
+                    else:
+                        address.country = form_data["country"]
+
                 if address.state != form_data["state"]:
-                    address.state = form_data["state"]
+                    if form_data["state"].name == 'Other':
+                        address.state = State.objects.create_state(form_data["other_state"], address.country)
+                    else:
+                        address.state = form_data["state"]
+
                 if address.city != form_data["city"]:
-                    address.city = form_data["city"]
+                    if form_data["city"].name == 'Other':
+                        address.city = City.objects.create_city(form_data["other_city"], address.state)
+                    else:
+                        address.city = form_data["city"]
+
                 if address.zip != form_data["pincode"]:
                     address.zip = form_data["pincode"]
                 address.updated_by = self.request.user.id

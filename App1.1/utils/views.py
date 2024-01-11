@@ -130,7 +130,11 @@ class CityView(View):
 
     def get(self, request, id):
         state = State.objects.get_state(id)
-        cities = list(City.objects.filter(state=state).values("id", "name"))
+        if state.name == 'Other':
+            cities = list(City.objects.filter(name='Other').values("id", "name"))
+        else:
+            cities = list(City.objects.filter(state=state).values("id", "name"))
+            other = cities.append(list(City.objects.filter(name='Other').values("id", "name"))[0])
         data = {
             "cities": cities
         }
@@ -142,8 +146,13 @@ class StateView(View):
 
     def get(self, request, id):
         country = Country.objects.get_country(id)
-        states = list(State.objects.filter(
-            country=country).values("id", "name"))
+        if country.name != 'Other':
+            states = list(State.objects.filter(
+                country=country).values("id", "name"))
+            states.append(list(State.objects.filter(name='Other').values("id", "name"))[0])
+        else:
+            states = list(State.objects.filter(
+                country=country).values("id", "name"))
         data = {
             "states": states
         }

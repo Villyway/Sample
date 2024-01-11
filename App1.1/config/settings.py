@@ -172,7 +172,7 @@ EMAIL_HOST = 'smtp.hostinger.com'  # 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'info@basuriautomotive.com'
 EMAIL_HOST_PASSWORD = os.environ.get(
-    'EMAIL_PASSWORD', 'Basuri#123456@')
+    'EMAIL_PASSWORD', 'KrunalKey#123456@')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_WELCOME_MESSAGE = "Welcome to  BasuriAutomotive"

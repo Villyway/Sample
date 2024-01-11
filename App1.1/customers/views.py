@@ -12,7 +12,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 from .forms import CustomerForm, CustomerAddressDetails
 from utils.views import get_secured_url, is_ajax
 from customers.models import Customer
-from utils.models import Address
+from utils.models import Address, City, State, Country
 
 
 class Dashboard(View):
@@ -113,9 +113,20 @@ class SingleCustomerAndAddAddress(View):
                 address.contect_phone = form_data['mobile1']
                 address.street = form_data["street"]
                 address.street2 = form_data["street2"]
-                address.city = form_data["city"]
-                address.state = form_data["state"]
-                address.country = form_data["country"]
+                if form_data["country"].name == 'Other':
+                    address.country = Country.objects.crate_country(form_data["other_country"])
+                else:
+                    address.country = form_data["country"]
+                
+                if form_data["state"].name == 'Other':
+                    address.state = State.objects.create_state(form_data["other_state"], address.country)
+                else:
+                    address.state = form_data["state"]
+                
+                if form_data["city"].name == 'Other':
+                    address.city = City.objects.create_city(form_data["other_city"], address.state)
+                else:
+                    address.city = form_data["city"]
                 address.zip = form_data["pincode"]
                 address.created_by = request.user.id
                 address.save()

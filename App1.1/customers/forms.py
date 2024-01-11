@@ -52,12 +52,17 @@ class CustomerAddressDetails(forms.Form):
                               widget=forms.TextInput(attrs={"class": "form-control"}))
     country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="Country", empty_label='--- Select Country ---')
+    other_country = forms.CharField(required=False, label="", widget=forms.TextInput(
+        attrs={"class": "form-control","placeholder":"Other Country"}))
     state = forms.ModelChoiceField(queryset=State.objects.all(), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="State", empty_label='--- Select State ---')
-    
+    other_state = forms.CharField(required=False, label="", widget=forms.TextInput(
+        attrs={"class": "form-control","placeholder":"Other State"}))
     city = forms.ModelChoiceField(queryset=City.objects.all(), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=True, label="City", empty_label='--- Select City ---')
-
+    other_city = forms.CharField(required=False, label="", widget=forms.TextInput(
+        attrs={"class": "form-control","placeholder":"Other City"}))
     pincode = forms.IntegerField(required=False, label="Pincode", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
+    
     

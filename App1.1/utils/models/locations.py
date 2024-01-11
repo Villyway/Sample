@@ -23,6 +23,12 @@ class CountryManager(models.Manager):
             return self.get(code="IN")
         except:
             None
+    
+    def crate_country(self,country):
+        country, created = self.get_or_create(
+            name=country
+        )
+        return country
 
 
 # Country Model
@@ -32,7 +38,7 @@ class Country(Base):
         "Country Code", max_length=10, blank=True, null=True)
 
     objects = CountryManager()
-
+    
     class Meta:
         verbose_name_plural = "Countries"
         ordering = ['name']
@@ -53,6 +59,12 @@ class StateManager(models.Manager):
         if self.filter(id=id).exists():
             return self.get(id=id)
         return None
+    
+    def create_state(self,name,country):
+        state, created = self.get_or_create(
+            name=name, country=country
+        )
+        return state
 
 
 # State Model
@@ -83,6 +95,10 @@ class CityManager(models.Manager):
         if self.filter(id=id).exists():
             return self.get(id=id)
         return None
+    
+    def create_city(self,name,state):
+        city, created = self.get_or_create(name=name,state=state)
+        return city
 
 
 # City Model
@@ -133,4 +149,7 @@ class Address(Base):
 
     def __str__(self):
         return self.street
+    
+    
+
 

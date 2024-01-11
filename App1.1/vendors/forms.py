@@ -13,11 +13,11 @@ class VendorForm(forms.Form):
     comany_name = forms.CharField(required=True, label="Company Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     other_city = forms.CharField(required=False, label="Other City", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control","placeholder":"Other City"}))
     other_state = forms.CharField(required=False, label="Other State", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control","placeholder":"Other State"}))
     other_country = forms.CharField(required=False, label="Other Country", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control","placeholder":"Other Country"}))
     type = forms.ModelChoiceField(queryset=PartyType.objects.filter(is_active=True), widget=forms.Select(
         attrs={"class": "form-control form-select"}), required=False, label="Vendor Type", empty_label='--- Select Type ---')
     primary_contect_name = forms.CharField(required=False, label="Primary Contect Person", widget=forms.TextInput(
@@ -56,19 +56,19 @@ class VendorForm(forms.Form):
         
         super(VendorForm, self).__init__(*args, **kwargs)
         if self.edit and self.vendor:
+            vendor = self.vendor
             address = self.vendor.address.first()
-            # self.fields["code"].initial = self.vendor.code
-            # self.fields['code'].widget.attrs['readonly'] = True
-            self.fields['type'].inital = self.vendor.type
-            self.fields['comany_name'].inital = self.vendor.comany_name
-            self.fields['primary_contect_name'].inital = self.vendor.primary_contect_name
-            self.fields['secondary_contect_name'].inital = self.vendor.secondary_contect_name
-            self.fields['mobile1'].inital = self.vendor.mobile
-            self.fields['mobile2'].inital = self.vendor.mobile1
-            self.fields['email1'].inital = self.vendor.email
-            self.fields['mobile2'].inital = self.vendor.email1
-            self.fields['gst_no'].inital = self.vendor.gst_no
-            if self.address:
+            self.fields['comany_name'].initial = vendor.comany_name
+            self.fields['type'].initial = vendor.type
+            self.fields['primary_contect_name'].initial = vendor.primary_contect_name
+            self.fields['secondary_contect_name'].initial = vendor.secondary_contect_name
+            self.fields['mobile1'].initial = vendor.mobile
+            self.fields['mobile2'].initial = vendor.mobile1
+            self.fields['email1'].initial = vendor.email
+            self.fields['email2'].initial = vendor.email1
+            self.fields['gst_no'].initial = vendor.gst_no
+            
+            if address:
                 self.fields["street"].initial = address.street
                 self.fields["street2"].initial =address.street2
                 self.fields["country"].initial =address.country
