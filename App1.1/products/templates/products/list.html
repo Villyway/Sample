@@ -5,7 +5,33 @@
 {% block title %}All Products{% endblock %}
 
 {% block css %}
+<style>
+  /* Style for the modal */
+  .modal {
+    display: none;
+  }
 
+  /* Style for the modal content */
+  .modal-content {
+    max-width: 80%;
+    max-height: 80%;
+    overflow: hidden;
+    background-color: #fff; /* Background color for the modal content */
+    position: relative;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  /* Style for the close button */
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #000;
+    cursor: pointer;
+    font-size: 20px;
+  }
+</style>
 {% endblock css %}
 
 {% block next_page %}
@@ -71,7 +97,7 @@ All Products
                 <td>
                 {{ forloop.counter|adjust_for_pagination:data }}
                 </td>
-                <td><img src="{{product.image}}" height="50px" width="50px"></td>
+                <td><img src="{{product.image}}" height="50px" width="50px" onclick="openModal(this.src)"></td>
                 <td>{{product.part_no}}</td>
                 <td>{{product.name}}</td>
                 <td> {{product.umo}} </td>
@@ -121,12 +147,40 @@ All Products
 </div>
 <div class="mt-5"></div>
 
+<!-- The Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Modal content -->
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Close button -->
+      <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <!-- Image container -->
+      <img id="modalImage" src="" alt="Modal Image" style="width: 100%; height: 100%;">
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
 
 {% block js %}
 <script>
   $('#product-menu').addClass('active open');
   $('#sub-all-product').addClass('active')
+</script>
+
+<script>
+  // Function to open the modal with the clicked image
+  function openModal(imageSrc) {
+    // Get the modal and image elements
+    var modalImage = document.getElementById('modalImage');
+
+    // Set the image source in the modal
+    modalImage.src = imageSrc;
+
+    // Display the modal
+    var modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    modal.show();
+  }
 </script>
 
 <script>

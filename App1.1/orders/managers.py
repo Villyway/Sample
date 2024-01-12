@@ -6,7 +6,7 @@ from django.db.models import Sum
 from django.db.models.functions import TruncMonth
 from django.db import models
 from django.db.models import Q
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Avg
 
 
 from utils.constants import OrderStatus, DispatchStatus, OrderConfirmation
@@ -265,5 +265,9 @@ class OrderOfProductManager(models.Manager):
                         'monthly_data': dict(sorted(data.items()))} for product_name, data in table_data.items()]
 
         return table_data, table_rows
+    
+    def product_wise_average_orders(self):
+
+        return self.active().values('product__code').annotate(avg_order_qty=Avg('order_qty'))
 
         # return self.active().filter(order__created_at__isnull=False).annotate(month=TruncMonth('order__created_at')).values('month').annotate(total_qty=Sum('order_qty')).order_by('month')

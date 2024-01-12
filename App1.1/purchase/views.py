@@ -65,6 +65,7 @@ class MRP(View):
             product_objs.append(self.calculate_mrp(Product.objects.by_code(product_name),int(quantity_value)))
         
         results = self.aggregate_mrp(product_objs)
+        
         requirements = []
         for i, j in dict(results).items():
             __p = {}

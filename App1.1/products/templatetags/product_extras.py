@@ -62,3 +62,9 @@ def get_requirement(value, arg):
 @register.filter
 def get_total_of_list(value):
     return sum(list(value))
+
+
+@register.filter
+def get_average_of_list(value):
+    return sum(list(value))
+
