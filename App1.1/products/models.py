@@ -3,7 +3,7 @@ from django.utils.text import slugify
 from django.db.models.signals import pre_save
 
 from base.models import Base
-from .managers import ProductManager, AttributeManager
+from .managers import ProductManager, AttributeManager, VendorWithProductDataManager
 from utils.views import upload_file
 from utils.constants.choices import State
 from vendors.models import Vendor
@@ -169,6 +169,8 @@ class VendorWithProductData(Base):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=5, decimal_places=2)
+
+    objects = VendorWithProductDataManager()
 
     def __str__(self):
         return str(self.id)

@@ -57,3 +57,8 @@ def get_requirement(value, arg):
         return value - arg
     else:
         return 0
+    
+
+@register.filter
+def get_total_of_list(value):
+    return sum(list(value))

@@ -3,6 +3,8 @@
 
 {% block title %}Inventory{% endblock %}
 
+{% load product_extras %}
+
 {% block css %}
 <link rel="stylesheet" href="https://unpkg.com/@adminkit/core@latest/dist/css/app.css">
 {% endblock css %}
@@ -87,26 +89,31 @@ Orders
       <div class="card">
         <div class="row row-bordered g-0">
           <div class="col-md-12">
-            <h5 class="card-header m-0 me-2 pb-3"> Best-Selling List</h5>
+            <h5 class="card-header m-0 me-2 pb-3"> Month Wise Product Sales</h5>
             {{monthly_sales}}
           </div>
           
-          <table class="table">
+          <table class="table table-sm table-bordered">
             <tr>
-              <td>Sr. No</td>
+              <th>No</th>
+              <th>Code</th>
               <th>Name</th>
               {% for month in months %}
                 <th>{{ month|date:"M-Y" }}</th>
               {% endfor %}
+              <th>Total</th>
+              
               
             </tr>
             {% for i in table_rows %}
             <tr>
               <td> {{forloop.counter}} </td>
+              <td>{{i.product_code}}</td>
               <td>{{ i.product_name }}</td>
                 {% for month, total_qty in i.monthly_data.items %}
                   <td>{{ total_qty }}</td>
                 {% endfor %}
+                <td>{{ i.monthly_data.values|get_total_of_list}}</td>
             </tr>
             {% endfor %}
           </table>

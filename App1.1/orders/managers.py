@@ -243,22 +243,26 @@ class OrderOfProductManager(models.Manager):
         table_data = {}
 
         for entry in monthly_product_totals:
-            product_name = entry['product__code'] + " - " + entry['product__name']
+            product_code = entry['product__code']
+            product_name = entry['product__name']+ ',' + entry['product__code']
             month = entry['month']
             total_qty = entry['total_qty']
         
             if product_name not in table_data:
                 table_data[product_name] = {}
+                
         
             table_data[product_name][month] = total_qty
-        
+            #table_data['code'] = product_code
+
         # Ensure all months are included in the data with quantity 0 for products that didn't sell
         for product_name in table_data:
             for month in all_months:
                 if month not in table_data[product_name]:
                     table_data[product_name][month] = 0
         
-        table_rows = [{'product_name': product_name, 'monthly_data': dict(sorted(data.items()))} for product_name, data in table_data.items()]
+        table_rows = [{'product_code':product_name.split(',')[1],'product_name': product_name.split(',')[0],
+                        'monthly_data': dict(sorted(data.items()))} for product_name, data in table_data.items()]
 
         return table_data, table_rows
 

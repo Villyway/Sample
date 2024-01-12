@@ -289,11 +289,14 @@ class VendorDetails(View):
 
     def get(self, request, id):
         vendor = Vendor.objects.get(id=id)
+        products = vendor.vendorwithproductdata_set.is_active()
         address = vendor.address.first()
         
         context = {
             "vendor":vendor,
-            "address":address
+            "address":address,
+            "products":products
+
         }
         return render(request,self.template_name,context)
     
@@ -307,3 +310,13 @@ class VendorDetails(View):
             VendorWithProductData.objects.create(vendor=vendor, product=product, price=price)
             
         return redirect("vendors:vendor-details",vendor.id)
+    
+
+def DeleteVendorOfProduct(View):
+
+    def get(self, request, id):
+
+        product = VendorWithProductData.objects.get(id=id)
+        product.is_active = False
+        product.save()
+        return redirect("vendors:vendor-details",product.vendor.id)

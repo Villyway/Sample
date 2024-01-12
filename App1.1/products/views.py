@@ -588,48 +588,48 @@ class ProductSearch(View):
 
 
 # Add Vendor
-class AddVendorOfProduct(View):
+# class AddVendorOfProduct(View):
 
-    template_name = "products/add_vendor.html"
-    form_class = VendorWithProduct
+#     template_name = "products/add_vendor.html"
+#     form_class = VendorWithProduct
 
-    def get(self,request,id):
-        product = Product.objects.by_part_no(id)
+#     def get(self,request,id):
+#         product = Product.objects.by_part_no(id)
 
-        context = {
-            "product":product,
-            "form":self.form_class
-        }
+#         context = {
+#             "product":product,
+#             "form":self.form_class
+#         }
 
-        return render(request,self.template_name,context)
+#         return render(request,self.template_name,context)
     
-    def post(self,request,id):
-        if is_ajax(self.request):
-            with transaction.atomic():
-                vendor = Vendor()
-                if request.POST.get('comany_name'):
-                    vendor.comany_name = request.POST.get('comany_name')
-                    vendor.save()
-                else:
-                    if Vendor.objects.filter(id = int(request.POST.get('vendor'))).exists:
-                         vendor = Vendor.objects.get(id = int(request.POST.get('vendor')))
+#     def post(self,request,id):
+#         if is_ajax(self.request):
+#             with transaction.atomic():
+#                 vendor = Vendor()
+#                 if request.POST.get('comany_name'):
+#                     vendor.comany_name = request.POST.get('comany_name')
+#                     vendor.save()
+#                 else:
+#                     if Vendor.objects.filter(id = int(request.POST.get('vendor'))).exists:
+#                          vendor = Vendor.objects.get(id = int(request.POST.get('vendor')))
                 
 
-                product = Product.objects.by_part_no(id)
-                obj = VendorWithProductData()
-                obj.vendor = vendor
-                obj.product = product
-                obj.price = request.POST.get('price')
-                obj.save()
-                messages.success(
-                    self.request, "Order added successfully.")
-            data = {
-                    'message': "Order added successfully.",
-                    'url': request.META.get('HTTP_REFERER')
-                }
-            return JsonResponse(data)
-        else:
-            return redirect("orders:orders-create")
+#                 product = Product.objects.by_part_no(id)
+#                 obj = VendorWithProductData()
+#                 obj.vendor = vendor
+#                 obj.product = product
+#                 obj.price = request.POST.get('price')
+#                 obj.save()
+#                 messages.success(
+#                     self.request, "Order added successfully.")
+#             data = {
+#                     'message': "Order added successfully.",
+#                     'url': request.META.get('HTTP_REFERER')
+#                 }
+#             return JsonResponse(data)
+#         else:
+#             return redirect("orders:orders-create")
 
 
         
