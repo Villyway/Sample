@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.text import slugify
 from django.db.models.signals import pre_save
 
@@ -38,6 +39,13 @@ class VendorManager(models.Manager):
             return self.active().get(id=id)
         except:
             return None
+    
+    def search(self, query):
+        if query:
+            return self.filter(Q(comany_name__icontains=query) |Q(gst_no__icontains=query)
+)
+        else:
+            return self.get_queryset()
 
 
 #Party Type

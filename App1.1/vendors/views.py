@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from .forms import VendorForm
 from .models import Vendor, PartyType
 from utils.models import Address, Country, State, City
-from utils.views import decode_data
+from utils.views import decode_data, is_ajax
 from .serializers import VendorDetailSerializer
 from products.models import Product, VendorWithProductData
 
@@ -312,7 +312,7 @@ class VendorDetails(View):
         return redirect("vendors:vendor-details",vendor.id)
     
 
-def DeleteVendorOfProduct(View):
+class DeleteVendorOfProduct(View):
 
     def get(self, request, id):
 
@@ -320,3 +320,39 @@ def DeleteVendorOfProduct(View):
         product.is_active = False
         product.save()
         return redirect("vendors:vendor-details",product.vendor.id)
+    
+
+class SearchVendor(View):
+    template_name = "components/vendor-list.html"
+
+    def get(self, request):
+        try:
+            if is_ajax(request):
+                query = request.GET.get("query", None)
+                print(query)
+                vendors = Vendor.objects.search(query)
+
+                results_per_page = 100
+                page = request.GET.get('page', 1)
+                paginator = Paginator(vendors, results_per_page)
+                print(vendors)
+                try:
+                    products = paginator.page(page)
+                except PageNotAnInteger:
+                    products = paginator.page(1)
+                except EmptyPage:
+                    vendors = paginator.page(paginator.num_pages)
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"vendors": vendors}
+                )
+
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
+                
+            else:
+                return redirect("vendors:vendor-list")
+        except Exception as e:
+            return JsonResponse({"error": str(e)})

@@ -33,7 +33,11 @@ All Vendors
     </div>
   </nav>
   <div class="row">
-    <div class="col-12">
+    <div class="col-4">
+      <input type="text" class="form-control" id="id_search" name="search" placeholder="Search" />      
+    </div>
+    <div class="col-8">
+      
       <a href="{% url 'vendors:vendor-create' %}"><button type="button" class="btn btn-success  mb-2"
           style="float: right; ">Add New Vendor</button></a>
     </div>
@@ -59,14 +63,14 @@ All Vendors
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody class="table-border-bottom-0">
+            <tbody class="table-border-bottom-0" id="id_vendors_list">
                 {% for vendor in vendors %}
               <tr>
                 <td>{{forloop.counter}}</td>
                 {% comment %} <td>{{vendor.code}}</td> {% endcomment %}
-                <td> <a href="{% url 'vendors:vendor-details' vendor.id %}">{{vendor.comany_name}}</a></td>
+                <td> <a href="{% url 'vendors:vendor-details' vendor.id %}">{{vendor.comany_name|upper}}</a></td>
                 <td>{{vendor.mobile}}</td>
-                <td>{{vendor.email}}</td>
+                <td>{{vendor.email|lower}}</td>
                 <td>{{vendor.gst_no}}</td>
                 <td> 
                     {% if vendor.is_active %}
@@ -108,5 +112,21 @@ All Vendors
 <script>
   $('#vendor-menu').addClass('active open');
   $('#sub-all-vendor').addClass('active')
+</script>
+
+<script>
+  $(document).on("keyup", "#id_search", function () {
+    var query = this.value;
+    // var category = $()
+    $.ajax({
+        url: '/vendors/search/',
+        type: 'GET',
+        data: { 'query': query},
+        success: function (data) {
+          console.log(data)
+            $('#id_vendors_list').html(data.data);
+        }
+    });
+});
 </script>
 {% endblock js %}

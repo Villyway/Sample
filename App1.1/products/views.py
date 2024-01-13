@@ -569,6 +569,7 @@ class ProductSearch(View):
                     products = paginator.page(1)
                 except EmptyPage:
                     products = paginator.page(paginator.num_pages)
+                    
                 html = render_to_string(
                     template_name=self.template_name,
                     context={"products": products, "data" : [page,results_per_page], "categories":categories}

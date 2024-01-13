@@ -2,6 +2,7 @@ import json
 import csv
 from collections import defaultdict
 
+from django.db.models import F
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import JsonResponse, HttpResponse
@@ -17,7 +18,11 @@ class Dashboard(View):
     template_name = "purchase/dashboard.html"
 
     def get(self, request):
-        return render(request, self.template_name)
+        products_below_minimum_stock = Product.objects.filter(stock__lt=F('minimum_stock_level'))
+        context = {
+            "products":products_below_minimum_stock,
+        }
+        return render(request, self.template_name, context)
 
 
 class MRP(View):
