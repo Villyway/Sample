@@ -312,6 +312,7 @@ class VendorDetails(View):
         return redirect("vendors:vendor-details",vendor.id)
     
 
+#Delete Vendor of product
 class DeleteVendorOfProduct(View):
 
     def get(self, request, id):
@@ -322,6 +323,7 @@ class DeleteVendorOfProduct(View):
         return redirect("vendors:vendor-details",product.vendor.id)
     
 
+# Search Vendor
 class SearchVendor(View):
     template_name = "components/vendor-list.html"
 
