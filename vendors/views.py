@@ -289,7 +289,7 @@ class VendorDetails(View):
 
     def get(self, request, id):
         vendor = Vendor.objects.get(id=id)
-        products = vendor.vendorwithproductdata_set.is_active()
+        products = vendor.vendorwithproductdata_set.active()
         address = vendor.address.first()
         
         context = {
