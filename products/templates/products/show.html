@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Product Details{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://basuriautomotive.com/assets/css/aiz-core.css">
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+        href="{% url 'vendors:vendor-list' %}">Product</a> / <b class="text-dark"> {{product.name}} <b></li>
+{% endblock %}
+
+{% block head %}
+Product Details
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mt-3">
+        <div class="card mb-4">
+          <h5 class="card-header">Product Details</h5>
+          <div class="card-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="main-img">
+                        <img class="img-fluid" src="{{product.image}}" alt="ProductS">
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="main-description px-2">
+                        <div class="category text-bold">
+                            Category: {{product.category}}
+                        </div>
+                        <div class="product-title text-bold my-3">
+                            {{product.part_no}} - {{product.name}}
+                        </div>
+                        <div class="product-title text-bold my-3">
+                            Current Stock : {{product.stock}}
+                        </div>
+    
+    
+                        <div class="price-area my-4">
+                            <table class="table">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Vendor</th>
+                                    <th>Date</th>
+                                    <th>Price</th>
+                                </tr>
+                                {% for i in vendors%}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{i.vendor.comany_name}}</td>
+                                    <td>{{i.created_at|date:"d M, Y"}}</td>
+                                    <td>{{i.price}}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    
+{% endblock %}

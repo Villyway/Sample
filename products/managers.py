@@ -89,9 +89,9 @@ class VendorWithProductDataManager(models.Manager):
     def get_queryset(self):
         return super(VendorWithProductDataManager, self).get_queryset()
     
-    def is_active(self):
+    def active(self):
         return self.filter(is_active=True)
     
     def get_vendor_with_product_price(self, vendor):
-        return self.is_active().filter(vendor=vendor)
+        return self.active().filter(vendor=vendor)
     

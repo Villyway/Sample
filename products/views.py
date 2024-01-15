@@ -588,6 +588,23 @@ class ProductSearch(View):
             return JsonResponse({"error": str(e)})
 
 
+# Product Details
+class ProductDetails(View):
+    template_name = "products/show.html"
+
+    def get(self, request, id):
+        product = Product.objects.by_part_no(id)
+        price = product.vendorwithproductdata_set.active()
+        print(price)
+
+        context = {
+            'product' : product,
+            'vendors':price
+        }
+
+        return render(request,self.template_name, context)
+
+
 # Add Vendor
 # class AddVendorOfProduct(View):
 
