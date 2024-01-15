@@ -22,8 +22,8 @@
         <td>
         {{ forloop.counter|adjust_for_pagination:data }}
         </td>
-        <td><img src="{{product.image}}" height="50px" width="50px"></td>
-        <td>{{product.part_no}}</td>
+        <td><img src="{{product.image}}" height="50px" width="50px" onclick="openModal(this.src)"></td>
+        <td><a href="{% url "products:product-details" product.part_no %}">{{product.part_no}}</a></td>
         <td>{{product.name}}</td>
         <td> {{product.umo}} </td>
         {% if product.stock < product.minimum_stock_level %}
