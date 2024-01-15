@@ -153,6 +153,7 @@ Vendor Details
                         <td>
                             {{forloop.counter}}
                         </td>
+                        <td><a href="{% url "products:product-details" i.product.part_no %}">{{i.product.part_no}}</a></td>
                         <td>{{i.product.part_no}}</td>
                         <td> {{i.product.name}} </td>
                         <td> {{i.price}}</td>
