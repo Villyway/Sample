@@ -21,24 +21,13 @@
 
 <div class="container mt-3 mb-5">
   <div class="row">
-    <div class="col-4">
-      <div class="input-group">
-        <label class="input-group-text" for="inputGroupSelect01">Categories</label>
-        <select class="form-select" id="inputGroupSelect01">
-          <option value="0" selected>Choose...</option>
-          {% for category in categories %}
-          <option value={{category.id}}>{{category.name}}</option>
-          {% endfor %}
-        </select>
-      </div>
-    </div>
+    
 
-    <div class="col-4">
-      <input type="text" class="form-control" name="search" placeholder="Search" />      
+    <div class="col-6 ">
+      <input type="text" class="form-control " name="search" placeholder="Search" id="id_search" />      
     </div>
-    <div class="col-4"> 
-      <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success  mb-2"
-        style="float: right; ">Add New Product</button></a>
+    <div class="col-6 float-end"> 
+      <a href="{% url 'products:products-create' %}"><button type="button" class="btn btn-success float-end mb-2">Add New Product</button></a>
     </div>
     <div class="col-12">
 
@@ -47,7 +36,7 @@
         <h5 class="card-header">{{category}}</h5>
         
         {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
-        <div class="table-responsive text-nowrap">
+        <div class="table-responsive text-nowrap" id="id_products_list">
           <table class="table">
             <thead>
               <tr>
@@ -76,8 +65,8 @@
                    {{ forloop.counter }}
                   
              </td>
-                <td><img src="{{product.image}}" height="50px" width="50px"></td>
-                <td>{{product.part_no}}</td>
+                <td><img src="{{product.image}}" height="50px" width="50px" onclick="openModal(this.src)"></td>
+                <td><a href="{% url "products:product-details" product.part_no %}">{{product.part_no}}</a></td>
                 <td>{{product.name}}</td>
                 <td> {{product.umo}} </td>
                 {% if product.stock < product.minimum_stock_level %}
@@ -126,6 +115,19 @@
 </div>
 </div>
 <div class="mt-5"></div>
+<!-- The Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Modal content -->
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Close button -->
+      <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <!-- Image container -->
+      <img id="modalImage" src="" alt="Modal Image" style="width: 100%; height: 100%;">
+    </div>
+  </div>
+</div>
+
 
 {% endblock content %}
 
@@ -134,4 +136,40 @@
   $('#product-menu').addClass('active open');
   $('#sub-all-product').addClass('active')
 </script>
+
+<script>
+  // Function to open the modal with the clicked image
+  function openModal(imageSrc) {
+    // Get the modal and image elements
+    var modalImage = document.getElementById('modalImage');
+
+    // Set the image source in the modal
+    modalImage.src = imageSrc;
+
+    // Display the modal
+    var modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    modal.show();
+  }
+</script>
+
+<script>
+  $(document).on("keyup", "#id_search", function () {
+    console.log("Hi")
+    var select = document.getElementById("inputGroupSelect01");
+    var selectedOption = select.options[select.selectedIndex];
+    var selectedValue = selectedOption.value;
+    
+    var query = this.value;
+    // var category = $()
+    $.ajax({
+        url: '/products/search/',
+        type: 'GET',
+        data: { 'query': query, "category":{{category}}},
+        success: function (data) {
+            $('#id_products_list').html(data.data);
+        }
+    });
+});
+</script>
+
 {% endblock js %}

@@ -4,18 +4,17 @@ from django.core.validators import RegexValidator
 
 from utils.models import State, City, Country
 from .models import Customer
+from utils.constants import OrdersType
 
 class CustomerForm(forms.Form):
     mobile_regex = RegexValidator(
         regex=r'^[6-9][0-9]{9}', message="Mobile number must be entered with code in the format: 9999999999. It must start with 6, 7, 8, 9")
-    # code = forms.CharField(required=True, label="Vendor Code", widget=forms.TextInput(
-    #     attrs={"class": "form-control"}))
+    category = forms.ChoiceField(required=True, label="Customer Type", choices=OrdersType.choices(
+    ), widget=forms.Select(attrs={"class": "form-control form-select"}))
     name = forms.CharField(label="Customer", widget=forms.TextInput(
         attrs={"class": "form-control"}))
     person_name = forms.CharField(label="Contect Person Name", widget=forms.TextInput(
         attrs={"class": "form-control"}))
-    # type = forms.ModelChoiceField(queryset=PartyType.objects.filter(is_active=True), widget=forms.Select(
-    #     attrs={"class": "form-control form-select"}), required=False, label="Vendor Type", empty_label='--- Select Type ---')
     mobile1 = forms.CharField(
         required= True ,label=" Mobile No", widget=forms.TextInput(attrs={"class": "form-control"}))
     mobile2 = forms.CharField(
@@ -24,6 +23,8 @@ class CustomerForm(forms.Form):
         attrs={'class': 'form-control'}), required=False, validators=[validate_email])
     gst_no = forms.CharField(
         required= False ,label=" GST No", widget=forms.TextInput(attrs={"class": "form-control"}))
+    
+    
     
     def __init__(self, *args, **kwargs):
         self.user = None

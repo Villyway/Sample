@@ -56,6 +56,7 @@ class CreateCustomer(FormView):
                     customer.mobile1 = form_data['mobile2']
                     customer.gst_no = form_data['gst_no']
                     customer.created_by = self.request.user.id
+                    customer.category = form_data['category']
                     customer.save()                    
                     
                     messages.success(

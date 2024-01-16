@@ -175,8 +175,9 @@ class DispatchStatus(Enum):
 class OrdersType(Enum):
     DOMESTIC = "DOMESTIC"
     ECOMMERCE = "ECOMMERCE"
-    EXPORT = "EXPORT"
-    DIRECT = "DIRECT"
+    ASIA = "ASIA"
+    GLOBAL = "GLOBAL"
+    AMAZON = "AMAZON"
 
     @classmethod
     def choices(cls):

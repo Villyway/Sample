@@ -15,7 +15,7 @@ from utils.views import get_secured_url, is_ajax, generate_order_dispatch_no
 from customers.models import Customer
 from products.models import Product
 from orders.models import OrderDetails, OrderOfProduct
-from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles
+from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles, OrdersType
 from utils.models import Address
 from orders.resources import OrderReport
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -81,8 +81,7 @@ class CreateOrders(View):
             'products': products,
             'customer': customer,
             'unit' :[e.value for e in OrderUOM], 
-            'packaging_type' : [e.value for e in PackingType]
-
+            'packaging_type' : [e.value for e in PackingType],
         }
         return render(request,self.template_name, context)
     

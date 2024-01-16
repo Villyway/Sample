@@ -3,6 +3,7 @@ from django.db import models
 from base.models import Base
 from utils.models import Address
 from customers.managers import CustomerManager
+from utils.constants import OrdersType
 
 # Create your models here.
 class Customer(Base):
@@ -14,6 +15,8 @@ class Customer(Base):
     address = models.ManyToManyField(Address, blank=True)
     mobile1 = models.CharField(max_length=50, null=True, blank=True)
     gst_no = models.CharField(max_length=20, null=True, blank=True)
+    category = models.CharField(
+        max_length=25, choices=OrdersType.choices(), default=OrdersType.DOMESTIC.value)
     objects = CustomerManager()
 
     def __str__(self):
