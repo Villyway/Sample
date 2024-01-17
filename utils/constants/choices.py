@@ -192,3 +192,26 @@ class OrderConfirmation(Enum):
     @classmethod
     def choices(cls):
         return tuple((i.name, i.value) for i in cls)
+    
+
+class Department(Enum):
+    SALES = "SALES"
+    ACCOUNT="ACCOUNT"
+    HR="HR"
+    INFO = "INFO"
+    PURCHASE = "PURCHASE"
+    MD = "MD"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)
+    
+
+class NotificationTypes(Enum):
+    NOTIFICATION = "NOTIFICATION"
+    CONFIRMED = "CONFIRMED"
+    ORDER_REQUEST = "ORDER_REQUEST"
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)

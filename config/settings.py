@@ -13,12 +13,13 @@ import os
 from datetime import timedelta
 
 from django.contrib.messages import constants as messages
+from celery.schedules import crontab
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 
 # Quick-start development settings - unsuitable for production
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'import_export',
     'wkhtmltopdf',
+    'django_celery_beat',
 
     # Project applications
     'users.apps.UsersConfig',
@@ -192,3 +194,20 @@ WKHTMLTOPDF_CMD_OPTIONS = {
     # Add any other options as needed
 }
 WKHTMLTOPDF_PATH = '/usr/bin/wkhtmltopdf' 
+
+# For redis :
+CELERY_BROKER_URL = os.environ.get(
+    'CELERY_BROKER_URL', 'redis://127.0.0.1:6379')
+CELERY_RESULT_BACKEND = os.environ.get(
+    'CELERY_RESULT_BACKEND', 'redis://127.0.0.1:6379')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+CELERY_BEAT_SCHEDULE = {
+    'every-mid-night': {
+        'task': 'utils.tasks.expir_notification',
+        'schedule': crontab(minute=0, hour=0)
+    }
+}

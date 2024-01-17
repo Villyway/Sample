@@ -1,5 +1,7 @@
 import os
 import json
+from csv import DictReader
+from io import TextIOWrapper
 
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
@@ -15,7 +17,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import (Product, Attribute, ProductAttribute,
                       Categories, PartQuality, BOMItem, VendorWithProductData
                     )
-from .forms import ProductForm, BomForm, VendorWithProduct
+from .forms import ProductForm, FileUploadForm
 from utils.views import get_secured_url, is_ajax
 from .serializers import InwordOfProductSerializer, ProductSerializer, ProductSerializerWithId
 from utils.views import generate_part_code, BarCode
@@ -433,7 +435,7 @@ class BomItemList(View):
 
     def get(self,request):
         # products = BOMItem.objects.values_list('product__name','product__code', 'product__id','product__part_no').distinct()
-        products = Product.objects.active().filter(category=Categories.objects.get(id=1), quality_type__code = 'D').order_by('id')
+        products = Product.objects.active().filter(category=Categories.objects.get(id=1)).order_by('id')
         results_per_page = 10
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)
@@ -507,13 +509,35 @@ class ExportData(View):
 # Create Bom 
 class CreatBOM(View):
     template_name = "bom/create.html"
-    form_name = BomForm()
+    form_name = FileUploadForm()
+    
     
     def get(self,request):
         
         return render(request,self.template_name,{"form":self.form_name})
     
     def post(self,request):
+        bom_file = request.FILES["csv_file"]
+        main_part_no = request.POST.get('main_part_no')
+        rows = TextIOWrapper(bom_file, encoding="utf-8", newline="")
+        with transaction.atomic():
+            main_part = Product.objects.by_part_no(main_part_no)
+            if main_part:
+                for row in DictReader(rows):
+                    child_part = Product.objects.by_part_no(row['part_no'])
+                    qty = row['qty']
+                    bom = BOMItem()
+                    bom.product = main_part
+                    bom.component = child_part
+                    bom.quantity = qty
+                    bom.save()
+                messages.success(
+                    request, "Bom Created successfully"
+                )      
+            else:
+                messages.error(
+                    request, "Main Product is Not Found"
+                )      
         
         return render(request,self.template_name,{"form":self.form_name})
     

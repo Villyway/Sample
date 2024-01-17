@@ -76,6 +76,12 @@ class BomForm(forms.Form):
         attrs={"class": "form-control","type":"number","value":"0"}))
     
 
+class FileUploadForm(forms.Form):
+    main_part_no = forms.CharField(required=True, label="Main Part No.", widget=forms.TextInput(
+        attrs={"class": "form-control"}))
+    csv_file = forms.FileField()
+    
+
 # Entry of Price and vendor with product table
 class VendorWithProduct(forms.Form):    
     comany_name = forms.CharField(required=False, label="Company Name", widget=forms.TextInput(

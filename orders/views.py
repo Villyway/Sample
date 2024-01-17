@@ -342,10 +342,11 @@ class ExportDispatchNote(View):
     def get(self, request, id):
         # You can pass context data if needed
         order = OrderDetails.objects.get(id=id)
-        products = OrderOfProduct.objects.filter(dispatch_status=DispatchStatus.READY.value)
+        products = OrderOfProduct.objects.filter(dispatch_status=DispatchStatus.READY.value, order=order)
         context_data = {'variable': 'Hello, World!',
                             "order_details" : order,
                             "products" : products,
+                            "title" : "DESPATCH NOTE"
                         }
 
         # Render the template as PDF
@@ -388,6 +389,8 @@ class AddLRNo(View):
                 }
         return JsonResponse(data)
 
+
+# Change Conformation Status
 class ChangeOrderConfirmationStatus(View):
 
     def get(self,request,id):
@@ -398,6 +401,7 @@ class ChangeOrderConfirmationStatus(View):
             order.order_confirmation = status
             order.order_confirmation_remark = remark
             order.save()
+        
         elif request.user.role == Roles.SUPER_ADMIN.value: 
             order.order_confirmation = status
             order.order_confirmation_remark = remark
@@ -405,6 +409,7 @@ class ChangeOrderConfirmationStatus(View):
         return redirect("orders:orders-list")
     
 
+# Order Cancleation
 class OrderOfProductCancleation(View):
 
     def get(self, request, id):
@@ -417,6 +422,8 @@ class OrderOfProductCancleation(View):
         return redirect(get_secured_url(
                         self.request) + self.request.META["HTTP_HOST"] + '/orders/'+ str(order_of_item.order.id) +'/order-details')
 
+
+# Order Report
 class OrdersReport(View):
     template_name = "orders/report.html"
 
@@ -430,6 +437,7 @@ class OrdersReport(View):
         return render(request,self.template_name,context)
     
 
+#Export Data
 class ExportData(View):
     
     def get(self, request):
@@ -465,6 +473,7 @@ class ExportData(View):
         return response
 
 
+# Order Custome Report
 class OrdersCustomReportResponse(View):
     template_name = "components/search-report.html"
 
@@ -561,13 +570,12 @@ class OrderSearch(View):
             return JsonResponse({"error": str(e)})
 
 
+# Track Lr No
 class TrackLR(View):
     
     template_name = "orders/track.html"
 
     def get(self,request,id):
-        
-        
         order = OrderDetails.objects.get_order(id)
         lr_nos = []
         if order:
@@ -599,6 +607,3 @@ class TrackLR(View):
             # Handle any errors that occurred during the API call
             return JsonResponse({'message': f'API call failed: {str(e)}'}, status=500)
 
-    
-
-    
