@@ -78,7 +78,7 @@ class BomForm(forms.Form):
 
 class FileUploadForm(forms.Form):
     main_part_no = forms.CharField(required=True, label="Main Part No.", widget=forms.TextInput(
-        attrs={"class": "form-control"}))
+        attrs={"class": "form-control m-3"}))
     csv_file = forms.FileField()
     
 
