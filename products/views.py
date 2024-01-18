@@ -634,50 +634,43 @@ class ProductDetails(View):
         return render(request,self.template_name, context)
 
 
-# Add Vendor
-# class AddVendorOfProduct(View):
+#Search Bom
+class SearchBom(View):
 
-#     template_name = "products/add_vendor.html"
-#     form_class = VendorWithProduct
+    template_name = "components/bom-list.html"
 
-#     def get(self,request,id):
-#         product = Product.objects.by_part_no(id)
+    def get(self, request):
+        try:
+            if is_ajax(request):
+                query = request.GET.get("query", None)
 
-#         context = {
-#             "product":product,
-#             "form":self.form_class
-#         }
+                item_category = Categories.objects.get(slug="finish-goods")
+                products = Product.objects.search(
+                    query=query,category = item_category)
 
-#         return render(request,self.template_name,context)
-    
-#     def post(self,request,id):
-#         if is_ajax(self.request):
-#             with transaction.atomic():
-#                 vendor = Vendor()
-#                 if request.POST.get('comany_name'):
-#                     vendor.comany_name = request.POST.get('comany_name')
-#                     vendor.save()
-#                 else:
-#                     if Vendor.objects.filter(id = int(request.POST.get('vendor'))).exists:
-#                          vendor = Vendor.objects.get(id = int(request.POST.get('vendor')))
-                
+                results_per_page = 100
+                page = request.GET.get('page', 1)
+                paginator = Paginator(products, results_per_page)
+                try:
+                    products = paginator.page(page)
+                except PageNotAnInteger:
+                    products = paginator.page(1)
+                except EmptyPage:
+                    products = paginator.page(paginator.num_pages)
+                    
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"products": products, "data" : [page,results_per_page]}
+                )
 
-#                 product = Product.objects.by_part_no(id)
-#                 obj = VendorWithProductData()
-#                 obj.vendor = vendor
-#                 obj.product = product
-#                 obj.price = request.POST.get('price')
-#                 obj.save()
-#                 messages.success(
-#                     self.request, "Order added successfully.")
-#             data = {
-#                     'message': "Order added successfully.",
-#                     'url': request.META.get('HTTP_REFERER')
-#                 }
-#             return JsonResponse(data)
-#         else:
-#             return redirect("orders:orders-create")
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
 
-
-        
-
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("products:list")
+        except Exception as e:
+            return JsonResponse({"error": str(e)})

@@ -1,0 +1,23 @@
+{% load product_extras %}
+
+{% for product in products %}
+<tr>
+  <td> 
+    {{ forloop.counter|adjust_for_pagination:data }}
+  </td>
+  <td><img src="{{product.image}}" height="50px" width="50px"></td>
+  <td>{{product.code}}</td>
+  <td>{{product.name}}</td>
+  <td> 
+      {% if product.is_active %}
+      <i class="fas fa-check text-success" style="font-size: 15px;"></i>
+      {% else %}
+      <i class="fas fa-times text-danger" style="font-size: 15px;"></i>
+      {% endif %}
+  </td>
+  <td>
+    <a href="{% url 'products:product-bom' product.code %}"
+                  class="btn btn-success btn-circle " title="Bill Of Matrials"><i class="fa-solid fa-magnet"></i></i></a>
+  </td>
+</tr>
+{% endfor %}
