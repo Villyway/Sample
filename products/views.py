@@ -511,35 +511,40 @@ class CreatBOM(View):
     template_name = "bom/create.html"
     form_name = FileUploadForm()
     
-    
     def get(self,request):
         
         return render(request,self.template_name,{"form":self.form_name})
     
     def post(self,request):
-        bom_file = request.FILES["csv_file"]
-        main_part_no = request.POST.get('main_part_no')
-        rows = TextIOWrapper(bom_file, encoding="utf-8", newline="")
-        with transaction.atomic():
-            main_part = Product.objects.by_part_no(main_part_no)
-            if main_part:
-                for row in DictReader(rows):
-                    child_part = Product.objects.by_part_no(row['part_no'])
-                    qty = row['qty']
-                    bom = BOMItem()
-                    bom.product = main_part
-                    bom.component = child_part
-                    bom.quantity = qty
-                    bom.save()
-                messages.success(
-                    request, "Bom Created successfully"
-                )      
-            else:
-                messages.error(
-                    request, "Main Product is Not Found"
-                )      
+        try:
+            bom_file = request.FILES["csv_file"]
+            main_part_no = request.POST.get('main_part_no')
+            rows = TextIOWrapper(bom_file, encoding="utf-8", newline="")
+            with transaction.atomic():
+                main_part = Product.objects.by_part_no(main_part_no)
+                if main_part:
+                    for row in DictReader(rows):
+                        child_part = Product.objects.by_part_no(row['part_no'])
+                        qty = row['qty']
+                        bom = BOMItem()
+                        bom.product = main_part
+                        bom.component = child_part
+                        bom.quantity = qty
+                        bom.save()
+                    messages.success(
+                        request, "Bom Created successfully"
+                    )      
+                else:
+                    messages.error(
+                        request, "Main Product is Not Found"
+                    )      
+            return redirect("products:product-bom", main_part.code)
         
-        return render(request,self.template_name,{"form":self.form_name})
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect(request.META['HTTP_REFERER'])
+
+
     
 
 # Row data by Json response
