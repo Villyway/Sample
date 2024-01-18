@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Customers{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+    href="{% url 'customers:dashboard' %}">Customers</a> / 
+{% endblock %}
+
+{% block head %}
+Customers
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <div class="col-lg-12 col-md-4 order-1">
+        <div class="row">
+          <div class="col-lg-2 col-md-12 col-6 mb-4">
+            <a href="{% url 'customers:customer-list'%}">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title d-flex align-items-start justify-content-between">
+
+                    <span class="fw-semibold d-block mb-1">Total Customers</span>    
+                  
+                </div>
+                
+                <h3 class="card-title mb-2">{{total}}</h3>
+                
+              </div>
+            </div>
+          </a>
+          </div>
+          {% for i, j in category_by.items %}
+          
+          
+          <div class="col-lg-2 col-md-12 col-6 mb-4">
+            {% for k in categories %}
+          {% if k.name == i %}
+          <a href="{% url 'products:category-product' k.id %}">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">
+                    <span>{{i}} </span>
+                </div>
+                <h3 class="card-title text-nowrap mb-1">{{j}}</h3>
+              </div>
+            </div>
+          </a>
+          {% endif %}
+          {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      
+    </div>
+    
+  </div>
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#customers-menu').addClass('active open');
+  $('#customer-dashboard').addClass('active')
+</script>
+{% endblock js %}

@@ -18,11 +18,13 @@ Customers
 
 {% block content %}
 <div class="content-wrapper">
-  <!-- Content -->
-
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
-      <!-- Order Statistics -->
+      <div class="col-4 mb-3">
+        <input type="text" class="form-control float-end" id="id_search" name="search" placeholder="Search" />      
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-6 col-lg-4 col-xl-12 order-0 mb-4">
         <div class="card h-100">
           <table class="table">
@@ -37,7 +39,7 @@ Customers
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="id_customers_list">
               {% for customer in customers %}
               <tr>
                 <td>{{forloop.counter}}</td>
@@ -67,9 +69,11 @@ Customers
           </table>    
         </div>
       </div>
-      <!--/ Order Statistics -->
-
-      
+    </div>
+    <div class="row container-fluid mt-2">
+        {% if customers.paginator.num_pages > 1 %}    
+        {% include 'components/pagination.html' with items=customers paginator=customers.paginator %}
+        {% endif %}
     </div>
   </div>
   <!-- / Content -->
@@ -80,4 +84,21 @@ Customers
   $('#customers-menu').addClass('active open');
   $('#customers-dashboard').addClass('active')
 </script>
+
+<script>
+  $(document).on("keyup", "#id_search", function () {
+
+    var query = this.value;
+    // var category = $()
+    $.ajax({
+        url: '/customers/search/',
+        type: 'GET',
+        data: { 'query': query},
+        success: function (data) {
+            $('#id_customers_list').html(data.data);
+        }
+    });
+});
+</script>
+
 {% endblock js %}

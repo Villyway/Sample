@@ -176,8 +176,13 @@
         </a>
 
         <ul class="menu-sub">
-          <li class="menu-item" id="customers-dashboard">
+          <li class="menu-item" id="customer-dashboard">
             <a href="{% url 'customers:dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
+          <li class="menu-item" id="customers-dashboard">
+            <a href="{% url 'customers:customer-list' %}" class="menu-link">
               <div data-i18n="Without menu">List</div>
             </a>
           </li>

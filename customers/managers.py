@@ -24,5 +24,8 @@ class CustomerManager(models.Manager):
                 customers.append(i.name)
                 orders.append(i.total_orders)
             return customers, orders
+        
+    def search(self,query):
+        return self.active().filter(Q(name__icontains=query)|Q(contect_person__icontains=query)|Q(email__icontains=query))
     
     

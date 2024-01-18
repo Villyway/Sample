@@ -26,5 +26,5 @@ urlpatterns = [
          name="remove-category"),
     path("<slug:id>/vendor-details/", login_required(VendorDetails.as_view()), name="vendor-details"),
     path("search/", login_required(SearchVendor.as_view()),
-         name="product-search"),
+         name="vendor-search"),
 ]
