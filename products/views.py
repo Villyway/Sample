@@ -96,24 +96,29 @@ class CreateProduct(FormView):
             if is_ajax(self.request):
                 form_data = form.cleaned_data
                 with transaction.atomic():
-                    product = Product()
-                    product.code = form_data['code']
-                    product.name = form_data['name']
-                    product.category = form_data["category"]
-                    product.description = form_data['description']
-                    product.umo = form_data['umo']
-                    product.specification = form_data['specification']
-                    product.stock = form_data['stock']
-                    product.minimum_stock_level  = form_data['minimum_stock_level']
-                    product.rack_no = form_data['rack_no']
-                    product.tray_no = form_data['tray_no']
-                    product.created_by = self.request.user.id
-                    product.quality_type = form_data['part_quality']
-                    product.version = form_data['part_version']                    
-                    product.save()
+                    if Product.objects.filter(code=form_data['code']).exists:
+                        
+                        data = {"error": "Product Was already stored.", "status": 403}
+                        return JsonResponse(data)
+                    else:
+                        product = Product()
+                        product.code = form_data['code']
+                        product.name = form_data['name']
+                        product.category = form_data["category"]
+                        product.description = form_data['description']
+                        product.umo = form_data['umo']
+                        product.specification = form_data['specification']
+                        product.stock = form_data['stock']
+                        product.minimum_stock_level  = form_data['minimum_stock_level']
+                        product.rack_no = form_data['rack_no']
+                        product.tray_no = form_data['tray_no']
+                        product.created_by = self.request.user.id
+                        product.quality_type = form_data['part_quality']
+                        product.version = form_data['part_version']                    
+                        product.save()
 
-                    product.part_no = generate_part_code(product.id, product.version, product.quality_type.code)
-                    product.save()
+                        product.part_no = generate_part_code(product.id, product.version, product.quality_type.code)
+                        product.save()
 
                     if form_data['image']:
                         product.save_image_url(form_data["image"], get_secured_url(
@@ -124,8 +129,6 @@ class CreateProduct(FormView):
                     status = gen_barcode.generate(product.part_no,product.part_no,path, product.name + ".png")
                     product.barcode_image = get_secured_url(self.request) + self.request.META["HTTP_HOST"] +"/media/" + path + product.name + ".png"
                     product.save()
-                        
-                    
                     
                     messages.success(
                         self.request, "Product added successfully.")
