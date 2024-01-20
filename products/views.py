@@ -96,8 +96,8 @@ class CreateProduct(FormView):
             if is_ajax(self.request):
                 form_data = form.cleaned_data
                 with transaction.atomic():
-                    if Product.objects.filter(code=form_data['code']).exists:
-                        
+                    
+                    if Categories.objects.get(slug="finish-goods") == form_data["category"]  and Product.objects.filter(code=form_data['code']).exists:
                         data = {"error": "Product Was already stored.", "status": 403}
                         return JsonResponse(data)
                     else:
