@@ -113,6 +113,7 @@ class Product(Base):
             bom['part_no'] = component_part_no
             bom['code'] = component_code
             bom['stock'] = bom_item.component.stock
+            bom['id'] = bom_item.id
             if qty:
                 bom['total_req'] = quantity * qty
                 bom['availabel'] = bom_item.component.stock - quantity * qty

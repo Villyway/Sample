@@ -465,6 +465,7 @@ class SingelBom(View):
         bom = product_a.get_bom(60)
         
         context={
+            
             "part_no": product_a.part_no,
             "name": product_a.name,
             "code":product_a.code,
@@ -547,8 +548,6 @@ class CreatBOM(View):
             messages.error(request, str(e))
             return redirect(request.META['HTTP_REFERER'])
 
-
-    
 
 # Row data by Json response
 # Singel Product return
@@ -677,3 +676,31 @@ class SearchBom(View):
                 return redirect("products:list")
         except Exception as e:
             return JsonResponse({"error": str(e)})
+
+
+class DeleteBom(View):
+
+    def get(self,request,id):
+
+        with transaction.atomic():
+            main_part = Product.objects.get(code=id)
+            for i in BOMItem.objects.filter(product=main_part):
+                i.delete()
+            messages.success(
+                    request, "Bom deleted successfully"
+                )
+            return redirect("products:product-bom", main_part.code)
+        
+
+class DeleteBomOfChildPart(View):
+
+    def get(self,request,id):
+
+        child_part = BOMItem.objects.get(id=id)
+        main_part = child_part.product.code
+        child_part.delete()
+        messages.success(
+                    request, "Child part deleted successfully"
+                )
+        return redirect("products:product-bom", main_part)
+        

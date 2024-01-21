@@ -29,7 +29,17 @@ BOM OF {{name}}
         <div class="col-12">
           <!-- Basic Bootstrap Table -->
           <div class="card">
-            <h5 class="card-header">BOM OF {{code}}-{{name}} </h5>
+            
+            <div class="card-header">
+              <h5 class="">BOM OF {{code}}-{{name}} </h5>
+              {% if user.role == 'SUPER_ADMIN' %}
+              <a href="{% url 'products:bom-delete' code %}"
+                   class="btn btn-danger btn-circle " title="Delete"><i class="fa-solid fa-trash"></i></a>
+              <a href="{% url 'products:bom-create' %}"
+                   class="btn btn-success btn-circle " title="Delete"><i class="fa-solid fa-plus"></i></a>
+              {% endif %}
+            </div>
+            
             <table id="example" class="display nowrap table mt-3 mb-3" style="width:100%">
               <thead>
                 <tr>
@@ -66,9 +76,11 @@ BOM OF {{name}}
                       <td>{{i.part_no|get_price }}</td>
                       <td>{{i.part_no|get_total_price:i.qty}}</td>
                       <td>
+                        {% if user.role == 'SUPER_ADMIN' %}
                         {% if i.part_no %}
-                        <a href=""
-                                  class="btn btn-success btn-circle " title="Add Vendor"><i class="fa-solid fa-magnet"></i></i></a>
+                        <a href="{% url 'products:child-part-delete' i.id %}"
+                                  class="btn btn-danger btn-circle " title="Delete"><i class="fa-solid fa-trash"></i></a>
+                        {% endif %}
                         {% endif %}
                       </td>
                       
