@@ -27,7 +27,7 @@ class PurchaseOrder(Base):
         TaxCode, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     del_date = models.DateTimeField(blank=True, null=True)
-    total = models.DecimalField(max_digits=5, decimal_places=2)
+    total = models.DecimalField(max_digits=12,decimal_places=2)
     with_tax_total = models.DecimalField(max_digits=5, decimal_places=2)
     checked_by = models.IntegerField(null=True, blank=True)
     remarks = models.TextField(blank=True, null=True)

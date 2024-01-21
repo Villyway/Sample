@@ -157,7 +157,7 @@ class ProductAttribute(Base):
 class BOMItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='bom_items')
     component = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='used_in_bom')
-    quantity = models.PositiveIntegerField(default=0)
+    quantity = models.DecimalField(max_digits=12, decimal_places=2)
     category = models.CharField(max_length=150, blank=True, null=True)
 
     def __str__(self):
@@ -168,7 +168,7 @@ class BOMItem(models.Model):
 class VendorWithProductData(Base):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=12, decimal_places=2)
 
     objects = VendorWithProductDataManager()
 
