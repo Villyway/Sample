@@ -137,6 +137,7 @@ Vendor Details
             </div>
         </div>
       </div>
+      {% if user.role == 'SUPER_ADMIN' %}
       <div class="col-md-6 col-lg-4 col-xl-12 order-0 mb-2">
         <div class="card h-100">
             <div class="card-header"><h5>Products Details</h5></div>
@@ -147,6 +148,7 @@ Vendor Details
                         <th>Part No</th>
                         <th>Description</th>
                         <th>Price</th>
+                        <th>Action</th>
                     </tr>
                     {% for i in vendor.vendorwithproductdata_set.all %}
                     <tr>
@@ -154,15 +156,20 @@ Vendor Details
                             {{forloop.counter}}
                         </td>
                         <td><a href="{% url "products:product-details" i.product.part_no %}">{{i.product.part_no}}</a></td>
-                        <td>{{i.product.part_no}}</td>
                         <td> {{i.product.name}} </td>
-                        <td> {{i.price}}</td>
+                        <td>{{user.role}} {{i.price}}</td>
+                        <td>
+                            <a href="{% url 'vendors:delete-vendor-product' i.id %}" class="open-modal btn btn-danger btn-circle " data-toggle="modal"
+                                data-target="" title="Delete"><i class="fa fa-trash"
+                                    aria-hidden="true"></i></a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </table>
             </div>
         </div>
       </div>
+      {% endif %}
       <!--/ Order Statistics -->
 
       

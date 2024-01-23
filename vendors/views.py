@@ -316,10 +316,10 @@ class VendorDetails(View):
 class DeleteVendorOfProduct(View):
 
     def get(self, request, id):
-
         product = VendorWithProductData.objects.get(id=id)
-        product.is_active = False
-        product.save()
+        part_no = product.product.part_no
+        product.delete()
+        messages.success(request, part_no + "of rate successfully deleted.")
         return redirect("vendors:vendor-details",product.vendor.id)
     
 

@@ -112,4 +112,10 @@ class MRP(View):
             # return JsonResponse(data=data_dict, safe=False)            
             
 
-        
+# PO
+class PurchaseOrder(View):
+    template_name = "purchase/create.html"
+
+    def get(self, request):
+
+        return render(request,self.template_name)
