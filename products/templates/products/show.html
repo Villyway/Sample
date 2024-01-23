@@ -55,7 +55,7 @@ Product Details
                                     <td>{{forloop.counter}}</td>
                                     <td>{{i.vendor.comany_name}}</td>
                                     <td>{{i.created_at|date:"d M, Y"}}</td>
-                                    <td>{{i.price}}</td>
+                                    <td><i class="fa fa-inr" aria-hidden="true"></i> {{i.price}} / {{i.product.umo}}</td>
                                     <td>
                                     <a href="{% url 'vendors:delete-vendor-product' i.id %}" class="open-modal btn btn-danger btn-circle " data-toggle="modal"
                                             data-target="" title="Delete"><i class="fa fa-trash"
