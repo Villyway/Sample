@@ -5,4 +5,3 @@ from django.core.validators import validate_email
 
 from products.models import (Unit, Product)
 from vendors.models import Vendor
-

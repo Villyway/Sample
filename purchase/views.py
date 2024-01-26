@@ -9,7 +9,10 @@ from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 
 from products.models import Product, BOMItem
+from purchase.models import PurchaseOrder
+
 from utils.views import is_ajax
+
 
 
 # Create your views here.
@@ -113,9 +116,23 @@ class MRP(View):
             
 
 # PO
-class PurchaseOrder(View):
+class CreatePurchaseOrder(View):
     template_name = "purchase/create.html"
 
-    def get(self, request):
+    def get(self, request, product=None):
+        if PurchaseOrder.objects.last():
+            po_no = int(PurchaseOrder.Objects.last().po_no) + 1
+        else:
+            po_no = 1
 
-        return render(request,self.template_name)
+        if product:
+            product = Product.objects.by_part_no(product)
+            vendors = product.vendorwithproductdata_set.all()
+        else:
+            product = None
+        context = {
+            "product": product,
+            "po_no":po_no,
+            "vendors":vendors
+        }
+        return render(request,self.template_name, context)
