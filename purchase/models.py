@@ -12,24 +12,54 @@ class TaxCode(Base):
     code= models.CharField(max_length=30, blank=True, null=True)
     value =  models.DecimalField(max_digits=5, decimal_places=2)
 
+    def __str__(self):
+        return str(self.name)
+
 class PaymentTerms(Base):
     name = models.CharField(max_length=150, blank=True, null=True) 
     description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class TermsAndConditions(Base):
+    name = models.CharField(max_length=150, blank=True, null=True) 
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+
 
 class PurchaseOrder(Base):
     po_no = models.CharField(max_length=30, blank=True, null=True) # autogenrated
     vendor = models.ForeignKey(
         Vendor, on_delete=models.CASCADE)
-    part = models.ManyToManyField(
-        Product, blank=True)
-    qty = models.DecimalField(max_digits=10, decimal_places=2)
     tax_code = models.ManyToManyField(TaxCode, blank=True)
+    general_terms = models.ManyToManyField(TermsAndConditions, blank=True)
+    payment_term = models.ForeignKey(PaymentTerms, on_delete=models.CASCADE, blank=True, null=True)
     status = models.BooleanField(default=False)
     del_date = models.DateTimeField(blank=True, null=True)
     total = models.DecimalField(max_digits=12,decimal_places=2)
-    with_tax_total = models.DecimalField(max_digits=5, decimal_places=2)
+    with_tax_total = models.DecimalField(max_digits=12, decimal_places=2)
     checked_by = models.IntegerField(null=True, blank=True)
     remarks = models.TextField(blank=True, null=True)
+    close_date = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.vendor.comany_name)
+
+
+class PurchaseItem(Base):
+    po = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    part = models.ForeignKey(Product, on_delete=models.CASCADE)
+    qty = models.DecimalField(max_digits=10, decimal_places=2)
+    del_date = models.DateTimeField(blank=True, null=True)
+    del_status = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.part.name)
     
 
 

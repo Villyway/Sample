@@ -1,0 +1,11 @@
+{% for i in vendors %}
+<tr>
+    <td>{{forloop.counter}}</td>
+    <td><input name="vendor" class="form-check-input" type="radio" value="{{product_url}}{{i.vendor.id}}/vendor-of-product/" id="defaultRadio2"></td>
+    <td><a href="javascript:void(0);" onclick='openVendor("{% url 'vendors:vendor-details' i.vendor.id %}")' >{{i.vendor.comany_name|upper}}</a></td>
+    <td>{{i.product.part_no}}</td>
+    <td>{{i.product.name}}</td>
+    <td><i class="fa fa-inr" aria-hidden="true"></i> {{i.price}} / {{i.product.umo}}</td>
+    <td><input type="text" class="col-3" value=""> {{i.product.umo}} </td>
+</tr>
+{% endfor %}

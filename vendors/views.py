@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from .forms import VendorForm
 from .models import Vendor, PartyType
 from utils.models import Address, Country, State, City
-from utils.views import decode_data, is_ajax
+from utils.views import decode_data, is_ajax, get_secured_url
 from .serializers import VendorDetailSerializer
 from products.models import Product, VendorWithProductData
 
@@ -358,3 +358,47 @@ class SearchVendor(View):
                 return redirect("vendors:vendor-list")
         except Exception as e:
             return JsonResponse({"error": str(e)})
+        
+
+# Vendor by get product
+class VendorOfProduct(View):
+
+    template_name = "components/vendor-with-all-product.html"
+    
+    def get(self, request, id):
+
+        if is_ajax(request):
+            vendor = Vendor.objects.get(id=id)
+            # products = vendor.vendorwithproductdata_set.active()
+            html = render_to_string(
+                    template_name=self.template_name,
+                    context={"vendor": vendor}
+                )
+            data_dict = {
+                    "data": html
+                }
+            return JsonResponse(data=data_dict, safe=False)
+        
+
+class ProductByVendor(View):
+    template_name = "components/product-by-vendor-list.html"
+    
+    def get(self, request, id=None):
+
+        if is_ajax(request):
+            part_no = request.GET.get("query", None)
+            product = Product.objects.by_part_no(part_no)
+            vendors = product.vendorwithproductdata_set.all()
+            
+            html = render_to_string(
+                    template_name=self.template_name,
+                    context={
+                        "vendors":vendors,
+                        "product_url" : get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + '/vendors/'
+                        }
+                )
+            data_dict = {
+                    "data": html
+                }
+            return JsonResponse(data=data_dict, safe=False)

@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from products.models import Product, BOMItem
 from purchase.models import PurchaseOrder
 
-from utils.views import is_ajax
+from utils.views import is_ajax, get_secured_url
 
 
 
@@ -120,6 +120,7 @@ class CreatePurchaseOrder(View):
     template_name = "purchase/create.html"
 
     def get(self, request, product=None):
+        vendors = None
         if PurchaseOrder.objects.last():
             po_no = int(PurchaseOrder.Objects.last().po_no) + 1
         else:
@@ -133,6 +134,10 @@ class CreatePurchaseOrder(View):
         context = {
             "product": product,
             "po_no":po_no,
-            "vendors":vendors
+            "vendors":vendors,
+            "product_url" : get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + '/vendors/'
         }
         return render(request,self.template_name, context)
+    
+

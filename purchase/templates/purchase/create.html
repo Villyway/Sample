@@ -17,6 +17,11 @@ Purchase Order
 {% endblock %}
 
 {% block content %}
+<style>
+    table, th, td {
+        border: 1px solid;
+      }
+</style>
 <div class="row">
     <div class="col-md-12 mt-3">
         <div class="card mb-4">
@@ -26,22 +31,24 @@ Purchase Order
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-6">
-                            <div class="mb-3">
+                            <div class="mb-3 col-2 ">
                                 <label class="form-label" for="basic-default-inword-bill_no">PO No:</label>
                                 <span class="text-danger"></span>
                                 <input type="text" class="form-control" name="po_no" value="{{po_no}}">
                                 <span class="text-danger print_error" id="code"></span>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-3 col-2">
                                 <label class="form-label" for="basic-default-inword-bill_no">Item:</label>
                                 <span class="text-danger"></span>
-                                <input type="text" class="form-control" value="{{product.part_no}}">
+                                <input type="text" id="id_part_no" class="form-control" value="{{product.part_no}}">
                                 <span class="text-danger print_error" id="code"></span>
                             </div>
+                            
+                        </div>
+                        <div class="col-6">
                             <div class="mb-3">
-                                <label class="form-label" for="basic-default-inword-bill_no">Vendor List</label>
-                                <span class="text-danger"></span>
-                                <table class="table">
+                                <h5>Vendor List</h5>
+                                <table class="">
                                     <tr>
                                         <th>No.</th>
                                         <th>Select</th>
@@ -50,24 +57,28 @@ Purchase Order
                                         <th>Description</th>
                                         <th>Rate</th>
                                     </tr>
+                                    <tbody id="vendor-list-by-product">
                                     {% for i in vendors %}
                                     <tr>
                                         <td>{{forloop.counter}}</td>
-                                        <td></td>
-                                        <td>{{i.vendor.comany_name}}</td>
+                                        <td><input name="vendor" class="form-check-input" type="radio" value="{{product_url}}{{i.vendor.id}}/vendor-of-product/" id="defaultRadio2"></td>
+                                        <td><a href="javascript:void(0);" onclick='openVendor("{% url 'vendors:vendor-details' i.vendor.id %}")' >{{i.vendor.comany_name|upper}}</a></td>
                                         <td>{{i.product.part_no}}</td>
-                                        <td>{{i.price}}</td>
+                                        <td>{{i.product.name}}</td>
+                                        <td><i class="fa fa-inr" aria-hidden="true"></i> {{i.price}} / {{i.product.umo}}</td>
                                     </tr>
                                     {% endfor %}
+                                    </tbody>
                                     
                                 </table>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="mb-3">
-                                <label class="form-label" for="basic-default-inword-bill_no">{{form.umo.label}}</label>
-                                <span class="text-danger">*</span>
-                                <span class="text-danger print_error" id="umo"></span>
+                                <h5>Other Product Suggestion</h5>
+                                <div id="id_vendorsof_product_list">
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -130,7 +141,56 @@ Purchase Order
 </script>
 
 <script>
+    // Get all radio buttons in the group
+    const radioButtons = document.querySelectorAll('input[name="vendor"]');
+
+    // Add change event listener to the radio button group
+    radioButtons.forEach(radioButton => {
+        radioButton.addEventListener('change', function() {
+            // Handle the change event
+            const selectedVendor = this.value;
+            console.log(selectedVendor)
+
+            $.ajax({
+                url: selectedVendor,
+                type: 'GET',
+                //data: { 'query': query},
+                success: function (data) {
+                  console.log(data)
+                    $('#id_vendorsof_product_list').html(data.data);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).on("keyup", "#id_part_no", function () {
+      var id = this.value;
+      // var category = $()
+      $.ajax({
+          url: "{% url 'vendors:product-by-vendors' %}",
+          type: 'GET',
+          data: { 'query': id},
+          success: function (data) {
+            console.log(data)
+              $('#vendor-list-by-product').html(data.data);
+          }
+      });
+  });
+</script>
+
+<script>
     $('#purchase-menu').addClass('active open');
     $('#purchase-order').addClass('active')
+</script>
+
+<script>
+    function openVendor(url) {
+        const newWindow = window.open(url, 'pop', 'width=1200,height=600');
+        if (newWindow) {
+            return false;
+        }
+    }
 </script>
 {% endblock %}

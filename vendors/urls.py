@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .views import (CreateVendor, VendorList, VendorEditView,
                     VendorDelete, Dashboard, GetVenderName,
                     CreateCategories, RemoveVendorCategory, VendorDetails,
-                    SearchVendor, DeleteVendorOfProduct
+                    SearchVendor, DeleteVendorOfProduct, VendorOfProduct,
+                    ProductByVendor
                     )
 
 app_name = "vendors"
@@ -25,7 +26,11 @@ urlpatterns = [
     path("remove-category/", login_required(RemoveVendorCategory.as_view()),
          name="remove-category"),
     path("<slug:id>/vendor-details/", login_required(VendorDetails.as_view()), name="vendor-details"),
-    path("<slug:id>/vendor-of-product/", login_required(DeleteVendorOfProduct.as_view()), name="delete-vendor-product"),
+    path("<slug:id>/vendor-of-product/delete", login_required(DeleteVendorOfProduct.as_view()), name="delete-vendor-product"),
     path("search/", login_required(SearchVendor.as_view()),
          name="vendor-search"),
+    path("<slug:id>/vendor-of-product/", login_required(VendorOfProduct.as_view()),
+         name="vendor-product"),
+    path("product-of-vendors/", login_required(ProductByVendor.as_view()),
+         name="product-by-vendors"), 
 ]
