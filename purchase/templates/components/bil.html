@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* body {
+            margin: 0;
+            size: A4;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 21cm;
+            margin: 2%;
+            box-sizing: border-box;
+            border: 1px solid black;
+
+        } */
+
+        /* The rest of your existing styles remain unchanged */
+
+        body {
+            margin: 0;
+        }
+
+        .container {
+            width: 96%;
+            margin: 2%;
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            width: 100%;
+            height: 70px;
+            display: flex;
+            flex-direction: row;
+            border-bottom: 1px solid black;
+        }
+
+        .header-left {
+            width: 50%;
+            height: 70px;
+        }
+
+        .header-right {
+            width: 50%;
+            height: 70px;
+        }
+
+        
+        .self-details {
+            width: 100%;
+            height: 35px;
+            display: flex;
+            flex-direction: row;
+        }
+        
+        .self-gst {
+            width: 40%;
+            height: 35px;
+        }
+        
+        .purchase-subject {
+            width: 30%;
+            height: 35px;
+        }
+        
+        .purchase-status {
+            width: 30%;
+            height: 35px;
+        }
+
+        .vender-details {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        
+        .vender-address-gst {
+            width: 34%;
+            height: 100%;
+            margin-left: 2%;
+            margin-right: 2%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .vender-address {
+            width: 100%;
+            height: 80%;
+            border: 1px solid rgb(0, 0, 0);
+        }
+        .vender-gst {
+            width: 100%;
+            height: 20%;
+            border: 1px solid rgb(0, 0, 0);
+            border-top: none;
+            
+        }
+        
+        .purchase-information {
+            width: 26%;
+            height: 100%;
+            margin-left: 2%;
+            margin-right: 2%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgb(0, 0, 0);
+            
+        }
+        
+        .vender-bank-details {
+            width: 32%;
+            height: 100%;
+            margin-left: 2%;
+            margin-right: 2%;
+            border: 1px solid rgb(0, 0, 0);
+        }
+        .tabletitle {
+            width: 100%;
+            height: 35px;
+            text-align: center;
+            margin-top: 2%;
+        }
+
+        .tabledetails {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            border-right: none;
+        }
+
+        .goods-details {
+            width: 50%;
+            height: 100%;
+            text-align: center;
+            margin-top: 2%;
+
+        }
+
+        .product-details {
+            width: 50%;
+            height: 100%;
+            text-align: center;
+            margin-top: 2%;
+            border-right: none;
+        }
+
+        .terms {
+            width: 100%;
+            display: flex;
+
+        }
+
+        .terms1 {
+            width: 60%;
+            border: 1px solid black;
+            border-left: none;
+        }
+
+        .terms2 {
+            width: 40%;
+            border-bottom: 1px solid black;
+            border-left: none;
+        }
+        .remark-total{
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+        }
+        .remark{
+            width: 60%;
+            height: 100%;
+            text-align: center;
+        }
+        .total{
+            width: 30%;
+            margin-left: 10%;
+            text-align: center;
+        }
+        .footer {
+            width: 100%;
+            height: 10%;
+            display: flex;
+            flex-direction: row;
+        }
+        .footer1 {
+            width: 80%;
+
+            height: 10%;
+
+        }
+
+        .footer2 {
+            width: 20%;
+        }
+        .m0 {
+            margin: 0;
+        }
+        
+        .m2 {
+            margin-left: 2%;
+        }
+        
+        
+        .mt-0 {
+            margin-top: 0;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .ms-10 {
+            margin-left: 10px;
+        }
+
+        .ms-8 {
+            margin-left: 8px;
+        }
+
+        .me-8 {
+            margin-left: 8px;
+        }
+
+        .text-align-end {
+            text-align: end;
+        }
+        .text-align-start {
+            text-align: start;
+        }
+
+        .me-2 {
+            margin-right: 2px;
+        }
+        .no-border-table {
+            border-collapse: collapse;
+            border: none;
+            font-size: 13px;
+        }
+
+        .no-border-rightside-table {
+            border-right: none;
+        }
+        .no-border-topside-table {
+            border-top: none;
+        }
+
+        ul {
+            text-decoration: none;
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+        }
+
+        li {
+            margin-right: 18%;
+        }
+        table,th,td {
+            border: 1px solid black;
+            border-left: none;
+            border-collapse: collapse;
+        }
+        p {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h3 class="ms-10 mt-0 mb-0">Krunal Industries</h3>
+                <h3 class="ms-10 mt-0 mb-0">Kamrej</h3>
+                <p class="ms-8 mt-0 mb-0"> Navagam, Kamrej, Surat- 394185</p>
+            </div>
+            <div class="header-right">
+                <h5 class="me-8 mt-0 mb-0 text-align-end">Computer Generated Print</h5>
+            </div>
+
+        </div>
+        <!-- Self GST NO Purchase Order; -->
+        <div class="self-details">
+            <div class="self-gst">
+                <h5 class="ms-10 mt-0 mb-0">GST NO <span> : </span> <span> 24AABCR1308Q1ZC </span></h5>
+            </div>
+            <!--Purchase order subject-->
+            <div class="purchase-subject">
+                <h5 class="ms-10 mt-0 mb-0">Purchase Order<span> : </span> <span> </span></h5>
+            </div>
+            <div class="purchase-status">
+                <h5 class="ms-10 mt-0 mb-0">Order Status<span> : Open</span> <span> </span></h5>
+            </div>
+        </div>
+        <!-- Vender Address, Information and Vender Banck Details -->
+        <div class="vender-details">
+            <!--Vender Address and GST -->
+            <div class="vender-address-gst">
+                <!--Vender Address -->
+                <div class="vender-address">
+                    <h5 class="m0">TO,</h5>
+                    <p class="m2">
+                        add general details ne details
+                    </p>
+                    <p class="m2">gjghjdshfjahk,khkfsdk, outr details</p>
+                </div>
+                <!--Vender GST -->
+                <div class="vender-gst">
+                    <p><strong>GST : </strong> <span> 256306456430</span></p>
+                </div>
+            </div>
+
+
+            <!--Po Information -->
+            <div class="purchase-information">
+                <h5 class="ms-10 mt-0 mb-0">Information</h5>
+                <table class="no-border-table">
+                    <tr>
+
+                    </tr>
+                    <tr class="no-border-table">
+                        <td class="no-border-table">Order No</td>
+                        <td class="no-border-table">Germany</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Document Date</td>
+                        <td class="no-border-table">Mexico</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Indent NO</td>
+                        <td class="no-border-table">Germany</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Indent By</td>
+                        <td class="no-border-table">Mexico</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">G/L Name</td>
+                        <td class="no-border-table">Mexico</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!--Vendor's Banck Details -->
+            <div class="vender-bank-details">
+                <h5 class="ms-10 mt-0 mb-0">Vendor's Bank Details</h5>
+                <table class="no-border-table" style="width:100%">
+                    <tr>
+
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Bank Name</td>
+                        <td class="no-border-table">Germany</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Branch Name</td>
+                        <td class="no-border-table">Mexico</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Account NO</td>
+                        <td class="no-border-table">Germany</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">IFC Code </td>
+                        <td class="no-border-table">Mexico</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Payment Terms</td>
+                        <td class="no-border-table">Mexico</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!--Product and Goods Details-->
+        <div class="tabletitle">
+            <p>Sir / Madam, We are pleased to confirm our order as under</p>
+        </div>
+        <div class="tabledetails">
+
+            <!--goods dettails-->
+            <div class="goods-details">
+                <h5 class="ms-10 mt-0 mb-0">Goods Details</h5>
+                <table style="width:100%">
+                    <tr>
+                        <th>Sr NO</th>
+                        <th>Item No/Drawomg No</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>Jill</td>
+                        <td>Smith</td>
+                        <td>50</td>
+                    </tr>
+                    <tr>
+                        <td>Eve</td>
+                        <td>Jackson</td>
+                        <td>94</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!--Product Details-->
+            <div class="product-details">
+                <h5 class="ms-10 mt-0 mb-0">Vendor's Bank Details</h5>
+                <table class="no-border-rightside-table" style="width:100%">
+                    <tr>
+                        <th>Del Date</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Rate</th>
+                        <th class="no-border-rightside-table">AMT</th>
+                    </tr>
+                    <tr>
+                        <td>Jill</td>
+                        <td>Smith</td>
+                        <td>Smith</td>
+                        <td>Smith</td>
+                        <td class="no-border-rightside-table">50</td>
+                    </tr>
+                    <tr>
+                        <td>Eve</td>
+                        <td>Jackson</td>
+                        <td>Jackson</td>
+                        <td>Jackson</td>
+                        <td class="no-border-rightside-table">94</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- REMARK and Total -->
+        <div class="remark-total">
+            <div class="remark">
+                <h5 class="mt-0 mb-0 text-align-start">Remark</h5>
+            </div>
+            <div class="total">
+                <table class="no-border-rightside-table no-border-topside-table" style="width:100%">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Total</th>
+                        <th class="no-border-rightside-table">44075</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>SGST</td>
+                        <td>9.00%</td>
+                        <td class="no-border-rightside-table">3986.75</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>CGST</td>
+                        <td>9.00%</td>
+                        <td class="no-border-rightside-table">3986.75</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Terms and with Text Totals-->
+        <div class="terms">
+            <!--Terms-->
+            <div class="terms1">
+                <h5 class="ms-10 mt-0 mb-0">Tems & Conditions:</h5>
+                <p class="ms-10 mt-0 mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint, alias.</p>
+                <p class="ms-10 mt-0 mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                <p class="ms-10 mt-0 mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+                <p class="ms-10 mt-0 mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae!</p>
+                <p class="ms-10 mt-0 mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                <p class="ms-10 mt-0 mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+                <p class="ms-10 mt-0 mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae!</p>
+            </div>
+
+            <!--Total Amount With Text-->
+            <div class="terms2">
+                <table class="no-border-rightside-table" style="width:80%">
+                    <tr>
+                        <th>Lastname</th>
+                        <th class="no-border-rightside-table">Age</th>
+                    </tr>
+                    <table></table>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer1">
+                <ul>
+                    <li>Prepared By : </li>
+                    <li>Generated By : </li>
+                    <li>Checked By : </li>
+                </ul>
+
+            </div>
+            <div class="footer2">
+                <p class="me-8 mt-0 mb-0 text-align-end">Thank You</p>
+                <h5 class="me-8 mt-0 mb-0 text-align-end">Krunal Industries</h5>
+                <p class="me-8 mt-0 mb-0 text-align-end">Authorised Signatory</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
