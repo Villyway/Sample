@@ -9,6 +9,7 @@
     {% endif %}
 
     <td>
+        <input class="form-check-input" type="checkbox" value="{{order.order_no}}" name="so[]" id="defaultCheck3">
         {{ forloop.counter }}
     </td>
     <td><a href="{% url 'orders:order-details' order.id %}">{{order.order_no}}</a></td>
