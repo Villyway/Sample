@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 
-from purchase.views import (MRP, Dashboard, CreatePurchaseOrder, OrderAgainstMRP)
+from purchase.views import (MRP, Dashboard, CreatePurchaseOrder, OrderAgainstMRP, PoList, SingelPurchaseOrder)
 
 
 
@@ -13,5 +13,7 @@ urlpatterns = [
     path("order-mrp/",login_required(OrderAgainstMRP.as_view()), name="purchase-order-mrp"),
     path("dashboard/",login_required(Dashboard.as_view()), name="purchase-dashboard"),
     path("create-po/",login_required(CreatePurchaseOrder.as_view()), name="purchase-order"),
+    path("list/",login_required(PoList.as_view()), name="purchase-order-list"),
     path("<slug:product>/create-po/",login_required(CreatePurchaseOrder.as_view()), name="purchase-order"),
+    path("<slug:id>/po/",login_required(SingelPurchaseOrder.as_view()), name="purchase-singel-order"),
 ]

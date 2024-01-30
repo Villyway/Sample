@@ -31,19 +31,44 @@ Purchase Order
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-6">
-                            <div class="mb-3 col-2 ">
-                                <label class="form-label" for="basic-default-inword-bill_no">PO No:</label>
-                                <span class="text-danger"></span>
-                                <input type="text" class="form-control" name="po_no" value="{{po_no}}">
-                                <span class="text-danger print_error" id="code"></span>
+                            <div class="row">
+                                <div class="mb-3 col-2 ">
+                                    <label class="form-label" for="basic-default-inword-bill_no">PO No:</label>
+                                    <span class="text-danger"></span>
+                                    <input type="text" class="form-control" name="po_no" value="{{po_no}}">
+                                    <span class="text-danger print_error" id="code"></span>
+                                </div>
+                                <div class="mb-3 col-2">
+                                    <label class="form-label" for="basic-default-inword-bill_no">Item:</label>
+                                    <span class="text-danger"></span>
+                                    <input type="text" id="id_part_no" class="form-control" value="{{product.part_no}}">
+                                    <span class="text-danger print_error" id="code"></span>
+                                </div>
+
+                                <div class="mb-3 col-4">
+                                    <label class="form-label" for="basic-default-inword-bill_no">Indent:</label>
+                                    <span class="text-danger"></span>
+                                    <input type="text" name="indent" id="id_part_no" class="form-control" placeholder=" * If Indent then Po No.">
+                                    <span class="text-danger print_error" id="code"></span>
+                                </div>
+                                
+                                <div class="mb-3 col-4">
+                                    <label class="form-label" for="basic-default-inword-bill_no">Payment Terms:</label>
+                                    <span class="text-danger"></span>
+                                    <select class="form-select" id="inputGroupSelect01" name="payment_term">
+                                        <option value="0" selected>Choose...</option>
+                                        {% for term in payment_term %}
+                                        <option value={{term.id}}>{{term}}</option>
+                                        {% endfor %}
+                                      </select>
+                                </div>
+                                <div class="mb-3 col-12">
+                                    <label class="form-label" for="basic-default-inword-bill_no">Remark:</label>
+                                    <span class="text-danger"></span>
+                                    <textarea name="remark" cols="40" rows="5" class="form-control aiz-text-editor" id="id_description"></textarea>
+                                    <span class="text-danger print_error" id="code"></span>
+                                </div>
                             </div>
-                            <div class="mb-3 col-2">
-                                <label class="form-label" for="basic-default-inword-bill_no">Item:</label>
-                                <span class="text-danger"></span>
-                                <input type="text" id="id_part_no" class="form-control" value="{{product.part_no}}">
-                                <span class="text-danger print_error" id="code"></span>
-                            </div>
-                            
                         </div>
                         <div class="col-6">
                             <div class="mb-3">
@@ -61,7 +86,7 @@ Purchase Order
                                     {% for i in vendors %}
                                     <tr>
                                         <td>{{forloop.counter}}</td>
-                                        <td><input name="vendor" class="form-check-input" type="radio" value="{{product_url}}{{i.vendor.id}}/vendor-of-product/" id="defaultRadio2"></td>
+                                        <td><input name="vendor" class="form-check-input" type="radio" value="{{i.vendor.id}}" id="vendor"></td>
                                         <td><a href="javascript:void(0);" onclick='openVendor("{% url 'vendors:vendor-details' i.vendor.id %}")' >{{i.vendor.comany_name|upper}}</a></td>
                                         <td>{{i.product.part_no}}</td>
                                         <td>{{i.product.name}}</td>
@@ -152,7 +177,7 @@ Purchase Order
             console.log(selectedVendor)
 
             $.ajax({
-                url: selectedVendor,
+                url: "{{product_url}}"+ selectedVendor +"/vendor-of-product/",
                 type: 'GET',
                 //data: { 'query': query},
                 success: function (data) {

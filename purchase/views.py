@@ -10,8 +10,10 @@ from django.template.loader import render_to_string
 from django.db import transaction
 
 from products.models import Product, BOMItem, VendorWithProductData
-from purchase.models import PurchaseOrder, PaymentTerms, PurchaseItem, TaxCode
+from purchase.models import PurchaseOrder, PaymentTerms, PurchaseItem, TaxCode, TermsAndConditions
 from orders.models import OrderOfProduct
+from vendors.models import Vendor
+from utils.models import State
 
 from utils.views import is_ajax, get_secured_url
 
@@ -125,7 +127,7 @@ class CreatePurchaseOrder(View):
         vendors = None
         
         if PurchaseOrder.objects.last():
-            po_no = int(PurchaseOrder.Objects.last().po_no) + 1
+            po_no = int(PurchaseOrder.objects.last().po_no) + 1
         else:
             po_no = 1
 
@@ -147,14 +149,72 @@ class CreatePurchaseOrder(View):
     def post(self, request, product=None):
         if is_ajax(request):
             po_no = request.POST.get('po_no')
+            indent = request.POST.get('indent')
+            print(indent)
+            if indent !='':
+                indent = PurchaseOrder.objects.get(po_no=indent)
+            else:
+                indent = None
+            
             product_qty = [item for item in request.POST.getlist('quantity[]') if item != '']
             del_date = [item for item in request.POST.getlist('del_date[]') if item != '']
             product_of_price_obj = request.POST.getlist('selected[]')
+            vendor = Vendor.objects.get(id=request.POST.get('vendor'))
+            pay_term = request.POST.get('payment_term')
+            remark = request.POST.get('remark')
 
+            print(po_no,product_qty, del_date, product_of_price_obj, vendor, pay_term)
+
+            default_state = State.objects.get(code="GJ")
+            tax = []
+            if vendor.address.first().state == default_state:
+                 tax.append(TaxCode.objects.get(code="CGST"))
+                 tax.append(TaxCode.objects.get(code="SGST"))
+            else:
+                tax.append(TaxCode.objects.get(code="IGST"))
+            
             with transaction.atomic():
                 po_obj = PurchaseOrder()
+                if indent:
+                    po_obj.parent = indent
                 po_obj.po_no = po_no
+                po_obj.vendor = vendor
+                po_obj.payment_term = PaymentTerms.objects.get(id = pay_term)
+                po_obj.created_by = request.user.id
+                po_obj.remarks = remark
+                po_obj.save()
 
+                item_price = []
+
+                for qty, product_obj, del__date in zip(product_qty, product_of_price_obj, del_date):
+                    po_item = PurchaseItem()
+                    po_item.po = po_obj
+                    po_item.part = VendorWithProductData.objects.get(id=product_obj).product
+                    po_item.qty = qty
+                    po_item.del_date = del__date
+                    po_item.price = VendorWithProductData.objects.get(id=product_obj).price
+                    po_item.created_by = request.user.id
+                    po_item.save()
+                    item_price.append(VendorWithProductData.objects.get(id=product_obj).price * int(qty))
+                
+                po_obj.total = sum(item_price)
+
+                tax_per = []
+                for i in tax:
+                    tax_per.append(i.value * po_obj.total / 100)
+                    po_obj.tax_code.add(i)
+
+                
+
+                po_obj.with_tax_total = sum(tax_per) + po_obj.total
+
+                po_obj.save()
+
+                for i in TermsAndConditions.objects.all():
+                    po_obj.general_terms.add(i)
+                
+                po_obj.created_by = request.user.id
+                po_obj.save()
 
             return JsonResponse({"error":"Hi"})
 
@@ -239,6 +299,33 @@ class OrderAgainstMRP(View):
             ])
         return response      
 
+
+class PoList(View):
+    template_name = "purchase/list.html"
+
+    def get(self, request):
+        
+        purchase_orders = PurchaseOrder.objects.all()
+        
+        
+        context = {
+            "pos": purchase_orders,
+        }
+        return render(request,self.template_name, context)
+    
+class SingelPurchaseOrder(View):
+
+    template_name = "purchase/show.html"
+    def get(self,request,id):
+        po = PurchaseOrder.objects.get(id=id)
+        context = {
+            "po": po,
+            "po_address" : po.vendor.address.first()
+        }
+        return render(request,self.template_name, context)
         
 
-                
+
+        
+
+

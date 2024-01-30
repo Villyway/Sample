@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PO{% endblock %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+        href="{% url 'products:products-list' %}">Purchase</a> / <b class="text-dark">PO<b></li>
+{% endblock %}
+
+{% block head %}
+Purchase Order
+{% endblock %}
+
+{% block content %}
+<style>
+    table, th, td {
+        border: 1px solid;
+      }
+</style>
+<div class="row">
+    <div class="col-md-12 mt-3">
+        <div class="card mb-4">
+          <h5 class="card-header">Purchase Orders List</h5>
+          <div class="card-body">
+            <div class="table-responsive text-nowrap text-left">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      
+                      <th>No</th>
+                      {% comment %} <th>Code</th> {% endcomment %}
+                      <th>PO No</th>
+                      <th>Date</th>
+                      <th>Vendor Name</th>
+                      <th>Product</th>
+                      {% comment %} <th>sales_challan</th> {% endcomment %}
+                      <th>Status</th>              
+                      <th>Action</th>
+                    </tr>
+                    
+                  </thead>
+                  <form method="post" action="{% url 'purchase:purchase-order-mrp' %}" id="bulk-action">
+                    {% csrf_token %}
+                  <tbody class="table-border-bottom-1" id="id_products_list">
+                    {% for po in pos %}
+                    <tr >
+                      <td>
+                      {{ forloop.counter }}
+                      </td>
+                      <td>
+                        <a href="{% url 'orders:order-details' po.po_no %}">{{po.po_no}}</a>
+                      </td>
+                      <td>{{po.created_at|date:"d M, Y"}}</td>
+                      <td>{{po.vendor.comany_name}}</td>
+                      <td>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading-{{ forloop.counter }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse-{{ forloop.counter }}">
+                                    Products
+                                </button>
+                            </h2>
+                            <div id="flush-collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading-{{ forloop.counter }}" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                  <table class="table">
+                                    <tr>
+                                      <th>Product code</th>
+                                      <th>Qty</th>
+                                      <th>Delivery</br>Date</th>
+                                      <th>Price</th>
+                                    </tr>
+                                    {% for i in po.purchaseitem_set.all %}
+                                    <tr>
+                                      <td>{{i.part.part_no}}</td>
+                                      <td>{{i.qty}}/{{i.part.umo}}</td>
+                                      <td>{{i.del_date}}</td>
+                                      <td>{{i.price}}/{{i.part.umo}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                      
+                      {% comment %} <td>{{order.sales_challan}}</td> {% endcomment %}
+                      <td>
+                        {% if order.order_confirmation != 'CONFIRMED' %}
+                        {{order.order_confirmation}}
+                        {% else %}
+                        {{order.order_status}}
+                        {% endif %}
+                        
+                      </td>
+                      <td>
+                        
+                      </td>
+                    </tr>
+                    {% endfor %}
+      
+                  </tbody>
+                  </form>
+                  <tfoot>
+                    <tr>
+                      <th>No</th>
+                      {% comment %} <th>Code</th> {% endcomment %}
+                      <th>Po No</th>
+                      <th>Date</th>
+                      <th>Vendor Name</th>
+                      <th>Product</th>
+                      {% comment %} <th>sales_challan</th> {% endcomment %}
+                      <th>Status</th>              
+                      <th>Action</th>
+                    </tr>
+                  </tfoot>
+                </table>
+                
+              </div>
+          </div>
+        </div>
+                
+        
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/jquery.form.js'%}"></script>
+<script>
+    $('#purchase-menu').addClass('active open');
+    $('#purchase-order').addClass('active')
+</script>
+
+{% endblock %}
