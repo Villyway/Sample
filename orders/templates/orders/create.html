@@ -179,6 +179,7 @@ Orders
             var formData = $(this).serialize()
             console.log(formData)
             var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
+            console.log($thisURL)
             option = {
                 method: "POST",
                 url: $thisURL,

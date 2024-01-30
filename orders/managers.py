@@ -269,5 +269,8 @@ class OrderOfProductManager(models.Manager):
     def product_wise_average_orders(self):
 
         return self.active().values('product__code').annotate(avg_order_qty=Avg('order_qty'))
+    
+    def get_so_no_by_product(self,so_no):
+        return self.active().filter(order__order_no=so_no)
 
         # return self.active().filter(order__created_at__isnull=False).annotate(month=TruncMonth('order__created_at')).values('month').annotate(total_qty=Sum('order_qty')).order_by('month')
