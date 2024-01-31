@@ -150,7 +150,6 @@ class CreatePurchaseOrder(View):
         if is_ajax(request):
             po_no = request.POST.get('po_no')
             indent = request.POST.get('indent')
-            print(indent)
             if indent !='':
                 indent = PurchaseOrder.objects.get(po_no=indent)
             else:

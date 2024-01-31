@@ -53,7 +53,7 @@ Purchase Order
                       {{ forloop.counter }}
                       </td>
                       <td>
-                        <a href="{% url 'orders:order-details' po.po_no %}">{{po.po_no}}</a>
+                        <a href="{% url 'purchase:purchase-singel-order' po.id %}">{{po.po_no}}</a>
                       </td>
                       <td>{{po.created_at|date:"d M, Y"}}</td>
                       <td>{{po.vendor.comany_name}}</td>

@@ -40,7 +40,7 @@ class PurchaseOrder(Base):
     tax_code = models.ManyToManyField(TaxCode, blank=True)
     general_terms = models.ManyToManyField(TermsAndConditions, blank=True)
     payment_term = models.ForeignKey(PaymentTerms, on_delete=models.CASCADE, blank=True, null=True)
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
     del_date = models.DateTimeField(blank=True, null=True)
     total = models.DecimalField(max_digits=12,decimal_places=2, default=0)
     with_tax_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)

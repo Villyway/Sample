@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% load product_extras %}
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Purchase Order</title>
     <style>
         /* body {
             margin: 0;
@@ -386,7 +387,7 @@
         <!-- Header -->
         <div class="header">
             <div class="header-logo">
-                <img class="image" src="logo.png" alt="">
+                <img class="image" src="{% static "images/logo.png" %}" alt="">
             </div>
             <div class="header-text">
                 <h1 class="ms-10 mt-0 mb-0">Krunal Industries</h1>
@@ -400,7 +401,7 @@
         <!-- Self GST NO Purchase Order; -->
         <div class="self-details">
             <div class="self-gst">
-                <h5 class="ms-10 mt-0 mb-0">GST NO <span> : </span> <span> 24AABCR1308Q1ZC </span></h5>
+                <h5 class="ms-10 mt-0 mb-0">GST NO <span> : </span> <span> 24CFCPK5294K1Z6</span></h5>
             </div>
             <!--Purchase order subject-->
 
@@ -555,7 +556,7 @@
                     <tr>
                         <td class="no-border-table border-bottom">{{tax.code}}</td>
                         <td class="no-border-table border-bottom">{{tax.value}}%</td>
-                        <td class="no-border-table border-bottom">{% widthratio po.total tax.value 100 %}</td>
+                        <td class="no-border-table border-bottom">{{po.total | get_percentage_by_value:tax.value}}</td>
                     </tr>
                     {% endfor %}
                 </table>

@@ -175,7 +175,7 @@ Purchase Order
             // Handle the change event
             const selectedVendor = this.value;
             console.log(selectedVendor)
-
+            $('#id_vendorsof_product_list').html("");
             $.ajax({
                 url: "{{product_url}}"+ selectedVendor +"/vendor-of-product/",
                 type: 'GET',
@@ -193,6 +193,8 @@ Purchase Order
     $(document).on("keyup", "#id_part_no", function () {
       var id = this.value;
       // var category = $()
+      $('#vendor-list-by-product').html("");
+      $('#id_vendorsof_product_list').html("");
       $.ajax({
           url: "{% url 'vendors:product-by-vendors' %}",
           type: 'GET',

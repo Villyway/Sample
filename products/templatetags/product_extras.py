@@ -68,3 +68,7 @@ def get_total_of_list(value):
 def get_average_of_list(value):
     return sum(list(value))
 
+@register.filter
+def get_percentage_by_value(percentage, total):
+    result = total*percentage/100
+    return "%.2f" % result

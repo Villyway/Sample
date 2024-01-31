@@ -1,11 +1,33 @@
 {% for i in vendors %}
 <tr>
     <td>{{forloop.counter}}</td>
-    <td><input name="vendor" class="form-check-input" type="radio" value="{{product_url}}{{i.vendor.id}}/vendor-of-product/" id="defaultRadio2"></td>
+    <td><input name="vendor" class="form-check-input" type="radio" value="{{i.vendor.id}}" id="vendor"></td>
     <td><a href="javascript:void(0);" onclick='openVendor("{% url 'vendors:vendor-details' i.vendor.id %}")' >{{i.vendor.comany_name|upper}}</a></td>
     <td>{{i.product.part_no}}</td>
     <td>{{i.product.name}}</td>
     <td><i class="fa fa-inr" aria-hidden="true"></i> {{i.price}} / {{i.product.umo}}</td>
-    
 </tr>
 {% endfor %}
+
+<script>
+    // Get all radio buttons in the group
+    const radioButtons1 = document.querySelectorAll('input[name="vendor"]');
+
+    // Add change event listener to the radio button group
+    radioButtons1.forEach(radioButton => {
+        radioButton.addEventListener('change', function() {
+            // Handle the change event
+            const selectedVendor = this.value;
+            $('#id_vendorsof_product_list').html("");
+            $.ajax({
+                url: "{{product_url}}"+ selectedVendor +"/vendor-of-product/",
+                type: 'GET',
+                //data: { 'query': query},
+                success: function (data) {
+                    $('#id_vendorsof_product_list').html(data.data);
+                }
+            });
+        });
+    });
+</script>
+
