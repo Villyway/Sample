@@ -35,13 +35,13 @@ Purchase Order
                                 <div class="mb-3 col-2 ">
                                     <label class="form-label" for="basic-default-inword-bill_no">PO No:</label>
                                     <span class="text-danger"></span>
-                                    <input type="text" class="form-control" name="po_no" value="{{po_no}}">
+                                    <input type="text" class="form-control" name="po_no" value="{{po_no}}" required>
                                     <span class="text-danger print_error" id="code"></span>
                                 </div>
                                 <div class="mb-3 col-2">
                                     <label class="form-label" for="basic-default-inword-bill_no">Item:</label>
                                     <span class="text-danger"></span>
-                                    <input type="text" id="id_part_no" class="form-control" value="{{product.part_no}}">
+                                    <input type="text" id="id_part_no" class="form-control" value="{{product.part_no}}" required>
                                     <span class="text-danger print_error" id="code"></span>
                                 </div>
 

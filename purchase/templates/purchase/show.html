@@ -42,7 +42,7 @@
 
         .header {
             width: 100%;
-            height: 56px;
+            height: 70px;
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -52,6 +52,7 @@
         .header-logo {
             width: 20%;
             height: 56px;
+            margin:5px;
         }
 
         .header-text {
@@ -258,7 +259,7 @@
             margin-bottom: 0;
         }
 
-        .mb-8 {
+        .mb-3 {
             margin-bottom: 8px;
         }
 
@@ -391,22 +392,25 @@
             </div>
             <div class="header-text">
                 <h1 class="ms-10 mt-0 mb-0">Krunal Industries</h1>
-                <span class="ms-10 mt-0 mb-0"> Navagam, Kamrej, Surat- 394185</span>
+                <span class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px"> Block no 162/B 20 to 21, Shreeji industries, B/H Udhyog Nagar, Navagam,
+                    Kamrej, Surat- 394185</span><br>
+                <span class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px"> GSTIN-24CFCPK5294K1Z6</span>
             </div>
         </div>
         <!-- Header -->
         <div class="purchase-subject">
             <h3 class="ms-10 mt-0 mb-0">Purchase Order</h3>
+            <p style="text-align:right;margin-right:4px;" >Order Status<span> : {% if po.status %} Open {% else %} Close {% endif %}</p>
         </div>
         <!-- Self GST NO Purchase Order; -->
         <div class="self-details">
             <div class="self-gst">
-                <h5 class="ms-10 mt-0 mb-0">GST NO <span> : </span> <span> 24CFCPK5294K1Z6</span></h5>
+                 
             </div>
             <!--Purchase order subject-->
 
             <div class="purchase-status">
-                <h5 class="ms-10 mt-0 mb-0">Order Status<span> : Open</span> <span> </span></h5>
+                <h5 class="ms-10 mt-0 mb-0"></span> <span> </span></h5>
             </div>
         </div>
         <!-- Vender Address, Information and Vender Banck Details -->
@@ -416,9 +420,12 @@
                 <!--Vender Address -->
                 <div class="vender-address">
                     <h5 class="m0">TO,</h5>
-                    <p class="m2">
-                        {{po_address.street|upper}}, <br> {{po_address.street2|upper}}, <br>
-                        {{po_address.city.name|upper}}, {{po_address.state.name|upper}}, {{po_address.country.name|upper}}
+                    <p class="m2" style="font-size:11px; margin:3px">
+                    <b>{{po.vendor.comany_name|upper}}</b> <br>
+                    
+                        {{po_address.street|upper}} &nbsp; <br> {{po_address.street2|upper}}&nbsp; <br>
+                        <b>{{po_address.city.name|upper}}&nbsp; {{po_address.state.name|upper}}, {{po_address.country.name|upper}} &nbsp; - {{po_address.zip}}<br></b>
+                        <b>{{po.vendor.mobile}}</b> 
                     </p>
                     
                 </div>
@@ -442,7 +449,7 @@
                     </tr>
                     <tr>
                         <td class="no-border-table">Document Date</td>
-                        <td class="no-border-table">{{po.created_at}}</td>
+                        <td class="no-border-table">{{po.created_at|date:"d M, Y"}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Indent NO</td>
@@ -468,23 +475,23 @@
                     </tr>
                     <tr>
                         <td class="no-border-table">Bank Name</td>
-                        <td class="no-border-table">Germany</td>
+                        <td class="no-border-table">{{po.vendor.bank_name}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Branch Name</td>
-                        <td class="no-border-table">Mexico</td>
+                        <td class="no-border-table">{{po.vendor.bank_branch_name}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Account NO</td>
-                        <td class="no-border-table">Germany</td>
+                        <td class="no-border-table">{{po.vendor.bank_account_no}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">IFC Code </td>
-                        <td class="no-border-table">Mexico</td>
+                        <td class="no-border-table">{{po.vendor.bank_isfc}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Payment Terms</td>
-                        <td class="no-border-table">Mexico</td>
+                        <td class="no-border-table">{{po.payment_term.name}}</td>
                     </tr>
                 </table>
             </div>
@@ -506,7 +513,7 @@
                         <th>Description</th>
                     </tr>
                     {% for product in po.purchaseitem_set.all %}
-                    <tr>
+                    <tr style="font-size:11px; margin:3px">
                         <td>{{forloop.counter}}</td>
                         <td>{{product.part.part_no}}</td>
                         <td> {{product.part.name}} </td>    
@@ -527,12 +534,12 @@
                         <th class="no-border-rightside-table">Amount</th>
                     </tr>
                     {% for product in po.purchaseitem_set.all %}
-                    <tr>
-                        <th>{{product.del_date}}</th>
-                        <th>{{product.qty}}</th>
-                        <th>{{product.part.umo|title}}</th>
-                        <th>{{product.price}}</th>
-                        <th class="no-border-rightside-table">{% widthratio product.price 1 product.qty %}</th>
+                    <tr style="font-size:11px; margin:3px">
+                        <td>{{product.del_date|date:"d M, Y"}}</td>
+                        <td>{{product.qty}}</td>
+                        <td>{{product.part.umo|title}}</td>
+                        <td>{{product.price}}</td>
+                        <td class="no-border-rightside-table">{% widthratio product.price 1 product.qty %}</td>
                     </tr>
                     {% endfor %}
                 </table>
@@ -542,7 +549,13 @@
         <!-- REMARK and Total -->
         <div class="remark-total">
             <div class="remark">
-                <h5 class="ms-10 mt-0 mb-0 text-align-start">Remark:<br><p>{{po.remarks}}</p></h5>
+                <table class="no-border-table">
+                    <tr class="no-border-table">
+                        <th class="no-border-table">Remark:</th>
+                        <td class="no-border-table">{{po.remarks}}</td>
+                    </tr>
+                </table>
+                <h5 class="ms-10 mt-0 mb-0 text-align-start"><br><p></p></h5>
                 
             </div>
             <div class="total">
@@ -567,9 +580,9 @@
         <div class="terms-amount-with-text">
             <!--Terms-->
             <div class="terms">
-                <h5 class="ms-10 mt-0 mb-0">Tems & Conditions:</h5>
+                <h5 class="ms-10 mt-0 mb-0">Terms & Conditions:</h5>
                 {% for i in po.general_terms.all %}
-                <p class="ms-10 mt-0 mb-0">{{forloop.counter}}) {{i}}</p>
+                <p class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px">{{forloop.counter}}) {{i}}</p>
                 {% endfor %}               
             </div>
 
@@ -587,18 +600,18 @@
             </div>
         </div>
         <div class="footer">
-            <div class="footer-left">
+            <div class="footer-left" style="font-size:12px; margin:3px">
                 <ul>
-                    <li>Prepared By : </li>
-                    <li>Generated By : </li>
-                    <li>Checked By : </li>
+                    <li><b>Prepared By :</b> </li>
+                    <li><b>Generated By : </b></li>
+                    <li><b>Checked By : </b></li>
                 </ul>
 
             </div>
             <div class="footer-right">
                 <p class="me-10 mt-0 mb-0 text-align-end">Thank You</p>
                 <h5 class="me-10 mt-0 mb-9 text-align-end">Krunal Industries</h5>
-                <p class="me-10 mt-0 mb-0 text-align-end">Authorised Signatory</p>
+                <p class="me-10 mt- mb-3 text-align-end">Authorised Signatory</p>
             </div>
         </div>
     </div>
