@@ -1,3 +1,4 @@
+from wkhtmltopdf.views import PDFTemplateResponse
 import json
 import csv
 from collections import defaultdict
@@ -16,7 +17,6 @@ from vendors.models import Vendor
 from utils.models import State
 
 from utils.views import is_ajax, get_secured_url
-
 
 
 # Create your views here.
@@ -324,7 +324,30 @@ class SingelPurchaseOrder(View):
         return render(request,self.template_name, context)
         
 
+class ExportPO(View):
 
-        
+    template_name = "purchase/show.html"
+    # template_name = 'my_template.html'
+
+    def get(self, request, id):
+        # You can pass context data if needed
+        po = PurchaseOrder.objects.get(id=id)        
+        context_data = {
+            "po": po,
+            "po_address" : po.vendor.address.first(),
+            "title" : "PURCHASE ORDER"
+                        }
+
+        # Render the template as PDF
+        response = PDFTemplateResponse(
+            request=request,
+            template=self.template_name,
+            filename='output.pdf',
+            context=context_data,
+            show_content_in_browser=False,
+            cmd_options={'margin-top': 10, 'orientation': 'Landscape', 'enable-local-file-access': True},# Optional: Set additional wkhtmltopdf options
+        )
+
+        return response
 
 

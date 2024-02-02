@@ -68,77 +68,45 @@
             margin-left: 4%;
             margin-top: 5px;
         }
-
-        .purchase-subject {
-            width: 100%;
-            border-bottom: 1px solid black;
-            text-align: center;
-        }
-
-        .self-details {
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            margin-top: 8px;
-            margin-bottom: 8px;
-        }
-
-        .self-gst {
-            width: 50%;
-        }
-
-        .purchase-status {
-            width: 50%;
-        }
-
         .vender-details {
-            width: 100%;
-            height: 140px;
             display: flex;
-            flex-direction: row;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            box-sizing: border-box;
+
+        }
+        
+        .column {
+            flex: 1;
+            padding: 20px;
+            {% comment %} border-right: 1px solid black; {% endcomment %}
         }
 
-
-        .vender-address-gst {
-            width: 34%;
-            height: 100%;
-            margin-left: 2%;
-            margin-right: 2%;
-            display: flex;
-            flex-direction: column;
+        .column:last-child {
+            {% comment %} border-right: none; {% endcomment %}
         }
 
         .vender-address {
             width: 100%;
-            height: 80%;
-            border: 1px solid rgb(0, 0, 0);
+            border-right: 1px solid rgb(0, 0, 0);
+            {% comment %} border-bottom: 1px solid rgb(0, 0, 0); {% endcomment %}
         }
 
-        .vender-gst {
-            width: 100%;
-            height: 20%;
-            border: 1px solid rgb(0, 0, 0);
-            border-top: none;
-
-        }
 
         .purchase-information {
-            width: 26%;
+            width: 100%;
             height: 100%;
-            margin-left: 2%;
-            margin-right: 2%;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgb(0, 0, 0);
+            border-right: 1px solid rgb(0, 0, 0);
+
 
         }
 
         .vender-bank-details {
-            width: 32%;
+            width: 100%;
             height: 100%;
-            margin-left: 2%;
-            margin-right: 2%;
-            border: 1px solid rgb(0, 0, 0);
+            
         }
 
         .tabletitle {
@@ -147,6 +115,7 @@
             text-align: start;
             margin-left: 2%;
             margin-top: 1%;
+            
         }
 
         .tabledetails {
@@ -227,7 +196,7 @@
 
         .footer {
             width: 100%;
-            height: 55px;
+            height: 70px;
             display: flex;
             flex-direction: row;
         }
@@ -240,7 +209,6 @@
         .footer-right {
             width: 20%;
         }
-
 
         .m0 {
             margin: 0;
@@ -267,54 +235,13 @@
             margin-bottom: 9px;
         }
 
-        .mb-10 {
-            margin-bottom: 10px;
-        }
-
-        .mb-6 {
-            margin-bottom: 6px;
-        }
-
-        .mb-2 {
-            margin-bottom: 2px;
-        }
-
         .ms-10 {
             margin-left: 10px;
-        }
-
-        .ms-8 {
-            margin-left: 8px;
-        }
-
-        .me-8 {
-            margin-right: 8px;
         }
 
         .me-10 {
             margin-right: 10px;
         }
-
-        .me-14 {
-            margin-right: 14px;
-        }
-
-        .me-16 {
-            margin-right: 16px;
-        }
-
-        .me-18 {
-            margin-right: 18px;
-        }
-
-        .me-28 {
-            margin-right: 28px;
-        }
-
-        .me-100 {
-            margin-right: 40px;
-        }
-
 
         .text-align-end {
             text-align: end;
@@ -391,106 +318,98 @@
                 <img class="image" src="{% static "images/logo.png" %}" alt="">
             </div>
             <div class="header-text">
-                <h1 class="ms-10 mt-0 mb-0">Krunal Industries</h1>
+                <h1 class="ms-10 mt-0 mb-0" style="font-size:20px; margin:3px">KRUNAL INDUSTRIES</h1>
                 <span class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px"> Block no 162/B 20 to 21, Shreeji industries, B/H Udhyog Nagar, Navagam,
                     Kamrej, Surat- 394185</span><br>
                 <span class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px"> GSTIN-24CFCPK5294K1Z6</span>
             </div>
         </div>
         <!-- Header -->
-        <div class="purchase-subject">
-            <h3 class="ms-10 mt-0 mb-0">Purchase Order</h3>
-            <p style="text-align:right;margin-right:4px;" >Order Status<span> : {% if po.status %} Open {% else %} Close {% endif %}</p>
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <h3 class="ms-10 mt-0 mb-0" style="font-size:30px;">Purchase Order</h3>
+            <p style="margin-right: 4px; text-align: right;">Order Status<span> : {% if po.status %} Open {% else %} Close {% endif %}</p>
         </div>
-        <!-- Self GST NO Purchase Order; -->
-        <div class="self-details">
-            <div class="self-gst">
-                 
-            </div>
-            <!--Purchase order subject-->
-
-            <div class="purchase-status">
-                <h5 class="ms-10 mt-0 mb-0"></span> <span> </span></h5>
-            </div>
-        </div>
-        <!-- Vender Address, Information and Vender Banck Details -->
+        
+        
+        
+        
         <div class="vender-details">
-            <!--Vender Address and GST -->
-            <div class="vender-address-gst">
-                <!--Vender Address -->
-                <div class="vender-address">
-                    <h5 class="m0">TO,</h5>
-                    <p class="m2" style="font-size:11px; margin:3px">
-                    <b>{{po.vendor.comany_name|upper}}</b> <br>
-                    
-                        {{po_address.street|upper}} &nbsp; <br> {{po_address.street2|upper}}&nbsp; <br>
-                        <b>{{po_address.city.name|upper}}&nbsp; {{po_address.state.name|upper}}, {{po_address.country.name|upper}} &nbsp; - {{po_address.zip}}<br></b>
-                        <b>{{po.vendor.mobile}}</b> 
-                    </p>
-                    
-                </div>
-                <!--Vender GST -->
-                <div class="vender-gst">
-                    <p><strong>GST : </strong> <span> {{po.vendor.gst_no}}</span></p>
+            <div class="vender-address" style="margin-left:25px">
+                               
+                <div style="display: flex; flex-direction: column;">
+                    <div>
+                        <h5 class="m0">TO,</h5>
+                    </div>
+                    <div style="display: flex;">
+                        <div>
+                            <p style="font-size: 11px; margin-left: 40px;">
+                                <b>{{po.vendor.comany_name|upper}}</b> <br>
+                                {{po_address.street|upper}} &nbsp; <br> 
+                                {{po_address.street2|upper}}&nbsp; <br>
+                                <b>{{po_address.city.name|upper}}&nbsp; {{po_address.state.name|upper}}, {{po_address.country.name|upper}} &nbsp; - {{po_address.zip}}<br></b>
+                                <b>{{po.vendor.mobile}}</b> 
+                            </p>
+                            <p style="margin: 0;"><strong>GST : </strong> <span> {{po.vendor.gst_no}}</span></p>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
-            <!--Po Information -->
             <div class="purchase-information">
                 <h5 class="ms-10 mt-0 mb-0">Information</h5>
-                <table class="no-border-table">
-                    <tr>
-
-                    </tr>
+                <table class="no-border-table" style="margin-left:20px;">
                     <tr class="no-border-table">
-                        <td class="no-border-table">Order No</td>
+                        <td class="no-border-table">Purchase Order No</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{{po.po_no}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Document Date</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{{po.created_at|date:"d M, Y"}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Indent NO</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{% if po.parent %}{{po.parent.po_no}} {% else %} - {% endif %}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Indent By</td>
-                        <td class="no-border-table"></td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">-</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">G/L Name</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">Row Matrial</td>
                     </tr>
                 </table>
             </div>
-
-            <!--Vendor's Banck Details -->
             <div class="vender-bank-details">
                 <h5 class="ms-10 mt-0 mb-0">Vendor's Bank Details</h5>
-                <table class="no-border-table" style="width:100%">
-                    <tr>
-
-                    </tr>
+                <table class="no-border-table" style="width:100%;margin-left:25px">
                     <tr>
                         <td class="no-border-table">Bank Name</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{{po.vendor.bank_name}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Branch Name</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{{po.vendor.bank_branch_name}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Account NO</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{{po.vendor.bank_account_no}}</td>
                     </tr>
                     <tr>
-                        <td class="no-border-table">IFC Code </td>
+                        <td class="no-border-table">IFSC Code </td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{{po.vendor.bank_isfc}}</td>
                     </tr>
                     <tr>
                         <td class="no-border-table">Payment Terms</td>
+                        <td class="no-border-table">:</td>
                         <td class="no-border-table">{{po.payment_term.name}}</td>
                     </tr>
                 </table>
@@ -499,7 +418,7 @@
 
         <!--Product and Goods Details-->
         <div class="tabletitle">
-            <h4 class="mt-0 mb-0">Dear, Sir / Madam, We are pleased to confirm our order as under</h4>
+            <h4 class="mt-0 mb-0">Dear, Sir / Madam, We are pleased to confirm our order as under, </h4>
         </div>
         <div class="tabledetails">
 
@@ -513,10 +432,10 @@
                         <th>Description</th>
                     </tr>
                     {% for product in po.purchaseitem_set.all %}
-                    <tr style="font-size:11px; margin:3px">
-                        <td>{{forloop.counter}}</td>
+                    <tr style="font-size:13px; margin:3px">
+                        <td style="margin:20px">{{forloop.counter}}</td>
                         <td>{{product.part.part_no}}</td>
-                        <td> {{product.part.name}} </td>    
+                        <td style="text-align:left"> {{product.part.name}} </td>    
                     </tr>
                     {% endfor %}
                 </table>
@@ -534,7 +453,7 @@
                         <th class="no-border-rightside-table">Amount</th>
                     </tr>
                     {% for product in po.purchaseitem_set.all %}
-                    <tr style="font-size:11px; margin:3px">
+                    <tr style="font-size:13px; margin:3px">
                         <td>{{product.del_date|date:"d M, Y"}}</td>
                         <td>{{product.qty}}</td>
                         <td>{{product.part.umo|title}}</td>
@@ -561,8 +480,8 @@
             <div class="total">
                 <table class="no-border-table" style="width:100%">
                     <tr>
+                        <th class="no-border-table">Sub Total</th>
                         <th class="no-border-table"></th>
-                        <th class="no-border-table">Total</th>
                         <th class="no-border-table ">{{po.total}}</th>
                     </tr>
                     {% for tax in po.tax_code.all %}
@@ -582,7 +501,7 @@
             <div class="terms">
                 <h5 class="ms-10 mt-0 mb-0">Terms & Conditions:</h5>
                 {% for i in po.general_terms.all %}
-                <p class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px">{{forloop.counter}}) {{i}}</p>
+                <p class="ms-10 mt-0 mb-0" style="font-size:9px; margin:3px">{{forloop.counter}}) {{i}}</p>
                 {% endfor %}               
             </div>
 
@@ -601,20 +520,16 @@
         </div>
         <div class="footer">
             <div class="footer-left" style="font-size:12px; margin:3px">
-                <ul>
+                <ul style="margin-top:53px">
                     <li><b>Prepared By :</b> </li>
                     <li><b>Generated By : </b></li>
                     <li><b>Checked By : </b></li>
                 </ul>
 
             </div>
-            <div class="footer-right">
-                <p class="me-10 mt-0 mb-0 text-align-end">Thank You</p>
-                <h5 class="me-10 mt-0 mb-9 text-align-end">Krunal Industries</h5>
-                <p class="me-10 mt- mb-3 text-align-end">Authorised Signatory</p>
-            </div>
+            
         </div>
     </div>
-    <h5 class="me-100 mt-0 text-align-end">Computer Generated Print</h5>
+    <h5 class="me-100 mt-0" style="text-align:center;">Computer Generated Print</h5>
 </body>
 </html>
