@@ -4,8 +4,9 @@ import csv
 from collections import defaultdict
 
 from django.db.models import F
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import View
+from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.db import transaction
@@ -162,8 +163,6 @@ class CreatePurchaseOrder(View):
             vendor = Vendor.objects.get(id=request.POST.get('vendor'))
             pay_term = request.POST.get('payment_term')
             remark = request.POST.get('remark')
-
-            print(po_no,product_qty, del_date, product_of_price_obj, vendor, pay_term)
 
             default_state = State.objects.get(code="GJ")
             tax = []
@@ -351,5 +350,29 @@ class ExportPO(View):
         )
 
         return response
+
+
+class DeletePoProduct(View):
+
+    def get(self,request,id):
+        with transaction.atomic():
+            product = PurchaseItem.objects.get(id=id)
+
+            po = product.po
+            po.total = po.total - product.price*product.qty
+            po.save()
+            
+            if product.po.status:
+                product.is_active=False
+                product.save()
+                messages.success(
+                                self.request, "Purchase Order of product.product.part_no successfully remove from purchase order.")
+            else:
+                messages.error(
+                                self.request, "THIS PO WAS ALREADY CLOSED THEN NO CHANGES AVAILABEL!")
+        
+        return redirect('purchase:purchase-singel-order',id=product.po.id)
+
+        
 
 

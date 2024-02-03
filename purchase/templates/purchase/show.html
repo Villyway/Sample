@@ -465,6 +465,8 @@ Purchase Order
                                     <th>Unit</th>
                                     <th>Rate</th>
                                     <th class="no-border-rightside-table">Amount</th>
+                                    <th>Action</th>
+                                    
                                 </tr>
                                 {% for product in po.purchaseitem_set.all %}
                                 <tr style="font-size:13px; margin:3px">
@@ -472,7 +474,14 @@ Purchase Order
                                     <td>{{product.qty}}</td>
                                     <td>{{product.part.umo|title}}</td>
                                     <td>{{product.price}}</td>
-                                    <td class="no-border-rightside-table">{% widthratio product.price 1 product.qty %}</td>
+                                    <td class="no-border-rightside-table">{% widthratio product.price 1 product.qty %}
+                                        
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'purchase:remove-product-of-po' product.id %}" class="open-modal text-danger  " data-toggle="modal"
+                                            data-target="" title="Delete"><i class="fa fa-trash"
+                                            aria-hidden="true"></i></a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </table>
