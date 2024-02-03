@@ -14,6 +14,7 @@ from products.models import Product, BOMItem, VendorWithProductData
 from purchase.models import PurchaseOrder, PaymentTerms, PurchaseItem, TaxCode, TermsAndConditions
 from orders.models import OrderOfProduct
 from vendors.models import Vendor
+from users.models import User
 from utils.models import State
 
 from utils.views import is_ajax, get_secured_url
@@ -304,7 +305,7 @@ class PoList(View):
 
     def get(self, request):
         
-        purchase_orders = PurchaseOrder.objects.all()
+        purchase_orders = PurchaseOrder.objects.all().order_by('-created_at')
         
         
         context = {
@@ -319,15 +320,15 @@ class SingelPurchaseOrder(View):
         po = PurchaseOrder.objects.get(id=id)
         context = {
             "po": po,
-            "po_address" : po.vendor.address.first()
+            "po_address" : po.vendor.address.first(),
+            "genrated_by":User.objects.get(id=po.created_by).name
         }
         return render(request,self.template_name, context)
         
 
 class ExportPO(View):
 
-    template_name = "purchase/show.html"
-    # template_name = 'my_template.html'
+    template_name = "purchase/po-export.html"
 
     def get(self, request, id):
         # You can pass context data if needed
@@ -335,7 +336,8 @@ class ExportPO(View):
         context_data = {
             "po": po,
             "po_address" : po.vendor.address.first(),
-            "title" : "PURCHASE ORDER"
+            "title" : "PURCHASE ORDER",
+            "genrated_by":User.objects.get(id=po.created_by).name
                         }
 
         # Render the template as PDF

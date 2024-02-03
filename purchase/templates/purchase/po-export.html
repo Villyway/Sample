@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load product_extras %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Order</title>
+    <style>
+        /* body {
+            margin: 0;
+            size: A4;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 21cm;
+            margin: 2%;
+            box-sizing: border-box;
+            border: 1px solid black;
+
+        } */
+
+        /* The rest of your existing styles remain unchanged */
+
+        body {
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            border: 1px solid black;
+            display: flex;
+            box-sizing: border-box;
+            flex-direction: column;
+        }
+
+        .header {
+            width: 100%;
+            height: 70px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            border-bottom: 1px solid black;
+        }
+
+        .header-logo {
+            width: 20%;
+            height: 56px;
+            margin:5px;
+        }
+
+        .header-text {
+            width: 80%;
+            height: 56px;
+            text-align: center;
+            margin-right: 16%;
+        }
+
+        .image {
+            width: 192px;
+            height: 50px;
+            margin-left: 4%;
+            margin-top: 5px;
+        }
+        .vender-details {
+            display: flex;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            box-sizing: border-box;
+
+        }
+        
+        .column {
+            flex: 1;
+            padding: 20px;
+            {% comment %} border-right: 1px solid black; {% endcomment %}
+        }
+
+        .column:last-child {
+            {% comment %} border-right: none; {% endcomment %}
+        }
+
+        .vender-address {
+            width: 100%;
+            border-right: 1px solid rgb(0, 0, 0);
+            {% comment %} border-bottom: 1px solid rgb(0, 0, 0); {% endcomment %}
+        }
+
+
+        .purchase-information {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgb(0, 0, 0);
+
+
+        }
+
+        .vender-bank-details {
+            width: 100%;
+            height: 100%;
+            
+        }
+
+        .tabletitle {
+            width: 100%;
+            height: 10px;
+            text-align: start;
+            margin-left: 2%;
+            margin-top: 1%;
+            
+        }
+
+        .tabledetails {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            border-right: none;
+        }
+
+        .goods-details {
+            width: 50%;
+            height: 100%;
+            text-align: center;
+            margin-top: 2%;
+
+        }
+
+        .border-t-l {
+            border-top: 1px solid black;
+            border-left: 1px solid black;
+        }
+
+        .border-t {
+            border-top: 1px solid black;
+        }
+
+        .order-details {
+            width: 50%;
+            height: 100%;
+            text-align: center;
+            margin-top: 2%;
+            border-right: none;
+        }
+
+        .remark-total {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .remark {
+            width: 60%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .total {
+            width: 30%;
+            margin-left: 10%;
+            text-align: center;
+        }
+
+        .terms-amount-with-text {
+            width: 100%;
+            display: flex;
+        }
+
+        .terms {
+            width: 60%;
+            border: 1px solid black;
+            border-left: none;
+        }
+
+        .amount-with-text {
+            width: 40%;
+            border-bottom: 1px solid black;
+            border-left: none;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .amount-total {
+            width: 50%;
+            height: 40%;
+        }
+
+        .footer {
+            width: 100%;
+            height: 70px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .footer-left {
+            width: 80%;
+            height: 10%;
+        }
+
+        .footer-right {
+            width: 20%;
+        }
+
+        .m0 {
+            margin: 0;
+        }
+
+        .m2 {
+            margin-left: 2%;
+        }
+
+
+        .mt-0 {
+            margin-top: 0;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .mb-3 {
+            margin-bottom: 8px;
+        }
+
+        .mb-9 {
+            margin-bottom: 9px;
+        }
+
+        .ms-10 {
+            margin-left: 10px;
+        }
+
+        .me-10 {
+            margin-right: 10px;
+        }
+
+        .text-align-end {
+            text-align: end;
+        }
+
+        .text-align-start {
+            text-align: start;
+        }
+
+        .text-align-justify {
+            text-align: justify;
+        }
+
+        .me-2 {
+            margin-right: 2px;
+        }
+
+        .no-border-table {
+            border-collapse: collapse;
+            border: none;
+            font-size: 13px;
+        }
+
+        .no-border-rightside-table {
+            border-right: none;
+        }
+
+        .no-border-right-right-top-table {
+            border-right: none;
+            border-left: none;
+            border-top: none;
+        }
+
+        .no-border-topside-table {
+            border-top: none;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid black;
+        }
+
+        ul {
+            text-decoration: none;
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+        }
+
+        li {
+            margin-right: 18%;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-left: none;
+            border-collapse: collapse;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <p style="margin-right: 4px; text-align: right;">Purchase Order Status<span> : {% if po.status %} Open {% else %} Close {% endif %}</p>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-logo">
+                <img class="image" src="http://erp.krunalindustries.com/static/images/logo.png" alt="">
+            </div>
+            <div class="header-text">
+                <h1 class="ms-10 mt-0 mb-0" style="font-size:20px; margin:3px">KRUNAL INDUSTRIES</h1>
+                <span class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px"> Block no 162/B 20 to 21, Shreeji industries, B/H Udhyog Nagar, Navagam,
+                    Kamrej, Surat- 394185</span><br>
+                <span class="ms-10 mt-0 mb-0" style="font-size:11px; margin:3px"> <b>GSTIN-24CFCPK5294K1Z6</b></span>
+            </div>
+        </div>
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <h3 class="ms-10 mt-0 mb-0" style="font-size:30px;">Purchase Order</h3>
+            
+        </div>
+        
+        
+        
+        
+        <div class="vender-details">
+            <div class="vender-address" style="margin-left:25px">
+                               
+                <div style="display: flex; flex-direction: column;">
+                    <div>
+                        <h5 class="m0">TO,</h5>
+                    </div>
+                    <div style="display: flex;">
+                        <div>
+                            <p style="font-size: 11px; margin-left: 40px;">
+                                <b>{{po.vendor.comany_name|upper}}</b> <br>
+                                {{po_address.street|upper}} &nbsp; <br> 
+                                {{po_address.street2|upper}}&nbsp; <br>
+                                <b>{{po_address.city.name|upper}}&nbsp; {{po_address.state.name|upper}}, {{po_address.country.name|upper}} &nbsp; - {{po_address.zip}}<br></b>
+                                <b>{{po.vendor.mobile}}</b> 
+                            </p>
+                            <p style="margin: 0;"><strong>GST : </strong> <span> {{po.vendor.gst_no}}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="purchase-information">
+                <h5 class="ms-10 mt-0 mb-0">Information</h5>
+                <table class="no-border-table" style="margin-left:20px;">
+                    <tr class="no-border-table">
+                        <td class="no-border-table">Purchase Order No</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{{po.po_no}}</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Purchase Order Date</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{{po.created_at|date:"d M, Y"}}</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Indent NO</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{% if po.parent %}{{po.parent.po_no}} {% else %} - {% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Indent By</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">-</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">G/L Name</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">Row Matrial</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="vender-bank-details">
+                <h5 class="ms-10 mt-0 mb-0">Vendor's Bank Details</h5>
+                <table class="no-border-table" style="width:100%;margin-left:25px">
+                    <tr>
+                        <td class="no-border-table">Bank Name</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{{po.vendor.bank_name}}</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Branch Name</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{{po.vendor.bank_branch_name}}</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Account NO</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{{po.vendor.bank_account_no}}</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">IFSC Code </td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{{po.vendor.bank_isfc}}</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border-table">Payment Terms</td>
+                        <td class="no-border-table">:</td>
+                        <td class="no-border-table">{{po.payment_term.name}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!--Product and Goods Details-->
+        <div class="tabletitle">
+            <h4 class="mt-0 mb-0">Dear, Sir / Madam, We are pleased to confirm our order as under, </h4>
+        </div>
+        <div class="tabledetails">
+
+            <!--goods dettails-->
+            <div class="goods-details">
+                <h4 class=" mt-0 mb-0 border-t">Goods Details</h4>
+                <table style="width:100%">
+                    <tr>
+                        <th>Sr NO</th>
+                        <th>Item No/Drawing No</th>
+                        <th>Description</th>
+                    </tr>
+                    {% for product in po.purchaseitem_set.all %}
+                    <tr style="font-size:13px; margin:3px">
+                        <td style="margin:20px">{{forloop.counter}}</td>
+                        <td>{{product.part.part_no}}</td>
+                        <td style="text-align:left"> {{product.part.name}} </td>    
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <!--Order Details-->
+            <div class="order-details">
+                <h4 class="mt-0 mb-0 border-t-l">Order Details</h4>
+                <table class="no-border-rightside-table" style="width:100%">
+                    <tr>
+                        <th>Delivery Date</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Rate</th>
+                        <th class="no-border-rightside-table">Amount</th>
+                    </tr>
+                    {% for product in po.purchaseitem_set.all %}
+                    <tr style="font-size:13px; margin:3px">
+                        <td>{{product.del_date|date:"d M, Y"}}</td>
+                        <td>{{product.qty}}</td>
+                        <td>{{product.part.umo|title}}</td>
+                        <td>{{product.price}}</td>
+                        <td class="no-border-rightside-table">{% widthratio product.price 1 product.qty %}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <!-- REMARK and Total -->
+        <div class="remark-total">
+            <div class="remark">
+                <table class="no-border-table">
+                    <tr class="no-border-table">
+                        <th class="no-border-table">Remark:</th>
+                        <td class="no-border-table">{{po.remarks}}</td>
+                    </tr>
+                </table>
+                <h5 class="ms-10 mt-0 mb-0 text-align-start"><br><p></p></h5>
+                
+            </div>
+            <div class="total">
+                <table class="no-border-table" style="width:100%">
+                    <tr>
+                        <th class="no-border-table">Sub Total</th>
+                        <th class="no-border-table"></th>
+                        <th class="no-border-table ">{{po.total}}</th>
+                    </tr>
+                    {% for tax in po.tax_code.all %}
+                    <tr>
+                        <td class="no-border-table border-bottom">{{tax.code}}</td>
+                        <td class="no-border-table border-bottom">{{tax.value}}%</td>
+                        <td class="no-border-table border-bottom">{{po.total | get_percentage_by_value:tax.value}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <!-- Terms and with Text Totals-->
+        <div class="terms-amount-with-text">
+            <!--Terms-->
+            <div class="terms">
+                <h5 class="ms-10 mt-0 mb-0">Terms & Conditions:</h5>
+                {% for i in po.general_terms.all %}
+                <p class="ms-10 mt-0 mb-0" style="font-size:9px; margin:3px">{{forloop.counter}}) {{i}}</p>
+                {% endfor %}               
+            </div>
+
+            <!--Total Amount With Text-->
+            <div class="amount-with-text">
+                <div class="amount-total">
+                    <hr>
+                    <table class="no-border-table" style="width:100%">
+                        <tr>
+                            <th class="no-border-table">Total</th>
+                            <th class="no-border-table">{{po.with_tax_total}}</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-left" style="font-size:12px; margin:3px">
+                <ul style="margin-top:53px">
+                    <li><b>Generated By : {{genrated_by}}</b></li>
+                    <li><b>Checked By : </b></li>
+                </ul>
+
+            </div>
+            
+        </div>
+    </div>
+    <h5 class="me-100 mt-0" style="text-align:right;margin-top:10px">Computer Generated Print</h5>
+</body>
+</html>

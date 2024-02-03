@@ -84,15 +84,11 @@ Purchase Order
                       
                       {% comment %} <td>{{order.sales_challan}}</td> {% endcomment %}
                       <td>
-                        {% if order.order_confirmation != 'CONFIRMED' %}
-                        {{order.order_confirmation}}
-                        {% else %}
-                        {{order.order_status}}
-                        {% endif %}
-                        
+                        {% if po.status %} <i class="fa-regular fa-circle-dot text-success"></i> {% else %} <i class="fa-regular text-danger fa-circle-dot"></i> {% endif %}                        
                       </td>
                       <td>
-                        
+                        <a href="" class="btn btn-primary btn-circle "
+                                title="Product Edit"><i class="fas fa-edit" aria-hidden="true"></i></a>
                       </td>
                     </tr>
                     {% endfor %}
