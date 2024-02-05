@@ -101,9 +101,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB', 'erp2'), #latestData, inventory1, Asia
-        'USER': os.environ.get('DBUSER', 'krunalind_db'),
-        'PASSWORD': os.environ.get('DBPASSWORD', '#Basuri$Krunal%123'),
-        'HOST': os.environ.get('HOSTURL', 'basuriautomotive.cr8m4g28s5u1.ap-south-1.rds.amazonaws.com'),
+        'USER': os.environ.get('DBUSER', 'rupesh'),
+        'PASSWORD': os.environ.get('DBPASSWORD', 'Rupesh@123'),
+        'HOST': os.environ.get('HOSTURL', 'localhost'),
         'PORT': '5432',
     }
 }
@@ -174,7 +174,7 @@ EMAIL_HOST = 'smtp.hostinger.com'  # 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'info@basuriautomotive.com'
 EMAIL_HOST_PASSWORD = os.environ.get(
-    'EMAIL_PASSWORD', 'KrunalKey#123456@')
+    'EMAIL_PASSWORD', 'test@123')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_WELCOME_MESSAGE = "Welcome to  BasuriAutomotive"
