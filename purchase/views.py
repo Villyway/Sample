@@ -183,8 +183,6 @@ class CreatePurchaseOrder(View):
                 po_obj.remarks = remark
                 po_obj.save()
 
-                item_price = []
-
                 for qty, product_obj, del__date in zip(product_qty, product_of_price_obj, del_date):
                     po_item = PurchaseItem()
                     po_item.po = po_obj
@@ -194,26 +192,17 @@ class CreatePurchaseOrder(View):
                     po_item.price = VendorWithProductData.objects.get(id=product_obj).price
                     po_item.created_by = request.user.id
                     po_item.save()
-                    item_price.append(VendorWithProductData.objects.get(id=product_obj).price * int(qty))
                 
-                po_obj.total = sum(item_price)
-
-                tax_per = []
                 for i in tax:
-                    tax_per.append(i.value * po_obj.total / 100)
                     po_obj.tax_code.add(i)
-
-                
-
-                po_obj.with_tax_total = sum(tax_per) + po_obj.total
-
-                po_obj.save()
 
                 for i in TermsAndConditions.objects.all():
                     po_obj.general_terms.add(i)
                 
                 po_obj.created_by = request.user.id
                 po_obj.save()
+                PurchaseOrder.objects.calculate_and_save_total(po_obj.id)
+                PurchaseOrder.objects.calculate_tax_and_save(po_obj.id)
 
             return JsonResponse({"error":"Hi"})
 
@@ -355,21 +344,18 @@ class ExportPO(View):
 class DeletePoProduct(View):
 
     def get(self,request,id):
-        with transaction.atomic():
-            product = PurchaseItem.objects.get(id=id)
+        product = PurchaseItem.objects.get(id=id)
+        if product.po.status:
+            with transaction.atomic():
+                po_id = product.po.id
+                product.delete()
 
-            po = product.po
-            po.total = po.total - product.price*product.qty
-            po.save()
-            
-            if product.po.status:
-                product.is_active=False
-                product.save()
+                PurchaseOrder.objects.calculate_and_save_total(po_id)
+                PurchaseOrder.objects.calculate_tax_and_save(po_id)
                 messages.success(
-                                self.request, "Purchase Order of product.product.part_no successfully remove from purchase order.")
-            else:
-                messages.error(
-                                self.request, "THIS PO WAS ALREADY CLOSED THEN NO CHANGES AVAILABEL!")
+                                request, "Purchase Order of product.product.part_no successfully remove from purchase order.")
+        else:
+            messages.error(request, "THIS PO WAS ALREADY CLOSED THEN NO CHANGES AVAILABEL!")
         
         return redirect('purchase:purchase-singel-order',id=product.po.id)
 

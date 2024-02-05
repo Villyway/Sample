@@ -4,6 +4,8 @@ from products.models import Product
 from vendors.models import Vendor
 from base.models import Base
 
+from purchase.managers import PurchaseOrderManager
+
 
 # Create your models here.
 
@@ -47,6 +49,8 @@ class PurchaseOrder(Base):
     checked_by = models.IntegerField(null=True, blank=True)
     remarks = models.TextField(blank=True, null=True)
     close_date = models.DateTimeField(blank=True, null=True)
+
+    objects = PurchaseOrderManager()
 
     def __str__(self):
         return str(self.vendor.comany_name)

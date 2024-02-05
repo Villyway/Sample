@@ -309,8 +309,7 @@
 {% endblock css %}
 
 {% block next_page %}
-<li class="breadcrumb-item text-muted active" aria-current="page"><a
-        href="{% url 'products:products-list' %}">Purchase</a> / <b class="text-dark">PO<b></li>
+<li class="breadcrumb-item text-muted active" aria-current="page"><a href="{% url 'purchase:purchase-order-list' %}">Purchase</a> / <b class="text-dark">PO<b></li>
 {% endblock %}
 
 {% block head %}
@@ -322,7 +321,10 @@ Purchase Order
 <div class="row">
     <div class="col-md-12 mt-3">
         <div class="card mb-4">
-          <h5 class="card-header">Purchase Order</h5>
+            <div class="card-header">
+                <h5 class="">Purchase Order</h5>
+                <a href="{% url 'purchase:export-purchase-singel-order' po.id %}"  style="float:right;margin-right:20px;" class="btn btn-success" ><i class="fa-solid fa-download"></i></a>
+            </div>          
           <div class="card-body">
             <p style="margin-right: 4px; text-align: right;">Purchase Order Status<span> : {% if po.status %} Open {% else %} Close {% endif %}</p>
                 <div class="container">
