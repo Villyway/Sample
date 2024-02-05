@@ -1,6 +1,6 @@
 from django.db import models
 
-from products.models import Product
+from products.models import Product, Categories
 from vendors.models import Vendor
 from base.models import Base
 
@@ -49,6 +49,7 @@ class PurchaseOrder(Base):
     checked_by = models.IntegerField(null=True, blank=True)
     remarks = models.TextField(blank=True, null=True)
     close_date = models.DateTimeField(blank=True, null=True)
+    gl_name = models.ForeignKey(Categories, on_delete=models.CASCADE, blank=True,null=True)
 
     objects = PurchaseOrderManager()
 

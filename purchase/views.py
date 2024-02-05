@@ -11,7 +11,7 @@ from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.db import transaction
 
-from products.models import Product, BOMItem, VendorWithProductData
+from products.models import Product, BOMItem, VendorWithProductData, Categories
 from purchase.models import PurchaseOrder, PaymentTerms, PurchaseItem, TaxCode, TermsAndConditions
 from orders.models import OrderOfProduct
 from vendors.models import Vendor
@@ -129,7 +129,8 @@ class CreatePurchaseOrder(View):
         vendors = None
         
         if PurchaseOrder.objects.last():
-            po_no = int(PurchaseOrder.objects.last().po_no) + 1
+            po_no = int(PurchaseOrder.objects.first().po_no) + 1
+            print(PurchaseOrder.objects.last())
         else:
             po_no = 1
 
@@ -144,7 +145,8 @@ class CreatePurchaseOrder(View):
             "vendors":vendors,
             "payment_term":PaymentTerms.objects.all(),
             "product_url" : get_secured_url(
-                            self.request) + self.request.META["HTTP_HOST"] + '/vendors/'
+                            self.request) + self.request.META["HTTP_HOST"] + '/vendors/',
+            "categories":Categories.objects.all()
         }
         return render(request,self.template_name, context)
     
@@ -163,6 +165,7 @@ class CreatePurchaseOrder(View):
             vendor = Vendor.objects.get(id=request.POST.get('vendor'))
             pay_term = request.POST.get('payment_term')
             remark = request.POST.get('remark')
+            print()
 
             default_state = State.objects.get(code="GJ")
             tax = []
@@ -181,6 +184,8 @@ class CreatePurchaseOrder(View):
                 po_obj.payment_term = PaymentTerms.objects.get(id = pay_term)
                 po_obj.created_by = request.user.id
                 po_obj.remarks = remark
+                
+                po_obj.gl_name = Categories.objects.get(id=request.POST.get('gl_name'))
                 po_obj.save()
 
                 for qty, product_obj, del__date in zip(product_qty, product_of_price_obj, del_date):
@@ -358,6 +363,28 @@ class DeletePoProduct(View):
             messages.error(request, "THIS PO WAS ALREADY CLOSED THEN NO CHANGES AVAILABEL!")
         
         return redirect('purchase:purchase-singel-order',id=product.po.id)
+    
+
+class EditPo(View):
+
+    template_name = "purchase/edit.html"
+
+    def get(self, request, id):
+        po = PurchaseOrder.objects.get_po(id)
+        product = PurchaseItem.objects.filter(po=po)
+        # vendors = vendors.objects.filter(id = po.vendor.id)
+        context = {
+            "po":po,
+            "product": product,
+            # "vendors":vendors,
+            "payment_term":PaymentTerms.objects.all(),
+            "product_url" : get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + '/vendors/',
+            "categories":Categories.objects.all()
+        }
+        return render(request,self.template_name, context)
+
+
 
         
 

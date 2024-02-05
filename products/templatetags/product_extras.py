@@ -3,6 +3,7 @@ from django.conf import settings
 
 from products.models import Product, VendorWithProductData
 from customers.models import Customer
+from django.db.models import Sum, Min
 
 register = template.Library()
 
@@ -72,3 +73,13 @@ def get_average_of_list(value):
 def get_percentage_by_value(percentage, total):
     result = total*percentage/100
     return "%.2f" % result
+
+@register.filter
+def get_qty_by_purchase_item(po,item):
+    try:
+        item = po.purchaseitem_set.filter(part=item.product)
+        print(item)
+        return 0
+    except:
+        return ''
+    
