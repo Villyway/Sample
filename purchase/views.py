@@ -207,8 +207,13 @@ class CreatePurchaseOrder(View):
                 po_obj.save()
                 PurchaseOrder.objects.calculate_and_save_total(po_obj.id)
                 PurchaseOrder.objects.calculate_tax_and_save(po_obj.id)
-
-            return JsonResponse({"error":"Hi"})
+                data = {
+                        'message': "Po successfully Created.",
+                        'url': get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + '/purchase/' + str(po_obj.id) + '/po/'
+                    }
+                
+            return JsonResponse(data)
 
         return render(request,self.template_name)
     
@@ -304,6 +309,7 @@ class PoList(View):
             "pos": purchase_orders,
         }
         return render(request,self.template_name, context)
+    
     
 class SingelPurchaseOrder(View):
 
