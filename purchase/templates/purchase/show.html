@@ -573,42 +573,62 @@ Purchase Order
 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Modal content goes here -->
-                <table>
-                    <tr>
-                        <th>No.</th>
-                        <th>Part No</th>
-                        <th>Description</th>
-                        <th>Rate</th>
-                        <th>QTY</th>
-                        <th>Select</th>
-                    </tr>
-                    {% for i in po.vendor.vendorwithproductdata_set.all %}
-                    <tr>
-                        <td>
-                            {{forloop.counter}}
-                        </td>
-                        <td><a href="{% url "products:product-details" i.product.part_no %}" id="popup">{{i.product.part_no}}</a></td>
-                        <td> {{i.product.name}} </td>
-                        <td><i class="fa fa-inr" aria-hidden="true"></i> {{i.price}} / {{i.product.umo}} </td>
-                        <td><input type="text" class="col-3" value="" name="quantity[]" value="{{po | get_qty_by_purchase_item:i}}">  {{i.product.umo}} </td>
-                        <td><input type="date" name="del_date[]" value="" ></td>
-                        <td>
-                            <input class="form-check-input" type="checkbox" value="{{i.id}}" name="selected[]" id="defaultCheck3">
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+            <form method="post" action=".">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add New Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal content goes here -->
+                    <table>
+                        <tr>
+                            <th>No.</th>
+                            <th>Part No</th>
+                            <th>Description</th>
+                            <th>Rate</th>
+                            <th>QTY</th>
+                            <th>Select</th>
+                        </tr>
+                        {% for i in po.vendor.vendorwithproductdata_set.all %}
+                        <tr>
+                            <td>
+                                {{forloop.counter}}
+                            </td>
+                            <td><a href="{% url "products:product-details" i.product.part_no %}" id="popup">{{i.product.part_no}}</a></td>
+                            <td> {{i.product.name}}  </td>
+                            <td><i class="fa fa-inr" aria-hidden="true"></i> {{i.price}} / {{i.product.umo}} </td>
+                            <td>
+                                {% if po|get_qty_by_purchase_item:i %}
+                                <input type="text" class="col-5" value="{{po | get_qty_by_purchase_item:i}}" name="quantity[]">  {{i.product.umo}} 
+                                {% else %}
+                                <input type="text" class="col-5" value="" name="quantity[]">  {{i.product.umo}} 
+                                {% endif %}
+                            </td>
+                            <td><input type="date" name="del_date[]" value="{{po | get_qty_by_purchase_item_del_date:i}}"></td>
+                            <td>
+                                
+                                {% if po|get_qty_by_purchase_item:i %}
+                                <input class="form-check-input" type="checkbox" value="{{i.id}}" name="selected[]"  id="defaultCheck3" checked>
+                                {% else %}
+                                <input class="form-check-input" type="checkbox" value="{{i.id}}" name="selected[]" id="defaultCheck3">
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <div class="mb-3 col-12">
+                        <label class="form-label" for="basic-default-inword-bill_no">Remark:</label>
+                        <span class="text-danger"></span>
+                        <textarea name="remark" cols="40" rows="5" class="form-control aiz-text-editor" id="id_description">{{po.remarks}}</textarea>
+                        <span class="text-danger print_error" id="code"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

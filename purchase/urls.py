@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth.decorators import login_required
 
 from purchase.views import (MRP, Dashboard, CreatePurchaseOrder, 
-                            OrderAgainstMRP, PoList, SingelPurchaseOrder, ExportPO, DeletePoProduct, EditPo)
+                            OrderAgainstMRP, PoList, SingelPurchaseOrder, ExportPO, DeletePoProduct)
 
 
 
@@ -19,5 +19,5 @@ urlpatterns = [
     path("<slug:id>/po/",login_required(SingelPurchaseOrder.as_view()), name="purchase-singel-order"),
     path("<slug:id>/remove-product/",login_required(DeletePoProduct.as_view()), name="remove-product-of-po"),
     path("export/<slug:id>/po/",login_required(ExportPO.as_view()), name="export-purchase-singel-order"),
-    path("edit/<slug:id>/po/",login_required(EditPo.as_view()), name="purchase-edit-order"),
+    
 ]

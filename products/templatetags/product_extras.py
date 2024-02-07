@@ -77,9 +77,16 @@ def get_percentage_by_value(percentage, total):
 @register.filter
 def get_qty_by_purchase_item(po,item):
     try:
-        item = po.purchaseitem_set.filter(part=item.product)
-        print(item)
-        return 0
+        item = po.purchaseitem_set.filter(part=item.product).first()
+        return item.qty
+    except:
+        return None
+
+
+@register.filter
+def get_qty_by_purchase_item_del_date(po,item):
+    try:
+        item = po.purchaseitem_set.filter(part=item.product).first()
+        return item.del_date.strftime("%Y-%m-%d")
     except:
         return ''
-    

@@ -4,7 +4,7 @@ import csv
 from collections import defaultdict
 
 from django.db.models import F
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
@@ -130,7 +130,7 @@ class CreatePurchaseOrder(View):
         
         if PurchaseOrder.objects.last():
             po_no = int(PurchaseOrder.objects.first().po_no) + 1
-            print(PurchaseOrder.objects.last())
+            
         else:
             po_no = 1
 
@@ -165,7 +165,6 @@ class CreatePurchaseOrder(View):
             vendor = Vendor.objects.get(id=request.POST.get('vendor'))
             pay_term = request.POST.get('payment_term')
             remark = request.POST.get('remark')
-            print()
 
             default_state = State.objects.get(code="GJ")
             tax = []
@@ -317,7 +316,42 @@ class SingelPurchaseOrder(View):
             "genrated_by":User.objects.get(id=po.created_by).name
         }
         return render(request,self.template_name, context)
+    
+    def post(self, request, id):
+        po = PurchaseOrder.objects.get(id=id)
+        remark = request.POST.get('remark')
+        if po.remarks != remark:
+            po.remarks = remark
+            po.save()
+        product_qty = [item for item in request.POST.getlist('quantity[]') if item != '']
+        del_date = [item for item in request.POST.getlist('del_date[]') if item != '']
+        product_of_price_obj = request.POST.getlist('selected[]')
         
+        with transaction.atomic():
+            for qty, product_obj, del__date in zip(product_qty, product_of_price_obj, del_date):
+                product = VendorWithProductData.objects.get(id=product_obj).product
+                if PurchaseItem.objects.filter(part=product, po=po).exists():
+                    print(PurchaseItem.objects.filter(part=product, po=po))
+                    item = po.purchaseitem_set.get(part=product)
+                    if item.qty != qty:
+                       item.qty = qty
+                    if item.del_date != del__date:
+                        item.del_date = del__date                    
+                    item.save()
+                else:
+                    po_item = PurchaseItem()
+                    po_item.po = po
+                    po_item.part = VendorWithProductData.objects.get(id=product_obj).product
+                    po_item.qty = qty
+                    po_item.del_date = del__date
+                    po_item.price = VendorWithProductData.objects.get(id=product_obj).price
+                    po_item.created_by = request.user.id
+                    po_item.save()
+            PurchaseOrder.objects.calculate_and_save_total(id)
+            PurchaseOrder.objects.calculate_tax_and_save(id)
+
+        return redirect(request.path)
+    
 
 class ExportPO(View):
 
@@ -365,24 +399,6 @@ class DeletePoProduct(View):
         return redirect('purchase:purchase-singel-order',id=product.po.id)
     
 
-class EditPo(View):
-
-    template_name = "purchase/edit.html"
-
-    def get(self, request, id):
-        po = PurchaseOrder.objects.get_po(id)
-        product = PurchaseItem.objects.filter(po=po)
-        # vendors = vendors.objects.filter(id = po.vendor.id)
-        context = {
-            "po":po,
-            "product": product,
-            # "vendors":vendors,
-            "payment_term":PaymentTerms.objects.all(),
-            "product_url" : get_secured_url(
-                            self.request) + self.request.META["HTTP_HOST"] + '/vendors/',
-            "categories":Categories.objects.all()
-        }
-        return render(request,self.template_name, context)
 
 
 
