@@ -9,6 +9,8 @@ from .views import (
                      OrderSearch, TrackLR
                     )
 
+from orders.api import (CreateOrderApi,)
+
 app_name = "orders"
 
 urlpatterns = [
@@ -28,6 +30,9 @@ urlpatterns = [
     path("search-report/", login_required(OrdersCustomReportResponse.as_view()), name='search-report'),
     path("search/", login_required(OrderSearch.as_view()), name='search-orders'),
     path("<slug:id>/track-lr", login_required(TrackLR.as_view()), name='track-lr'),
+
+    # api
+    path("create-order/",CreateOrderApi.as_view(), name="create-order"),
 
     
 ]
