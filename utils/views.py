@@ -17,8 +17,19 @@ from django.http import JsonResponse
 from django.utils.encoding import force_bytes, force_str #force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.files.storage import default_storage
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from .models import City, State, Country, Address
+
+# Token Generator
+class TokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        login_timestamp = '' if user.last_login is None else user.last_login.replace(
+            microsecond=0, tzinfo=None)
+        return str(user.pk) + user.password + str(login_timestamp) + str(timestamp)
+    
+
+account_activation_token = TokenGenerator()
 
 # Create your views here.
 

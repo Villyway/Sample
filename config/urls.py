@@ -35,6 +35,7 @@ urlpatterns = [
     path('orders/', include('orders.urls', namespace='orders')),
     path('customers/', include('customers.urls', namespace='customers')),
     path('purchase/', include('purchase.urls', namespace='purchase')),
+    path('dhl/', include('dhl_api.urls', namespace='dhl_api')),
     path("robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),  #add the robots.txt file
     
 ]

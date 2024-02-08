@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'customers.apps.CustomersConfig',
     'purchase.apps.PurchaseConfig',
+    'dhl_api.apps.DhlApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -211,3 +212,25 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=0)
     }
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Rest Framework Contant
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('utils.backends.JWTAuthentication',),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
+    'EXCEPTION_HANDLER': 'utils.exceptions.custom_exception_handler'
+}
+
+# JWT Token life limit
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=45),
+}
+
+# Token Key and Algorithm for token
+# use settings secret key for JWT secret
+JWT_SECRET = os.environ.get('JWT_SECRET', 'ZSWVRSXPBOX12@sd!dsdr5%&*^EGEdgds')
+JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
+JWT_EXP_DELTA_SECONDS = 300

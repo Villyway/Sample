@@ -4,6 +4,7 @@ from base.models import Base
 from utils.models import Address
 from customers.managers import CustomerManager
 from utils.constants import OrdersType
+from users.models import User
 
 # Create your models here.
 class Customer(Base):
@@ -17,6 +18,7 @@ class Customer(Base):
     gst_no = models.CharField(max_length=20, null=True, blank=True)
     category = models.CharField(
         max_length=25, choices=OrdersType.choices(), default=OrdersType.DOMESTIC.value)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     objects = CustomerManager()
 
     def __str__(self):

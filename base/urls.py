@@ -10,6 +10,8 @@ from .views import (UserRegister,
                     ResendOtp, ChangePassword
                     )
 
+from base.api import UserLoginView
+
 app_name = "base"
 
 urlpatterns = [
@@ -22,5 +24,7 @@ urlpatterns = [
     path("resend/", ResendOtp.as_view(), name="resend-otp"),
     path('password/change/', login_required(ChangePassword.as_view()),
          name='change-password'),
+    path('simple-login/', UserLoginView.as_view(), name="simple-login"),
+
 
 ]
