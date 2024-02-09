@@ -289,14 +289,24 @@ class VendorDetails(View):
 
     def get(self, request, id):
         vendor = Vendor.objects.get(id=id)
-        products = vendor.vendorwithproductdata_set.active()
+        # products = vendor.vendorwithproductdata_set.active()
         address = vendor.address.first()
+
+        products = []
+        unique_products = vendor.vendorwithproductdata_set.active().select_related('product').values('product').distinct()
+        
+        # Iterate through the unique products and fetch the last created price for each
+        for product_data in unique_products:
+            product_id = product_data['product']
+            product = Product.objects.get(pk=product_id)
+            products.append(vendor.vendorwithproductdata_set.get_vendor_product_of_last_price_obj(product))
+        
+        print(len(products))
         
         context = {
             "vendor":vendor,
             "address":address,
             "products":products
-
         }
         return render(request,self.template_name,context)
     
@@ -388,7 +398,10 @@ class ProductByVendor(View):
         if is_ajax(request):
             part_no = request.GET.get("query", None)
             product = Product.objects.by_part_no(part_no)
-            vendors = product.vendorwithproductdata_set.all()
+            vendors_ids = product.vendorwithproductdata_set.all().select_related('vendor').values('vendor').distinct()
+            vendors = []
+            for vendor in vendors_ids:
+                vendors.append(Vendor.objects.get(id=vendor['vendor']).vendorwithproductdata_set.get_vendor_product_of_last_price_obj(product))
             
             html = render_to_string(
                     template_name=self.template_name,

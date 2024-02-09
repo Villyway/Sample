@@ -9,27 +9,20 @@ Order Confirmation Status
 {% block message %}
 Hello {{name}},<br><br>
 
-Thank you for choosing BasuriAutomotive for your business needs! We appreciate your partnership. Here is the confirmation of your recent order:
-Order Number: {{order_no}}
-Order Date: {{order_date}}
-Delivery Address: 
-{{shipping_address}}
+Thank you for choosing BasuriAutomotive for your business needs! We appreciate your partnership. Here is the confirmation of your recent order:<br>
+Order Number: {{order_no}}<br>
+Order Date: {{order_date}}<br>
+Delivery Address: <br>
+{{shipping_address}}<br>
 
-Order Summary:
----------------------
-Order Status: {{order_status}}
-Dispatch Status: {{dispatch_status}}
+Order Summary:<br>
+---------------------<br>
+Order Status: {{order_status}}<br>
+Dispatch Status: {{dispatch_status}}<br>
 
-[Include any additional information or instructions based on the order and dispatch status.]
+[Include any additional information or instructions based on the order and dispatch status.]<br>
 
-<p style="color:red;">If you have any questions or need further assistance, please reply to this email or contact your dedicated account manager at <b>sales@basuriautomotive.com</b>.</p>
+<p style="color:red;">If you have any questions or need further assistance, please reply to this email or contact your dedicated account manager at <b>sales@basuriautomotive.com</b>.</p><br>
 <br><br>
-<center>
-    <h1>{{otp}}</h1>
-</center><br>
-
-
-Welcome to BasuriAutomotive!<br>
-The BasuriAutomotive Team.<br><br>
 
 {% endblock %}

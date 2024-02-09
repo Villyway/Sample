@@ -17,6 +17,7 @@ from products.models import Product
 from orders.models import OrderDetails, OrderOfProduct
 from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles, OrdersType
 from utils.models import Address
+from utils.views import send_email
 from orders.resources import OrderReport
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -171,6 +172,18 @@ class OrderList(View):
                 order.order_confirmation_remark = reason
                 order.updated_by = request.user.id
                 order.save()
+        
+        message = {
+                    "name": order.customer.name,
+                    "order_no": order.order_no,
+                    "order_date":order.date,
+                    "shipping_address":order.shipped_add,
+                    "order_status":order.order_status,
+                    "dispatch_status":order.dispatch_status,
+                    }
+        
+        send_email(order.customer, message,
+                               "order_conformation_status_email.html", self.request,"Order Confirmation")
             
         data = {
                     'message': order_no + "was in" + order.order_confirmation,

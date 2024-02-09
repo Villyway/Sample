@@ -3,7 +3,7 @@ import datetime
 from itertools import chain
 
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Max
 # from django.db.models import Sum
 
 
@@ -94,4 +94,27 @@ class VendorWithProductDataManager(models.Manager):
     
     def get_vendor_with_product_price(self, vendor):
         return self.active().filter(vendor=vendor)
+    
+    def get_vendor_product_of_last_price_obj(self,product):
+        last_price = self.active().filter(product=product).aggregate(last_price=Max('created_at'))['last_price']
+        return self.active().filter(product=product, created_at=last_price).first()
+
+    # def get_lastprice_list(self,vendor):
+    #     unique_products = self.get_vendor_with_product_price(vendor).select_related('product').values('product').distinct()
+
+    #     # Iterate through the unique products and fetch the last created price for each
+    #     for product_data in unique_products:
+    #         product_id = product_data['product']
+    #         # Retrieve the product instance
+    #         product = Product.objects.get(pk=product_id)
+        
+    #         # Retrieve the last created price for the current product and vendor
+    #         last_price = VendorWithProductData.objects.filter(product=product, vendor=vendor).aggregate(last_price=Max('created_at'))['last_price']
+            
+    #         # Retrieve the VendorWithProductData instance for the last created price
+    #         last_price_instance = VendorWithProductData.objects.filter(product=product, vendor=vendor, created_at=last_price).first()
+            
+    #         # If a last price instance is found, print the vendor and its last created price
+    #         if last_price_instance:
+    #             print(f"Vendor: {vendor.comany_name}, Product: {product.name}, Last Created Price: {last_price_instance.price}")
     
