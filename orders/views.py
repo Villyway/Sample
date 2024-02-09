@@ -182,8 +182,8 @@ class OrderList(View):
                     "dispatch_status":order.dispatch_status,
                     }
         
-        send_email(order.customer, message,
-                               "order_conformation_status_email.html", self.request,"Order Confirmation")
+        # send_email(order.customer, message,
+                            #    "order_conformation_status_email.html", self.request,"Order Confirmation")
             
         data = {
                     'message': order_no + "was in" + order.order_confirmation,
