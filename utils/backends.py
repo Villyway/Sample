@@ -75,7 +75,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
         successful, return the user and token. If not, throw an error.
         """
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            payload = jwt.decode(token, settings.SECRET_KEY, settings.JWT_ALGORITHM)
         except:
             msg = 'Your session has been expired, please login again!'
             raise exceptions.AuthenticationFailed(msg)

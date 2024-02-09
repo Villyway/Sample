@@ -5,6 +5,7 @@ import html
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from orders.models import OrderDetails, OrderOfProduct
 # Create your views here.
 from dhl_api.SOAPApi import SOAPApi
 
@@ -20,6 +21,7 @@ class TrackAllCheckPoints(APIView):
 
     def get(self, request, order_no):
         response_data = {}
+        order = OrderOfProduct.objects.filter(order__order_no=order_no).first()
         
         api.soap_action= "http://tempuri.org/IDHLService/PostTracking_AllCheckpoint"
 
@@ -27,7 +29,7 @@ class TrackAllCheckPoints(APIView):
                         <Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
                             <Body>
                                 <PostTracking_AllCheckpoint xmlns="http://tempuri.org/">
-                                    <awbnumber>{order_no}</awbnumber>
+                                    <awbnumber>{order.lr_no}</awbnumber>
                                 </PostTracking_AllCheckpoint>
                             </Body>
                         </Envelope>
