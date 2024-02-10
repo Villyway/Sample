@@ -327,7 +327,7 @@ All Orders
 <script>
   $(document).ready(function () {
       // Bind the click event to the button with class "status-btn"
-      $('.status-btn').click(function () {
+      $('#status-btn').click(function () {
           // Get the data-order-id attribute from the clicked button
           var orderId = $(this).data('order-id');
 
@@ -379,9 +379,18 @@ All Orders
   $(document).ready(function () {
       var $myForm = $('#bulk-action');
       $('#run-mrp').on('click', function (event) {
+          var checkbox = document.querySelector('input.form-check-input[name="so[]"]');
+          
           event.preventDefault();
           // Trigger the form submission
-          $myForm.submit();
+          // Check if the checkbox is checked
+          if (checkbox.checked) {
+            // Call your function here
+            $myForm.submit();  
+          } else {
+            // Checkbox is not checked, do nothing or handle as needed
+          }
+          
       });
   });
 </script>

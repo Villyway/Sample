@@ -252,49 +252,49 @@ class OrderAgainstMRP(View):
         product_objs = []
         
         order_nos = request.POST.getlist('so[]')
-        print(order_nos)
+        if len(order_nos) != 0:
+            for i in order_nos:
 
-        for i in order_nos:
+                for order_item in OrderOfProduct.objects.get_so_no_by_product(i):
+                    product_objs.append(self.calculate_mrp(order_item.product,int(order_item.order_qty)))
 
-            for order_item in OrderOfProduct.objects.get_so_no_by_product(i):
-                product_objs.append(self.calculate_mrp(order_item.product,int(order_item.order_qty)))
+            results = self.aggregate_mrp(product_objs)
 
-        results = self.aggregate_mrp(product_objs)
-                
-        requirements = []
-        for i, j in dict(results).items():
-            __p = {}
-            __p['id'] = i.id
-            __p['name'] = i.part_no+" - "+i.name
-            __p['qty'] = j
-            if i.stock - j < 0:
-                __p['available_stock'] = 0
-            elif i.stock - j > 0:
-                __p['available_stock'] = i.stock - j
-            __p['current_stock'] = i.stock
-            if i.stock - j > 0:
-                __p['requirement'] = 0
-            elif i.stock - j < 0:
-                __p['requirement'] = i.stock - j
-            requirements.append(__p)
-        
-        # Export as CSV if requested
-        # if request.POST.get('export_csv'):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="requirements.csv"'
-        csv_writer = csv.writer(response)
-        # Write CSV header
-        csv_writer.writerow(['ID', 'Name', 'Quantity', 'Current Stock', 'Requirement', 'Available Stock'])
-        for requirement in requirements:
-            csv_writer.writerow([
-                requirement['id'],
-                requirement['name'],
-                requirement['qty'],
-                requirement['current_stock'],
-                requirement['requirement'],
-                requirement['available_stock']
-            ])
-        return response      
+            requirements = []
+            for i, j in dict(results).items():
+                __p = {}
+                __p['id'] = i.id
+                __p['name'] = i.part_no+" - "+i.name
+                __p['qty'] = j
+                if i.stock - j < 0:
+                    __p['available_stock'] = 0
+                elif i.stock - j > 0:
+                    __p['available_stock'] = i.stock - j
+                __p['current_stock'] = i.stock
+                if i.stock - j > 0:
+                    __p['requirement'] = 0
+                elif i.stock - j < 0:
+                    __p['requirement'] = i.stock - j
+                requirements.append(__p)
+
+            # Export as CSV if requested
+            # if request.POST.get('export_csv'):
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="requirements.csv"'
+            csv_writer = csv.writer(response)
+            # Write CSV header
+            csv_writer.writerow(['ID', 'Name', 'Quantity', 'Current Stock', 'Requirement', 'Available Stock'])
+            for requirement in requirements:
+                csv_writer.writerow([
+                    requirement['id'],
+                    requirement['name'],
+                    requirement['qty'],
+                    requirement['current_stock'],
+                    requirement['requirement'],
+                    requirement['available_stock']
+                ])
+            return response
+        return JsonResponse({})
 
 
 class PoList(View):

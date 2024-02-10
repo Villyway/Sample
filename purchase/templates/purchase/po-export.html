@@ -450,8 +450,8 @@
                         <th>Delivery Date</th>
                         <th>Qty</th>
                         <th>Unit</th>
-                        <th>Rate</th>
-                        <th class="no-border-rightside-table">Amount</th>
+                        <th>Rate(INR)</th>
+                        <th class="no-border-rightside-table">Amount(INR)</th>
                     </tr>
                     {% for product in po.purchaseitem_set.all %}
                     <tr style="font-size:13px; margin:3px">
@@ -481,7 +481,7 @@
             <div class="total">
                 <table class="no-border-table" style="width:100%">
                     <tr>
-                        <th class="no-border-table">Sub Total</th>
+                        <th class="no-border-table">Sub Total(INR)</th>
                         <th class="no-border-table"></th>
                         <th class="no-border-table ">{{po.total}}</th>
                     </tr>
@@ -512,7 +512,7 @@
                     <hr>
                     <table class="no-border-table" style="width:100%">
                         <tr>
-                            <th class="no-border-table">Total</th>
+                            <th class="no-border-table">Total(INR)</th>
                             <th class="no-border-table">{{po.with_tax_total}}</th>
                         </tr>
                     </table>

@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -596,22 +598,35 @@ class TrackLR(View):
             
             for i in order_of_products:
                 if i.lr_no not in lr_nos:
-                    lr_nos.append(i.lr_no)
+                    lr_nos.append([i.lr_no,i.transport_compny])
 
-        api_url = 'https://www.vrlgroup.in/track_consignment.aspx?lrtrack=1&lrno=' 
+        api_url_vrl = 'https://www.vrlgroup.in/track_consignment.aspx?lrtrack=1&lrno='
+        
         try:
             track_details = []
             for i in lr_nos:
                 if i:
-                    # Make a GET request to the API
-                    response = requests.post(api_url + i)
-                    # Check if the response status is OK (status code 200-299)
-                    response.raise_for_status()
-                    # Parse the JSON response
-                    api_data = response.json()
-                    track_details.append(api_data)
+                    if i[1]=='VRL':
+                        # Make a GET request to the API
+                        response = requests.post(api_url_vrl + i[0])
+                        # Check if the response status is OK (status code 200-299)
+                        response.raise_for_status()
+                        # Parse the JSON response
+                        api_data = response.json()
+                        track_details.append(api_data)
                     # Do something with the API data
                     # ...
+                    elif i[1] == 'DHL':
+                        response = requests.get('https://erp.krunalindustries.com/dhl/'+ order.order_no +'/track-order/')
+                        
+                        # data_string = response.decode('utf-8')
+                        data_dict = response.json()
+                        status = data_dict['status']
+                        message = data_dict['message']
+                        data = data_dict['data']
+                        print(data)
+
+                        
             context = {
                 "data":track_details
             }

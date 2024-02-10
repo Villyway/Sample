@@ -18,7 +18,7 @@ class OrderOfProductCreateSerializer(serializers.Serializer):
     part_no = serializers.ListField(child=serializers.CharField())
     qty = serializers.ListField(child=serializers.IntegerField())
     order_no = serializers.CharField(max_length=80)
-    remarks = serializers.CharField(max_length=500)
+    remarks = serializers.CharField(max_length=5000)
     
     def create(self, validated_data):
         request = self.context.get("request")
