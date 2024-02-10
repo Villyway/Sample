@@ -93,6 +93,40 @@ Vendor Details
                             {{vendor.email1}}
                         </div>
                     {% endif %}
+                    
+                    {% if vendor.bank_name %}
+                    <hr>
+                        <div class="col-3">
+                            Bank Name:
+                        </div>
+                        <div class="col-8">
+                            {{vendor.bank_name}}
+                        </div>
+                    {% endif %}
+                    {% if vendor.bank_branch_name %}
+                        <div class="col-3">
+                            Branch Name:
+                        </div>
+                        <div class="col-8">
+                            {{vendor.bank_branch_name}}
+                        </div>
+                    {% endif %}
+                    {% if vendor.bank_account_no %}
+                        <div class="col-3">
+                            Account NO:
+                        </div>
+                        <div class="col-8">
+                            {{vendor.bank_account_no}}
+                        </div>
+                    {% endif %}
+                    {% if vendor.bank_isfc %}
+                        <div class="col-3">
+                            IFSC Code:
+                        </div>
+                        <div class="col-8">
+                            {{vendor.bank_isfc}}
+                        </div>
+                    {% endif %}
                     <hr>
                     <div class="col-3">
                         Address:

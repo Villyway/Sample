@@ -17,7 +17,6 @@ from .serializers import VendorDetailSerializer
 from products.models import Product, VendorWithProductData
 
 
-
 # Product Dashboard
 class Dashboard(View):
     template_name = "vendors/dashboard.html"
@@ -78,7 +77,11 @@ class CreateVendor(FormView):
                     email = form_data['email1'],
                     email1 = form_data['mobile2'],
                     gst_no = form_data['gst_no'],
-                    created_by = self.request.user.id
+                    created_by = self.request.user.id,
+                    bank_name = form_data['bank_name'],
+                    bank_branch_name = form_data['bank_branch_name'],
+                    bank_isfc = form_data['bank_isfc'],
+                    bank_account_no = form_data['bank_account_no']
                 )
                 address = Address()
                 address.street = form_data["street"]
@@ -131,7 +134,6 @@ class VendorEditView(FormView):
     
     def form_valid(self, form):
         form_data = form.cleaned_data
-        print(form_data)
         # try:
         with transaction.atomic():
             
@@ -154,6 +156,19 @@ class VendorEditView(FormView):
                 vendor.email1 = form_data['mobile2']
             if vendor.gst_no != form_data['gst_no']:
                 vendor.gst_no = form_data['gst_no']
+            
+            if vendor.bank_name != form_data['bank_name']:
+                vendor.bank_name=form_data['bank_name']
+            
+            if vendor.bank_branch_name != form_data['bank_branch_name']:
+                vendor.bank_branch_name=form_data['bank_branch_name']
+            
+            if vendor.bank_isfc != form_data['bank_isfc']:
+                vendor.bank_isfc=form_data['bank_isfc']
+            
+            if vendor.bank_account_no != form_data['bank_account_no']:
+                vendor.bank_account_no=form_data['bank_account_no']
+            
             vendor.updated_by = self.request.user.id
             vendor.save()
             address = vendor.address.first()
@@ -301,8 +316,6 @@ class VendorDetails(View):
             product = Product.objects.get(pk=product_id)
             products.append(vendor.vendorwithproductdata_set.get_vendor_product_of_last_price_obj(product))
         
-        print(len(products))
-        
         context = {
             "vendor":vendor,
             "address":address,
@@ -341,13 +354,11 @@ class SearchVendor(View):
         try:
             if is_ajax(request):
                 query = request.GET.get("query", None)
-                print(query)
                 vendors = Vendor.objects.search(query)
 
                 results_per_page = 100
                 page = request.GET.get('page', 1)
                 paginator = Paginator(vendors, results_per_page)
-                print(vendors)
                 try:
                     products = paginator.page(page)
                 except PageNotAnInteger:

@@ -49,6 +49,11 @@ class VendorForm(forms.Form):
     pincode = forms.IntegerField(required=False, label="Pincode", widget=forms.NumberInput(
         attrs={"class": "form-control"}))
     
+    bank_name = forms.CharField(required=False, label="Bank Name", widget=forms.TextInput(attrs={"class": "form-control"}))
+    bank_branch_name = forms.CharField(required=False, label="Bank Branch", widget=forms.TextInput(attrs={"class": "form-control"}))
+    bank_isfc = forms.CharField(required=False, label="Bank IFSC", widget=forms.TextInput(attrs={"class": "form-control"}))
+    bank_account_no = forms.CharField(required=False, label="Bank IFSC", widget=forms.TextInput(attrs={"class": "form-control"}))
+    
     def __init__(self, *args, **kwargs):
         self.user = None
         self.edit = kwargs.pop("edit", None)
@@ -67,7 +72,10 @@ class VendorForm(forms.Form):
             self.fields['email1'].initial = vendor.email
             self.fields['email2'].initial = vendor.email1
             self.fields['gst_no'].initial = vendor.gst_no
-            
+            self.fields['bank_name'].initial = vendor.bank_name
+            self.fields['bank_branch_name'].initial = vendor.bank_branch_name
+            self.fields['bank_isfc'].initial = vendor.bank_isfc
+            self.fields['bank_account_no'].initial = vendor.bank_account_no
             if address:
                 self.fields["street"].initial = address.street
                 self.fields["street2"].initial =address.street2
@@ -75,6 +83,8 @@ class VendorForm(forms.Form):
                 self.fields["state"].initial = address.state
                 self.fields["city"].initial = address.city
                 self.fields["pincode"].initial = address.zip
+            
+            
     
     def clean_gst_no(self):
         gst_no = self.cleaned_data.get("gst_no")
