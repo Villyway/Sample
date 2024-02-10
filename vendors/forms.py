@@ -52,7 +52,7 @@ class VendorForm(forms.Form):
     bank_name = forms.CharField(required=False, label="Bank Name", widget=forms.TextInput(attrs={"class": "form-control"}))
     bank_branch_name = forms.CharField(required=False, label="Bank Branch", widget=forms.TextInput(attrs={"class": "form-control"}))
     bank_isfc = forms.CharField(required=False, label="Bank IFSC", widget=forms.TextInput(attrs={"class": "form-control"}))
-    bank_account_no = forms.CharField(required=False, label="Bank IFSC", widget=forms.TextInput(attrs={"class": "form-control"}))
+    bank_account_no = forms.CharField(required=False, label="Bank Account No.", widget=forms.TextInput(attrs={"class": "form-control"}))
     
     def __init__(self, *args, **kwargs):
         self.user = None
