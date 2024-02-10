@@ -459,7 +459,7 @@
                         <td>{{product.qty}}</td>
                         <td>{{product.part.umo|title}}</td>
                         <td>{{product.price}}</td>
-                        <td class="no-border-rightside-table">{% widthratio product.price 1 product.qty %}</td>
+                        <td class="no-border-rightside-table">{{ product.price| get_multiplication:product.qty}}</td>
                     </tr>
                     {% endfor %}
                 </table>

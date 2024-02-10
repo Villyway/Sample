@@ -90,3 +90,10 @@ def get_qty_by_purchase_item_del_date(po,item):
         return item.del_date.strftime("%Y-%m-%d")
     except:
         return ''
+    
+
+
+@register.filter
+def get_multiplication(value1,value2):
+    x = value2*value1
+    return round(x,2)
