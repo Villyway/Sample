@@ -187,7 +187,7 @@ All Orders
                   {% if order.order_confirmation == 'CONFIRMED' %}
                   {{order.order_confirmation}}
                   {% else %}
-                  <button class="btn btn-warning status-btn" data-order-id="{{ order.order_no }}">Confirmed</button>
+                  <button class="btn btn-warning status-btn" id="confirmed" data-order-id="{{ order.order_no }}">Confirmed</button>
                   {% endif %}
                 </td>
                 {% else %}
@@ -327,7 +327,7 @@ All Orders
 <script>
   $(document).ready(function () {
       // Bind the click event to the button with class "status-btn"
-      $('#status-btn').click(function () {
+      $('#confirmed').click(function () {
           // Get the data-order-id attribute from the clicked button
           var orderId = $(this).data('order-id');
 
@@ -337,9 +337,35 @@ All Orders
 
           // Perform additional actions based on the selected option
           // Add your logic here
+
+          // Prevent the default action of the button
+          return false;
+      });
+
+      // Handle the click event for the "Run MRP" button
+      $('#run-mrp').click(function () {
+          // Perform actions to run MRP
+          
+          var $myForm = $('#bulk-action');
+          var checkbox = document.querySelector('input.form-check-input[name="so[]"]');
+          
+          event.preventDefault();
+          // Trigger the form submission
+          // Check if the checkbox is checked
+          if (checkbox.checked) {
+            // Call your function here
+            $myForm.submit();  
+          } else {
+            // Checkbox is not checked, do nothing or handle as needed
+          }
+          // Add your logic here
+
+          // Prevent the default action of the button
+          return false;
       });
   });
 </script>
+
 
 <script src="{% static 'js/jquery.form.js'%}"></script>
 <script>
@@ -375,7 +401,7 @@ All Orders
   })
 </script>
 
-<script>
+{% comment %} <script>
   $(document).ready(function () {
       var $myForm = $('#bulk-action');
       $('#run-mrp').on('click', function (event) {
@@ -393,7 +419,7 @@ All Orders
           
       });
   });
-</script>
+</script> {% endcomment %}
 
 
 

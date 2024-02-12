@@ -252,6 +252,7 @@ class OrderAgainstMRP(View):
         product_objs = []
         
         order_nos = request.POST.getlist('so[]')
+        print(order_nos)
         if len(order_nos) != 0:
             for i in order_nos:
 
