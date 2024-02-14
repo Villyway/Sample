@@ -35,7 +35,16 @@ class Categories(Base):
 
     def __str__(self):
         return self.name.capitalize()
+    
 
+class SubCategory(Base):
+    category = models.ForeignKey(
+        Categories, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return self.name.capitalize()
+    
 
 # Like Export, Asia, Domestic, Comman
 class PartQuality(Base):
@@ -78,6 +87,8 @@ class Product(Base):
     quality_type = models.ForeignKey(
         PartQuality, on_delete=models.SET_NULL, null=True, related_name='quality')
     barcode_image = models.URLField(max_length=500, blank=True, null=True)
+    subcategory = models.ForeignKey(
+        SubCategory, on_delete=models.SET_NULL, null=True)
 
     objects = ProductManager()
 

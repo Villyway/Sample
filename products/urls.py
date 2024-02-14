@@ -9,7 +9,7 @@ from .views import (ProductList, CreateProduct,
                     SingelBom, CategoryWiseList, ExportData, 
                     CreatBOM, SingleProduct, SingleProductByPartNo, 
                     ProductSearch, ProductDetails, SearchBom,
-                    DeleteBom, DeleteBomOfChildPart
+                    DeleteBom, DeleteBomOfChildPart, GetFinishedGoods
                     
                     )
 
@@ -50,6 +50,7 @@ urlpatterns = [
     path("search-bom/", login_required(SearchBom.as_view()), name="bom-search"),
     path("<slug:id>/delete-bom/",login_required(DeleteBom.as_view()), name="bom-delete"),
     path("<slug:id>/delete-bom-child/",login_required(DeleteBomOfChildPart.as_view()), name="child-part-delete"),
+    path("finished-goods/",login_required(GetFinishedGoods.as_view()), name="finished-goods"),
 
 #     path("<slug:id>/add-vendor", login_required(AddVendorOfProduct.as_view()), name="add-vendor-of-product"),
 ]

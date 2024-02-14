@@ -89,6 +89,32 @@
           </li>
         </ul>
       </li>
+      {% comment %} -----------------------------------inward----------------------------------- {% endcomment %}
+      <li class="menu-item " id = "purchase-menu">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-inbox"></i>
+          <div data-i18n="Layouts">Inward</div>
+        </a>
+        <ul class="menu-sub">
+          <li class="menu-item" id="bom-dashboard">
+            <a href="{% url 'products:products-dashboard' %}" class="menu-link">
+              <div data-i18n="Without menu">Dashboard</div>
+            </a>
+          </li>
+          
+          <li class="menu-item" id = "add-bom">
+            <a href="{% url 'products:bom-create' %}" class="menu-link">
+              <div data-i18n="Container">List</div>
+            </a>
+          </li>
+          <li class="menu-item" id = "product-bom">
+            <a href="{% url 'products:bom-list' %}" class="menu-link">
+              <div data-i18n="Container">Pending Po</div>
+            </a>
+          </li>
+        </ul>
+      </li>
+
       <li class="menu-item " id = "purchase-menu">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons fa-solid fa-cart-shopping"></i>
@@ -241,6 +267,23 @@
           </li>
         </ul>
       </li>
+
+      {% comment %} -------------------------warehouse---------------<i class="fa-solid fa-warehouse"></i>----- {% endcomment %}
+      <li class="menu-item " id = "ware-house">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons fa-solid fa-boxes-stacked"></i>
+          <div data-i18n="Layouts">WareHouse</div>
+        </a>
+
+        <ul class="menu-sub">
+          <li class="menu-item" id="finished">
+            <a href="{% url 'products:category-product' 1 %}" class="menu-link">
+              <div data-i18n="Without menu">Finished Goods</div>
+            </a>
+          </li>
+        </ul>
+      </li>
+
 
       <li class="menu-item " id = "settings">
         <a href="javascript:void(0);" class="menu-link menu-toggle">

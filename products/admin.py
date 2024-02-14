@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export.admin import ExportActionMixin
 
 # Register your models here.
-from .models import Product, Attribute, ProductAttribute, Unit, PartQuality, BOMItem, Categories, VendorWithProductData
+from .models import Product, Attribute, ProductAttribute, Unit, PartQuality, BOMItem, Categories, VendorWithProductData, SubCategory
 
 @admin.register(Product)
 class ProductAdmin(ExportActionMixin, admin.ModelAdmin):
@@ -44,3 +44,8 @@ class BOMItemAdmin(admin.ModelAdmin):
 @admin.register(VendorWithProductData)
 class VendorWithProductDataAdmin(admin.ModelAdmin):
     list = ["vendor","product","price"]
+
+#sub_category
+@admin.register(SubCategory)
+class SubCategoryAdmin(admin.ModelAdmin):
+    list = ["category","name"]

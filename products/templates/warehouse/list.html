@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}Finished Goods{% endblock %}
+
+{% block css %}
+<style>
+  /* Style for the modal */
+  .modal {
+    display: none;
+  }
+
+  /* Style for the modal content */
+  .modal-content {
+    max-width: 80%;
+    max-height: 80%;
+    overflow: hidden;
+    background-color: #fff; /* Background color for the modal content */
+    position: relative;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  /* Style for the close button */
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #000;
+    cursor: pointer;
+    font-size: 20px;
+  }
+</style>
+{% endblock css %}
+
+{% block next_page %}
+<li class="breadcrumb-item text-muted active" aria-current="page"><a
+  href="{% url 'products:products-list' %}">Products</a> / <b class="text-dark">Finished Goods<b></li>
+{% endblock %}
+
+{% block head %}
+Finished Goods
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-3 mb-5">
+  <div class="row">
+    <div class="col-4">
+      <div class="input-group">
+        <label class="input-group-text" for="inputGroupSelect01">Categories</label>
+        <select class="form-select" id="inputGroupSelect01">
+          <option value="0" selected>Choose...</option>
+          {% for category in categories %}
+          <option value={{category.id}}>{{category.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <input type="text" class="form-control mb-2" id="id_search" name="search" placeholder="Search" />      
+    </div>
+    
+    <div class="col-12">
+
+      <!-- Basic Bootstrap Table -->
+      <div class="card">
+        
+        
+        {% comment %} <a class="btn btn-success col-1">Add New</a> {% endcomment %}
+        <div class="table-responsive text-nowrap" id="id_products_list">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                {% comment %} <th>Code</th> {% endcomment %}
+                
+                <th>Code</th>
+                <th>Name</th>
+                <th>UOM</th>
+                <th>Stock</th>
+                <th>Action</th>
+              </tr>
+              
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% for product in products %}
+              <tr >
+                <td>
+                {{ forloop.counter|adjust_for_pagination:data }}
+                </td>
+                
+                <td><a href="{% url "products:product-details" product.part_no %}">{{product.code}}</a></td>
+                <td>{{product.name}}</td>
+                <td> {{product.umo}} </td>
+                {% if product.stock < product.minimum_stock_level %}
+                <td class="bg-danger"> 
+                  {% else %}
+                  <td> 
+                {% endif %}
+                {{product.stock}} </td>
+                <td>
+                  <a href="{% url 'products:products-edit' product.id %}" class="btn btn-primary btn-circle "
+                                title="Product Edit"><i class="fas fa-edit" aria-hidden="true"></i></a>
+                </td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+          
+        </div>
+        
+      </div>
+      <!--/ Basic Bootstrap Table -->
+    </div>
+  </div>
+  <div class="row container-fluid mt-2">
+ 
+    {% if products.paginator.num_pages > 1 %}    
+    {% include 'components/pagination.html' with items=products paginator=products.paginator %}
+    {% endif %}
+</div>
+</div>
+<div class="mt-5"></div>
+
+<!-- The Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Modal content -->
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Close button -->
+      <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <!-- Image container -->
+      <img id="modalImage" src="" alt="Modal Image" style="width: 100%; height: 100%;">
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  $('#ware-house').addClass('active open');
+  $('#finished').addClass('active')
+</script>
+
+<script>
+  $(document).on("keyup", "#id_search", function () {
+    var select = document.getElementById("inputGroupSelect01");
+    var selectedOption = select.options[select.selectedIndex];
+    var selectedValue = selectedOption.value;
+    
+    var query = this.value;
+    // var category = $()
+    $.ajax({
+        url: '/products/search/',
+        type: 'GET',
+        data: { 'query': query, "category":selectedValue},
+        success: function (data) {
+            $('#id_products_list').html(data.data);
+        }
+    });
+});
+</script>
+{% endblock js %}

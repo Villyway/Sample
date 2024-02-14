@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'customers.apps.CustomersConfig',
     'purchase.apps.PurchaseConfig',
     'dhl_api.apps.DhlApiConfig',
+    'inward.apps.InwardConfig',
 ]
 
 MIDDLEWARE = [

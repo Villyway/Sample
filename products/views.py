@@ -15,7 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 from .models import (Product, Attribute, ProductAttribute,
-                      Categories, PartQuality, BOMItem, VendorWithProductData
+                      Categories, PartQuality, BOMItem, SubCategory
                     )
 from .forms import ProductForm, FileUploadForm
 from utils.views import get_secured_url, is_ajax
@@ -704,3 +704,70 @@ class DeleteBomOfChildPart(View):
                 )
         return redirect("products:product-bom", main_part)
         
+
+class GetFinishedGoods(View):
+
+    template_name = "warehouse/list.html"
+
+    def get(self,request):
+        categories = SubCategory.objects.all()
+        products = Product.objects.finished_product()
+
+        results_per_page = 15
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, results_per_page)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context = {
+            "products": products,
+            "data" : [page,results_per_page],
+            "categories":categories
+        }
+        return render(request,self.template_name, context)
+    
+
+class FinishProductSearch(View):
+    template_name = "components/product-list.html"
+    # permission_required = "products.can_access_product"
+
+    def get(self, request):
+        try:
+            if is_ajax(request):
+                query = request.GET.get("query", None)
+                category = request.GET.get("category", None)
+                item_category = Categories.objects.get(id=1)
+
+                categories = Categories.objects.all()
+                products = Product.objects.search(
+                    query=query,category = item_category)
+
+                results_per_page = 100
+                page = request.GET.get('page', 1)
+                paginator = Paginator(products, results_per_page)
+                try:
+                    products = paginator.page(page)
+                except PageNotAnInteger:
+                    products = paginator.page(1)
+                except EmptyPage:
+                    products = paginator.page(paginator.num_pages)
+                    
+                html = render_to_string(
+                    template_name=self.template_name,
+                    context={"products": products, "data" : [page,results_per_page], "categories":categories}
+                )
+
+                data_dict = {
+                    "data": html
+                }
+                return JsonResponse(data=data_dict, safe=False)
+
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect("products:list")
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
