@@ -12,13 +12,12 @@ from django.core import serializers
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .forms import InWardForm, OutWardForm, StockForm
-from .models import InWord, Outword, SimpleStockUpdte
+from .forms import StockForm
+from .models import SimpleStockUpdte
 from utils.views import get_secured_url, is_ajax
-from .serializers import InwordOfBillWiseProductSerializer, StockHistorySerializer
 from products.models import Product, Categories
 from utils.constants import StockTransection
-from utils.constants import ReportTimeLine, InventryReportType
+from utils.constants import ReportTimeLine
 from inventry.resources import StockUpdateReport
 
 

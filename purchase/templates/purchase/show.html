@@ -480,7 +480,13 @@ Purchase Order
                                 {% for product in po.purchaseitem_set.all %}
                                 <tr style="font-size:13px; margin:3px">
                                     <td>{{product.del_date|date:"d M, Y"}}</td>
-                                    <td>{{product.qty}}</td>
+                                    <td>
+                                        {% if product.part.umo.name == "NOS" %}
+                                        {{product.qty|floatformat }}
+                                        {% else %}
+                                        {{product.qty}}
+                                        {% endif %}
+                                    </td>
                                     <td>{{product.part.umo|title}}</td>
                                     <td>{{product.price}}</td>
                                     <td class="no-border-rightside-table">{{ product.price| get_multiplication:product.qty}}

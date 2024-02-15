@@ -6,6 +6,6 @@ from .views import *
 app_name = "inward"
 
 urlpatterns = [
-    
+    path("new-inward/", login_required(CreateInward.as_view()), name="new-inward"),
 
 ]

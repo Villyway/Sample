@@ -18,10 +18,13 @@ class Inward(Base):
 
 class InwardItems(Base):
     inward = models.ForeignKey(Inward, on_delete=models.CASCADE)
+    chalan_no = models.CharField(max_length=30, blank=True, null=True)
     received_date = models.DateTimeField(auto_now_add=True)
     received_item = models.ForeignKey(Product, on_delete=models.CASCADE)
     uom = models.ForeignKey(Unit, on_delete=models.CASCADE)
     qty = models.DecimalField(max_digits=12, decimal_places=4)
+    invoice_no = models.CharField(max_length=70, blank=True, null=True)
+    qc_status = models.BooleanField(default=False)
 
     def __str__(self):
         return self.inward.inward_no

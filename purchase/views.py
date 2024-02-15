@@ -74,7 +74,9 @@ class MRP(View):
         # if is_ajax(request):
         product_objs = []
         products = request.POST.getlist('productCode[]')
+        # products = ["SW001", "TW001", "TW002", "BHA001", "BHA002", "BHA003", "BHA004", "BHA005", "BHA006", "BHA007", "BHA008", "BHA010", "BHA011", "CNT001", "CNT002", "CNT003", "CNT005", "CNT006", "CNT007", "CNT008", "CNT009", "CNT010", "CNT012", "CNT011", "HSP001", "HSP002", "UNT001", "UNT002", "UNT003"]
         quantities = request.POST.getlist('quantity[]')
+        # quantities = [100, 100, 250, 100, 250, 200, 75, 150, 50, 50, 75, 75, 75, 30, 20, 40, 50, 5, 50, 20, 15, 30, 30, 30, 100, 100, 200, 300, 250]
         for product_name, quantity_value in zip(products, quantities):
             product_objs.append(self.calculate_mrp(Product.objects.by_code(product_name),int(quantity_value)))
         
@@ -90,12 +92,21 @@ class MRP(View):
                 __p['available_stock'] = 0
             elif i.stock - j > 0:
                 __p['available_stock'] = i.stock - j
+            else:
+                __p['available_stock'] = i.stock - j
             __p['current_stock'] = i.stock
+
             if i.stock - j > 0:
                 __p['requirement'] = 0
             elif i.stock - j < 0:
                 __p['requirement'] = i.stock - j
+            else:
+                __p['requirement'] = i.stock - j
             requirements.append(__p)
+            # if __p['name'] == "KI1C0086 - 16 PIN IC-CD4017BE":
+            #     print("__p['id']=" ,i.id)
+            #     print("j=",j,"i=",i)
+            
         
         # Export as CSV if requested
         # if request.POST.get('export_csv'):
@@ -105,14 +116,17 @@ class MRP(View):
         # Write CSV header
         csv_writer.writerow(['ID', 'Name', 'Quantity', 'Current Stock', 'Requirement', 'Available Stock'])
         for requirement in requirements:
-            csv_writer.writerow([
-                requirement['id'],
-                requirement['name'],
-                requirement['qty'],
-                requirement['current_stock'],
-                requirement['requirement'],
-                requirement['available_stock']
-            ])
+            try:
+                csv_writer.writerow([
+                    requirement['id'],
+                    requirement['name'],
+                    requirement['qty'],
+                    requirement['current_stock'],
+                    requirement['requirement'],
+                    requirement['available_stock']
+                ])
+            except KeyError:
+                print(requirement)
         return response
 
             # data_dict = {
@@ -271,10 +285,15 @@ class OrderAgainstMRP(View):
                     __p['available_stock'] = 0
                 elif i.stock - j > 0:
                     __p['available_stock'] = i.stock - j
+                else:
+                    __p['available_stock'] = i.stock - j
                 __p['current_stock'] = i.stock
+    
                 if i.stock - j > 0:
                     __p['requirement'] = 0
                 elif i.stock - j < 0:
+                    __p['requirement'] = i.stock - j
+                else:
                     __p['requirement'] = i.stock - j
                 requirements.append(__p)
 
