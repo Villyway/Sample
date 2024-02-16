@@ -562,7 +562,12 @@ class SingleProduct(View):
 class SingleProductByPartNo(View):
     
     def get(self, request, id):
-        product = Product.objects.by_part_no(id)
+        if Product.objects.by_part_no(id):
+            product = Product.objects.by_part_no(id)
+        elif Product.objects.by_code(id):
+            product = Product.objects.by_code(id)
+        else:
+            product=None
         if product:
             product = ProductSerializerWithId(product).data
             data = {"product":product}

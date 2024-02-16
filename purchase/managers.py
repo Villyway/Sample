@@ -37,3 +37,9 @@ class PurchaseOrderManager(models.Manager):
         except:
             return None
         
+    def get_po_by_po_no(self,po_no):
+        try:
+            return self.active().get(po_no=po_no)
+        except:
+            return None
+        

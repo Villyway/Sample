@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from django.db.models import F
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import View
+from django.views.generic import View, DetailView
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
@@ -425,9 +425,17 @@ class DeletePoProduct(View):
         return redirect('purchase:purchase-singel-order',id=product.po.id)
     
 
+class GetPO(View):
 
+    model = PurchaseOrder
 
+    def get(self, po):
+        purchase = PurchaseOrder.objects.get_po_by_po_no(po)
 
+        data_dict = {
+            'po':purchase
+        }
+        return JsonResponse({'data':data_dict})
         
-
-
+        
+        

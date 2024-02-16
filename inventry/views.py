@@ -192,4 +192,54 @@ class ExportData(View):
         time_name = datetime.now().strftime("%Y%m%d-%H%M%S")
         response['Content-Disposition'] = 'attachment; filename="stock_report'+ time_name + '".csv"'
         return response
+
+
+class FinishedAddStock(FormView):
+
+    template_name = "inward/add_stock.html"
+    form_class = StockForm
+    success_url = "/products/finished-goods/"
+
+    def form_invalid(self, form):
+        response = super(SimpleAddStock, self).form_invalid(form)
+        if is_ajax(self.request):
+            data = form.errors
+            return JsonResponse(data, status=400)
+        else:
+            return response
         
+    def form_valid(self, form):
+        response = super(SimpleAddStock, self).form_valid(form)     
+        if is_ajax(self.request):
+            form_data = form.cleaned_data
+            with transaction.atomic():
+                part = Product.objects.by_code(form_data['part_no'])
+                stock = SimpleStockUpdte()
+                stock.part = part
+                stock.old_stock = part.stock
+                stock.received_by = form_data['receive_by']
+                stock.received_qty = form_data['qty']
+                if form_data['transection_type'] == StockTransection.DR.value:
+                    if part.stock > int(stock.received_qty):
+                        stock.transection_type = StockTransection.DR.value
+                        stock.quantity_on_hand = part.stock - int(form_data['qty'])
+                    else:
+                        messages.error(
+                        self.request, part.part_no + "-"+ part.name +" of issued quantity is greater then availabel stock quantity.")
+                        data = {
+                            'error':part.part_no + "-"+ part.name +" of issued quantity is greater then availabel stock quantity.",
+                            "status": 403
+                        }
+                        return JsonResponse(data)
+                else:
+                    stock.transection_type = StockTransection.CR.value
+                    stock.quantity_on_hand = part.stock + int(form_data['qty'])
+                stock.save()
+                part.stock = stock.quantity_on_hand
+                part.save()             
+            data = {
+                        'message': "Stock Add successfully.",
+                        'url': get_secured_url(
+                            self.request) + self.request.META["HTTP_HOST"] + 'inventry/add-stock/'
+                    }
+            return JsonResponse(data, status = 200)
