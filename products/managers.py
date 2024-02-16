@@ -41,7 +41,7 @@ class ProductManager(models.Manager):
         
     def by_part_no(self,part_no):
         try:
-            return self.active().get(part_no=part_no)
+            return self.active().get(part_no__icontains=part_no)
         except:
             return None
         

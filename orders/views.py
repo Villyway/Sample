@@ -17,11 +17,12 @@ from utils.views import get_secured_url, is_ajax, generate_order_dispatch_no
 from customers.models import Customer
 from products.models import Product
 from orders.models import OrderDetails, OrderOfProduct
-from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles, OrdersType
+from utils.constants import PackingType, OrderUOM, OrderStatus, DispatchStatus, OrderConfirmation, Roles, OrdersType, StockTransection
 from utils.models import Address
 from utils.views import send_email
 from orders.resources import OrderReport
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from inventry.models import SimpleStockUpdte
 
 from wkhtmltopdf.views import PDFTemplateResponse
 
@@ -261,13 +262,36 @@ class SingelOrderView(View):
 class ChangeDispatchStatusOfOrderOfChild(View):
 
     def get(self,request, id):
+        
         status = request.GET.get("status", None)
         obj = OrderOfProduct.objects.get(id=id)
         obj.dispatch_status = status
         if DispatchStatus.DISPATCHED.value == status:
             obj.dispatch_date = datetime.now()
             obj.status = OrderStatus.IN_TRANSPORT.value
-        obj.save()
+            obj.save()
+                
+        elif DispatchStatus.READY.value == status:
+            with transaction.atomic():
+                if obj.product.stock >= obj.order_qty:
+                    # product = obj.product
+                    # stock = SimpleStockUpdte()
+                    # stock.part = obj.product
+                    # stock.old_stock = obj.product.stock
+                    # stock.received_by = obj.order.customer.name
+                    # stock.received_qty = obj.order_qty
+                    # stock.transection_type = StockTransection.DR.value
+                    # stock.quantity_on_hand = obj.product.stock - obj.order_qty
+                    # stock.save()
+                    # product.stock = stock.quantity_on_hand
+                    # product.save()
+                    obj.save()
+                else:
+                    messages.error(
+                        self.request, "Stock is Not Availabel.")
+                    obj.save()
+        else:
+            obj.save()
 
         # Main Order sheet Changes
         all_order = OrderOfProduct.objects.filter(order=obj.order).count()
@@ -279,11 +303,11 @@ class ChangeDispatchStatusOfOrderOfChild(View):
             main_order.order_status = OrderStatus.IN_TRANSPORT.value
             main_order.save()
         
-        data = {
-                    'message': "",
-                    'url': get_secured_url(
-                        self.request) + self.request.META["HTTP_HOST"] + 'orders/'+ str(obj.order.id) +'/order-details'
-                }
+        # data = {
+        #             'message': message_string,
+        #             'url': get_secured_url(
+        #                 self.request) + self.request.META["HTTP_HOST"] + 'orders/'+ str(obj.order.id) +'/order-details'
+        #         }
         return redirect("orders:order-details",id=obj.order.id)
     
 

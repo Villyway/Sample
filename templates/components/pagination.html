@@ -10,28 +10,28 @@
         <ul class="pagination">
             {% if items.has_previous %}
             <li class="page-item ">
-                <a class=" page-link pagination-action" href="?page=1">
+                <a class=" page-link pagination-action" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                     <i class="fa fa-angle-double-left" aria-hidden="true"></i> </a>
             </li>
             <li class="page-item ">
-                <a class="page-link pagination-action" href="?page={{ items.previous_page_number }}">
+                <a class="page-link pagination-action" href="?page={{ items.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                     Previous
                 </a>
             </li>
             {% endif %}
             {% for num in items.paginator.page_range %}
             {% if items.number == num %}
-            <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            <li class="page-item active"><a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a></li>
             {% elif num > items.number|add:'-3' and num < items.number|add:'3' %} <li class="page-item"><a
-                    class="page-link" href="?page={{ num }}">{{ num }}<span class="sr-only">(current)</span></a></li>
+                    class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}<span class="sr-only">(current)</span></a></li>
                 {% endif %}
                 {% endfor %}
                 {% if items.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ items.next_page_number }}">Next</a>
+                    <a class="page-link" href="?page={{ items.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ items.paginator.num_pages }}">
+                    <a class="page-link" href="?page={{ items.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                     </a>
                 </li>

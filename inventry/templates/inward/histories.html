@@ -21,7 +21,18 @@ Stock History
 
 <div class="container-fluid mt-3 mb-5">
   <div class="row">
-    <div class="col-12">
+    
+      <div class="col-4">
+        <form action='.' method="GET">
+          <div class="row">
+            <div class="col-8"><input type="text" class="form-control fl-start" id="id_search" name="search" placeholder="Search" value="{% if request.GET.search %}{{ request.GET.search }}{% endif %}" /> </div>
+            <div class="col-4"><button type="submit" class="btn btn-primary fl-end" >Search</button></div>
+          </div>
+        </form>
+      </div>
+      
+    
+    <div class="col-8">
       <a href="{% url 'inventry:add-stock' %}"><button type="button" class="btn btn-success  mb-2"
         style="float: right; ">Stock Operations</button></a>
     </div>

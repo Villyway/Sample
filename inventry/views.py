@@ -94,7 +94,12 @@ class StockHistoryInJson(View):
     
     def get(self,request, id):
         try:
-            histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(id))[:12]
+            if Product.objects.by_part_no(id):
+                histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(id))[:12]
+            elif Product.objects.by_code(id):
+                histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_code(id))[:12]
+            else:
+                histories = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(id))[:12]
             html = render_to_string(
                 template_name="components/stock-trans-his.html",
                 context={"histories": histories}
@@ -114,8 +119,15 @@ class StockHistoriesList(View):
     template_name = "inward/histories.html"
 
     def get(self, request):
-         
-        products = SimpleStockUpdte.objects.active()
+        
+        part_no = request.GET.get("search", None)
+
+        if part_no:
+            products = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(part_no))
+            print(products.count())
+        else:
+            products = SimpleStockUpdte.objects.active()
+
         results_per_page = 15
         page = request.GET.get('page', 1)
         paginator = Paginator(products, results_per_page)
@@ -201,7 +213,7 @@ class FinishedAddStock(FormView):
     success_url = "/products/finished-goods/"
 
     def form_invalid(self, form):
-        response = super(SimpleAddStock, self).form_invalid(form)
+        response = super(FinishedAddStock, self).form_invalid(form)
         if is_ajax(self.request):
             data = form.errors
             return JsonResponse(data, status=400)
@@ -209,7 +221,7 @@ class FinishedAddStock(FormView):
             return response
         
     def form_valid(self, form):
-        response = super(SimpleAddStock, self).form_valid(form)     
+        response = super(FinishedAddStock, self).form_valid(form)     
         if is_ajax(self.request):
             form_data = form.cleaned_data
             with transaction.atomic():
@@ -243,3 +255,4 @@ class FinishedAddStock(FormView):
                             self.request) + self.request.META["HTTP_HOST"] + 'inventry/add-stock/'
                     }
             return JsonResponse(data, status = 200)
+        
