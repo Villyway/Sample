@@ -64,6 +64,7 @@ class PurchaseItem(Base):
     del_date = models.DateTimeField(blank=True, null=True)
     price = models.DecimalField(max_digits=12,decimal_places=2, default=0)
     del_status = models.DateTimeField(blank=True, null=True)
+    recived_qty = models.DecimalField(max_digits=12, decimal_places=4, default=0)
 
     def __str__(self):
         return str(self.part.name)

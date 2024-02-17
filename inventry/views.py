@@ -124,7 +124,6 @@ class StockHistoriesList(View):
 
         if part_no:
             products = SimpleStockUpdte.objects.single_itme_of_history(Product.objects.by_part_no(part_no))
-            print(products.count())
         else:
             products = SimpleStockUpdte.objects.active()
 

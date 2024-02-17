@@ -648,8 +648,6 @@ class TrackLR(View):
                         status = data_dict['status']
                         message = data_dict['message']
                         data = data_dict['data']
-                        print(data)
-
                         
             context = {
                 "data":track_details

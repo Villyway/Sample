@@ -196,7 +196,6 @@ class OrderOfProductManager(models.Manager):
         return self.active().filter(~Q(status = OrderStatus.DELIVERED.value))
     
     def search(self, query=None, dates=None, dispatch_status=None, order_status=None):
-        print(dispatch_status,order_status)
         if dates is None:
             base_queryset = self.active()
         else:

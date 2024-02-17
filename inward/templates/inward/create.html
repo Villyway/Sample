@@ -26,167 +26,76 @@ New Inward
                     data-url='{{ request.build_absolute_uri|safe }}' id="create-inward">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="d-flex align-items-start">
-                                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                      <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#basic-details" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Basic Details</button>
-                                      <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#po-reference" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">PO Reference</button>
-                                      <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#po-item" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Po Items</button>
-                                      {% comment %} <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"></button> {% endcomment %}
-                                    </div>
-                                    
-                                    <div class="tab-content col-8" id="v-pills-tabContent">
-                                      <div class="tab-pane fade show active" id="basic-details" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                                        <div class="mb-3">
-                                            <label class="form-label" for="basic-default-inword-">{{form.po_no.label}}</label>
-                                            <span class="text-danger"></span>
-                                            {{form.po_no}}
-                                            <span class="text-danger print_error" id="po_no"></span>
+                                <form method="POST" action=".">
+                                    {% csrf_token %}
+                                    <div class="d-flex align-items-start">
+                                        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                          <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#basic-details" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Basic Details</button>
+                                          <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#po-reference" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">PO Reference</button>
+                                          <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#po-item" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Po Items</button>
+                                          {% comment %} <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"></button> {% endcomment %}
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="basic-default-inword-">{{form.bill_date.label}}</label>
-                                            <span class="text-danger"></span>
-                                            {{form.bill_date}}
-                                            <span class="text-danger print_error" id="bill_date"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="basic-default-inword-">{{form.bill_no.label}}</label>
-                                            <span class="text-danger"></span>
-                                            {{form.bill_no}}
-                                            <span class="text-danger print_error" id="bill_no"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="basic-default-inword-">{{form.remarks.label}}</label>
-                                            <span class="text-danger"></span>
-                                            {{form.remarks}}
-                                            <span class="text-danger print_error" id="remarks"></span>
-                                        </div>
-                                      </div>
-                                      <!--po-reference-->
-                                      <div class="tab-pane fade" id="po-reference" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                                        Vendor Details
-                                        <div class="row">
-                                            <div class="col-3">
-                                                Name:
-                                            </div>
-                                            <div class="col-8">
-                                                {{vendor.comany_name}}
-                                            </div>
-                                            <div class="col-3">
-                                                Contect Person:
-                                            </div>
-                                            <div class="col-8">
-                                                {{vendor.primary_contect_name}}
-                                            </div>
-                                            <div class="col-3">
-                                                Mobile:
-                                            </div>
-                                            <div class="col-8">
-                                                {{vendor.mobile}}
-                                            </div>
-                                            <div class="col-3">
-                                                Email:
-                                            </div>
-                                            <div class="col-8">
-                                                {% if vendor.email %}
-                                                {{vendor.email}}
-                                                {% else %}
-                                                -
-                                                {% endif %}
-                                                
-                                            </div>
-                                            <div class="col-3">
-                                                GST NO:
-                                            </div>
-                                            <div class="col-8">
-                                                {% if vendor.gst_no %}
-                                                {{vendor.gst_no}}
-                                                {% else %}
-                                                -
-                                                {% endif %}
-                                                
-                                            </div>
-                                            {% if vendor.secondary_contect_name %}
-                                                <div class="col-3">
-                                                    Contect Person 2:
-                                                </div>
-                                                <div class="col-8">
-                                                    {{vendor.secondary_contect_name}}
-                                                </div>
-                                            {% endif %}
-                                            {% if vendor.mobile1 %}
-                                                <div class="col-3">
-                                                    Alternative Mobile:
-                                                </div>
-                                                <div class="col-8">
-                                                    {{vendor.mobile1}}
-                                                </div>
-                                            {% endif %}
-                        
-                                            {% if vendor.email1 %}
-                                                <div class="col-3">
-                                                    Alternative Email:
-                                                </div>
-                                                <div class="col-8">
-                                                    {{vendor.email1}}
-                                                </div>
-                                            {% endif %}
-                                            
-                                            {% if vendor.bank_name %}
-                                            <hr>
-                                                <div class="col-3">
-                                                    Bank Name:
-                                                </div>
-                                                <div class="col-8">
-                                                    {{vendor.bank_name}}
-                                                </div>
-                                            {% endif %}
-                                            {% if vendor.bank_branch_name %}
-                                                <div class="col-3">
-                                                    Branch Name:
-                                                </div>
-                                                <div class="col-8">
-                                                    {{vendor.bank_branch_name}}
-                                                </div>
-                                            {% endif %}
-                                            {% if vendor.bank_account_no %}
-                                                <div class="col-3">
-                                                    Account NO:
-                                                </div>
-                                                <div class="col-8">
-                                                    {{vendor.bank_account_no}}
-                                                </div>
-                                            {% endif %}
-                                            {% if vendor.bank_isfc %}
-                                                <div class="col-3">
-                                                    IFSC Code:
-                                                </div>
-                                                <div class="col-8">
-                                                    {{vendor.bank_isfc}}
-                                                </div>
-                                            {% endif %}
-                                            <hr>
-                                            <div class="col-3">
-                                                Address:
-                                            </div>
-                                            <div class="col-8">
-                                                {{address.street}}, {{address.street2}}, {{address.city.name}}, {{address.state.name}}, {{address.country}},  - {{address.zip}}
-                                            </div>
-                                        </div>
-                                      </div>
-                                      <!--po-item-->
-                                      <div class="tab-pane fade" id="po-item" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-                                        Items
-                                        <div id="id_vendorsof_product_list">
 
-                                        </div>
+                                        <div class="tab-content col-8" id="v-pills-tabContent">
+                                          <div class="tab-pane fade show active" id="basic-details" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="basic-default-inword-">{{form.po_no.label}}</label>
+                                                <span class="text-danger"></span>
+                                                {{form.po_no}}
+                                                <span class="text-danger print_error" id="po_no"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="basic-default-inword-">{{form.bill_date.label}}</label>
+                                                <span class="text-danger"></span>
+                                                {{form.bill_date}}
+                                                <span class="text-danger print_error" id="bill_date"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="basic-default-inword-">{{form.bill_no.label}}</label>
+                                                <span class="text-danger"></span>
+                                                {{form.bill_no}}
+                                                <span class="text-danger print_error" id="bill_no"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="basic-default-inword-">{{form.remarks.label}}</label>
+                                                <span class="text-danger"></span>
+                                                {{form.remarks}}
+                                                <span class="text-danger print_error" id="remarks"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <button class="btn btn-primary fl-end" type="button" id="basic-detail-next" onclick="$('#v-pills-profile-tab').trigger('click')">Next</button>
+                                            </div>
+                                          </div>
+                                          <!--po-reference-->
+                                          <div class="tab-pane fade" id="po-reference" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                                            Vendor Details
+                                            <div class="row">
+                                                <table class="col-6 table" id="vendor-details">
+                                                
+                                                </table>
+                                                <div class="mb-3">
+                                                    <button class="btn btn-primary fl-end" type="button" id="basic-detail-next" onclick="$('#v-pills-messages-tab').trigger('click')">Next</button>
+                                                </div>
+                                            </div>
+                                          </div>
+                                          <!--po-item-->
+                                          <div class="tab-pane fade" id="po-item" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                                            Items
+                                            <table id="po-of-product" class="table">
+
+
+                                            </table>
+                                            <div class="mb-3">
+                                                <button class="btn btn-success fl-end" type="submit" >Add</button>
+                                            </div>
+                                          </div>
+
                                       </div>
-                                      
-                                  </div>
-                                
-                                <div class="col-8">
-                                    
-                                </div>
-                                
+                                  
+                                    <div class="col-8">
+
+                                    </div>
+                                </form>
                             </div>
                       
                     </div>
@@ -232,11 +141,6 @@ New Inward
                         $('.toast').toast('show');
                     }
                     else {
-                        console.log(data)
-                        creatretable(data)
-                        
-                        $('input[name=part]').val('');
-                        $('input[name=received_qty]').val('');
                     }
                 },
                 error: function (data) {
@@ -257,31 +161,82 @@ New Inward
 </script>
 <script>
     $(document).ready(function () {
-        $("#id_vendor").change(function () {
-            var id = $(this).find(":selected").val();
+        $("#id_po_no").change(function () {
+            var id = $(this).val();
             $.ajax({
                 type: 'GET',
-                url: "{% url 'vendors:vendor-get-name' 1  %}".replace("1", id),
+                url: "{% url 'purchase:get-po' 1  %}".replace("1", id),
                 success: function (response) {
-                    console.log(response.vendor.name)
-                    $('#vendor').text("Name:- " + response.vendor.name + " |  GST-No:-" + response.vendor.gst_no)
-                    
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            })
-        })
+                    console.log(response.data)
+                    var data = response.data;
+                    var table = $('#vendor-details');
+                    table.html("")
 
-        $("#id_part").change(function () {
-            var id = $(this).find(":selected").val();
-            $.ajax({
-                type: 'GET',
-                url: "{% url 'products:products-name' 1  %}".replace("1", id),
-                success: function (response) {
-                    console.log(response.product)
-                    $('#part').text("Code:- " + response.product.code + " |  Name:-" + response.product.name)
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            // Create a new row
+                            var row = $('<tr>');
+                            
+                            // Create a data cell for the key
+                            var keyCell = $('<td>').text(key);
+                            
+                            // Create a data cell for the value
+                            var valueCell = $('<th>').text(data[key]);
+                            
+                            // Append the cells to the row
+                            row.append(keyCell);
+                            row.append(valueCell);
+                            
+                            // Append the row to the table body
+                            table.append(row);
+                        }
+                    }
+
+                    var products = response.products
+                    var table = $('#po-of-product');
+                    table.html("")
+                    $("#po-of-product").append(
+                        $('<tr></tr>').append(
+                                $('<th></th>').text("Sr.No"),
+                                $('<th></th>').text("Part No"),
+                                $('<th></th>').text("Description"),
+                                $('<th></th>').text("Unit"),
+                                $('<th></th>').text("Price"),
+                                $('<th></th>').text("Qty"),
+                                $('<th></th>').text("Received Qty"),
+                                $('<th></th>').text("Select"),
+                            )
+                    )
+                    var textBox = $('<input>').attr('type', 'text').attr('name', 'quantity[]').attr('class', 'form-control');
+                    var checkbox = $('<input>').attr('type', 'checkbox').attr('name', 'select[]').attr('class', 'form-check-input');
                     
+                    var counter = 1;
+
+                    $.each(products, function(){
+                        var row = $('<tr></tr>').append(
+                            $('<td></td>').text(counter++),
+                            $('<td></td>').text(this.part_no),
+                            $('<td></td>').text(this.name),
+                            $('<td></td>').text(this.uom),
+                            $('<td></td>').text(this.price),
+                            $('<td></td>').text(this.qty)
+                        );
+                    
+                        // Append textBox to the row
+                        var textBoxCell = $('<td></td>').append(textBox.clone()); // Clone textBox to prevent multiple instances having the same ID
+                    
+                        // Append checkbox to the row
+                        var checkboxCell = $('<td></td>').append(checkbox.clone().attr('value', this.id)); // Clone checkbox to prevent multiple instances having the same ID
+                    
+                        // Append textBoxCell and checkboxCell to the row
+                        row.append(textBoxCell);
+                        row.append(checkboxCell);
+                    
+                        // Append the row to the table
+                        table.append(row);
+                    });
+
+
                 },
                 error: function (error) {
                     console.log(error)
@@ -290,28 +245,8 @@ New Inward
         })
 
     });
-
-    function creatretable(data) {
-        $("#inword-data").find("tr").remove().end();
-                    $("#inword-data").append(
-                        $('<tr></tr>').append(
-                                $('<th></th>').text("Part No"),
-                                $('<th></th>').text("Part Name"),
-                                $('<th></th>').text("Part QTY"),
-                                $('<th></th>').text("Qc Status")
-                            )
-                    )
-                    var table = $('#inword-data');
-                    $.each(data.data.product, function(){
-                        table.append(
-                            $('<tr></tr>').append(
-                                $('<td></td>').text(this.code),
-                                $('<td></td>').text(this.name),
-                                $('<td></td>').text(this.received_qty),
-                                $('<td></td>').text(this.qc),
-                            )
-                        );
-                    });
-      }
+    
 </script>
+
+
 {% endblock %}

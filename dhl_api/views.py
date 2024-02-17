@@ -37,7 +37,6 @@ class TrackAllCheckPoints(APIView):
         response = api.call()
         
         if response.status_code == 200:
-            print("API call successful")
 
             # Extracting the nested XML string
             nested_xml_str = xmltodict.parse(response.content.decode())['s:Envelope']['s:Body'][

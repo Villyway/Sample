@@ -34,6 +34,7 @@ class Dashboard(View):
         return render(request, self.template_name, context)
 
 
+# Manual MRP
 class MRP(View):
     
     template_name = "purchase/mrp.html"
@@ -74,9 +75,7 @@ class MRP(View):
         # if is_ajax(request):
         product_objs = []
         products = request.POST.getlist('productCode[]')
-        # products = ["SW001", "TW001", "TW002", "BHA001", "BHA002", "BHA003", "BHA004", "BHA005", "BHA006", "BHA007", "BHA008", "BHA010", "BHA011", "CNT001", "CNT002", "CNT003", "CNT005", "CNT006", "CNT007", "CNT008", "CNT009", "CNT010", "CNT012", "CNT011", "HSP001", "HSP002", "UNT001", "UNT002", "UNT003"]
         quantities = request.POST.getlist('quantity[]')
-        # quantities = [100, 100, 250, 100, 250, 200, 75, 150, 50, 50, 75, 75, 75, 30, 20, 40, 50, 5, 50, 20, 15, 30, 30, 30, 100, 100, 200, 300, 250]
         for product_name, quantity_value in zip(products, quantities):
             product_objs.append(self.calculate_mrp(Product.objects.by_code(product_name),int(quantity_value)))
         
@@ -135,7 +134,7 @@ class MRP(View):
             # return JsonResponse(data=data_dict, safe=False)            
             
 
-# PO
+# PO Create
 class CreatePurchaseOrder(View):
     template_name = "purchase/create.html"
 
@@ -232,6 +231,7 @@ class CreatePurchaseOrder(View):
         return render(request,self.template_name)
     
 
+# Orders to Run Mrp
 class OrderAgainstMRP(View):
 
     def calculate_mrp(self, product, quantity, mrp_dict=None):
@@ -266,7 +266,6 @@ class OrderAgainstMRP(View):
         product_objs = []
         
         order_nos = request.POST.getlist('so[]')
-        print(order_nos)
         if len(order_nos) != 0:
             for i in order_nos:
 
@@ -317,6 +316,7 @@ class OrderAgainstMRP(View):
         return JsonResponse({})
 
 
+# PO List
 class PoList(View):
     template_name = "purchase/list.html"
 
@@ -324,13 +324,13 @@ class PoList(View):
         
         purchase_orders = PurchaseOrder.objects.all().order_by('-created_at')
         
-        
         context = {
             "pos": purchase_orders,
         }
         return render(request,self.template_name, context)
     
     
+# Singel PurchaseOrder
 class SingelPurchaseOrder(View):
 
     template_name = "purchase/show.html"
@@ -379,6 +379,7 @@ class SingelPurchaseOrder(View):
         return redirect(request.path)
     
 
+# Export PO
 class ExportPO(View):
 
     template_name = "purchase/po-export.html"
@@ -406,6 +407,7 @@ class ExportPO(View):
         return response
 
 
+#Delete Po Of Item
 class DeletePoProduct(View):
 
     def get(self,request,id):
@@ -423,19 +425,38 @@ class DeletePoProduct(View):
             messages.error(request, "THIS PO WAS ALREADY CLOSED THEN NO CHANGES AVAILABEL!")
         
         return redirect('purchase:purchase-singel-order',id=product.po.id)
-    
 
+
+#Get Po By Ajax
 class GetPO(View):
 
     model = PurchaseOrder
 
-    def get(self, po):
-        purchase = PurchaseOrder.objects.get_po_by_po_no(po)
+    def get(self, request, po):
+        if is_ajax(request):
+            purchase = PurchaseOrder.objects.get_po_by_po_no(po)
+            products = purchase.purchaseitem_set.all()
+            product_list = []
+            for i in products:
+                __product={}
+                __product['id'] = i.id
+                __product['part_no'] = i.part.part_no
+                __product['name'] = i.part.name
+                __product['uom'] = i.part.umo.name
+                __product['del_date'] = i.del_date
+                __product['qty'] = i.qty
+                __product['price'] = i.price
+                product_list.append(__product)
 
-        data_dict = {
-            'po':purchase
-        }
-        return JsonResponse({'data':data_dict})
+            address = purchase.vendor.address.first()
+            data_dict = {
+                'Name':purchase.vendor.comany_name,
+                'GST No':purchase.vendor.gst_no,
+                'Date':purchase.created_at,
+                'Address':address.street + address.street2 + address.city.name +', ' +address.state.name + ', ' +address.country.name + ', -' + address.zip,
+                'Phone':purchase.vendor.mobile
+            }
+            return JsonResponse({'data':data_dict,"products" : product_list})
         
         
         
