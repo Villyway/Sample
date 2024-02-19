@@ -27,7 +27,7 @@ class InWardForm(forms.Form):
         input_date = datetime.strptime(self.cleaned_data.get("bill_date"), '%Y-%m-%d')
 
         if input_date > datetime.combine(date.today(), datetime.min.time()):
-            raise forms.ValidationError('Purchase_Date cannot be in the future.')
+            raise forms.ValidationError(' Invoice date cannot be in the future.')
         else:
             return input_date 
 

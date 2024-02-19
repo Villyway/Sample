@@ -69,24 +69,51 @@ New Inward
                                           <!--po-reference-->
                                           <div class="tab-pane fade" id="po-reference" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                                             Vendor Details
+                                            
+                                           
                                             <div class="row">
+                                                <div class="col-6">
+                                                    <button class="btn btn-primary fl-end" type="button" id="basic-detail-next" onclick="$('#v-pills-home-tab').trigger('click')"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button class="btn btn-success fl-end" type="button" id="basic-detail-next" onclick="$('#v-pills-messages-tab').trigger('click')">Next</button>
+                                                </div>
                                                 <table class="col-6 table" id="vendor-details">
                                                 
                                                 </table>
                                                 <div class="mb-3">
-                                                    <button class="btn btn-primary fl-end" type="button" id="basic-detail-next" onclick="$('#v-pills-messages-tab').trigger('click')">Next</button>
+                                                    {% comment %} <button class="btn btn-primary fl-end" type="button" id="basic-detail-next" onclick="$('#v-pills-messages-tab').trigger('click')">Next</button> {% endcomment %}
                                                 </div>
                                             </div>
                                           </div>
                                           <!--po-item-->
                                           <div class="tab-pane fade" id="po-item" role="tabpanel" aria-labelledby="v-pills-messages-tab">
                                             Items
-                                            <table id="po-of-product" class="table">
+                                            <div class="mb-3 mt-4">
+                                                <button class="btn btn-primary fl-end" type="button" id="basic-detail-next" onclick="$('#v-pills-profile-tab').trigger('click')">Back</button>
+                                            </div>
+                                            <div class="table-responsive text-nowrap">
+                                                <table class="table table-bordered" id="po-of-product">
+                                                    <thead>
+                                                        <tr>
+                                                          <th>Sr.No</th>
+                                                          <th>Part No</th>
+                                                          <th>Description</th>
+                                                          <th>Unit</th>
+                                                          <th>Price</th>
+                                                          <th>Qty</th>
+                                                          <th>Pending Qty</th>
+                                                          <th>Received Qty</th>
+                                                          <th>Select</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
 
-
-                                            </table>
-                                            <div class="mb-3">
-                                                <button class="btn btn-success fl-end" type="submit" >Add</button>
+                                                      </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="mb-3 mt-4">
+                                                <button class="btn btn-success" style="float-right" type="submit" id="submit_btn">Add</button>
                                             </div>
                                           </div>
 
@@ -167,7 +194,7 @@ New Inward
                 type: 'GET',
                 url: "{% url 'purchase:get-po' 1  %}".replace("1", id),
                 success: function (response) {
-                    console.log(response.data)
+                    console.log(response)
                     var data = response.data;
                     var table = $('#vendor-details');
                     table.html("")
@@ -191,52 +218,54 @@ New Inward
                             table.append(row);
                         }
                     }
-
-                    var products = response.products
-                    var table = $('#po-of-product');
-                    table.html("")
-                    $("#po-of-product").append(
-                        $('<tr></tr>').append(
-                                $('<th></th>').text("Sr.No"),
-                                $('<th></th>').text("Part No"),
-                                $('<th></th>').text("Description"),
-                                $('<th></th>').text("Unit"),
-                                $('<th></th>').text("Price"),
-                                $('<th></th>').text("Qty"),
-                                $('<th></th>').text("Received Qty"),
-                                $('<th></th>').text("Select"),
-                            )
-                    )
-                    var textBox = $('<input>').attr('type', 'text').attr('name', 'quantity[]').attr('class', 'form-control');
-                    var checkbox = $('<input>').attr('type', 'checkbox').attr('name', 'select[]').attr('class', 'form-check-input');
                     
-                    var counter = 1;
+                    var status = response.po_status;
+                    var table = $('#po-of-product tbody');
 
-                    $.each(products, function(){
+                    if (status) {
+                        var products = response.products;
+                        table.empty();
+                        var textBox = $('<input>').attr('type', 'text').attr('name', 'quantity[]').attr('class', 'form-control');
+                        var checkbox = $('<input>').attr('type', 'checkbox').attr('name', 'select[]').attr('class', 'form-check-input');
+                        var counter = 1;
+                    
+                        $.each(products, function() {
+                            if (this.qty - this.recived_qty != 0) {
+                                var row = $('<tr></tr>').append(
+                                    $('<td></td>').text(counter++),
+                                    $('<td></td>').text(this.part_no),
+                                    $('<td></td>').text(this.name),
+                                    $('<td></td>').text(this.uom),
+                                    $('<td></td>').text(this.price),
+                                    $('<td></td>').text(this.qty),
+                                    $('<td></td>').text(this.qty - this.recived_qty)
+                                );
+                            
+                                // Append textBox to the row
+                                var textBoxCell = $('<td></td>').append(textBox.clone()); // Clone textBox to prevent multiple instances having the same ID
+                            
+                                // Append checkbox to the row
+                                var checkboxCell = $('<td></td>').append(checkbox.clone().attr('value', this.id)); // Clone checkbox to prevent multiple instances having the same ID
+                            
+                                // Append textBoxCell and checkboxCell to the row
+                                row.append(textBoxCell);
+                                row.append(checkboxCell);
+                            
+                                // Append the row to the table
+                                table.append(row);
+                            }
+                        });
+                        $('#submit_btn').show()
+                    } else {
+                        table.empty();
                         var row = $('<tr></tr>').append(
-                            $('<td></td>').text(counter++),
-                            $('<td></td>').text(this.part_no),
-                            $('<td></td>').text(this.name),
-                            $('<td></td>').text(this.uom),
-                            $('<td></td>').text(this.price),
-                            $('<td></td>').text(this.qty)
+                            $('<td colspan="9" class="text-danger text-center"></td>').text("PO WAS CLOSED")
                         );
-                    
-                        // Append textBox to the row
-                        var textBoxCell = $('<td></td>').append(textBox.clone()); // Clone textBox to prevent multiple instances having the same ID
-                    
-                        // Append checkbox to the row
-                        var checkboxCell = $('<td></td>').append(checkbox.clone().attr('value', this.id)); // Clone checkbox to prevent multiple instances having the same ID
-                    
-                        // Append textBoxCell and checkboxCell to the row
-                        row.append(textBoxCell);
-                        row.append(checkboxCell);
-                    
-                        // Append the row to the table
                         table.append(row);
-                    });
+                        $('#submit_btn').hide()
+                    }
 
-
+                    
                 },
                 error: function (error) {
                     console.log(error)

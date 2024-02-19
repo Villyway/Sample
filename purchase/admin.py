@@ -31,5 +31,5 @@ class PurchaseOrderAdmin(admin.ModelAdmin):
 
 @admin.register(PurchaseItem)
 class PurchaseItemAdmin(admin.ModelAdmin):
-    list_display = ['po','part','qty','del_status']
+    list_display = ['po','part','qty']
     search_fields = ['po','part','po__vendor__comany_name']

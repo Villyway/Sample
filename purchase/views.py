@@ -445,6 +445,7 @@ class GetPO(View):
                 __product['uom'] = i.part.umo.name
                 __product['del_date'] = i.del_date
                 __product['qty'] = i.qty
+                __product['recived_qty'] = i.recived_qty
                 __product['price'] = i.price
                 product_list.append(__product)
 
@@ -456,7 +457,7 @@ class GetPO(View):
                 'Address':address.street + address.street2 + address.city.name +', ' +address.state.name + ', ' +address.country.name + ', -' + address.zip,
                 'Phone':purchase.vendor.mobile
             }
-            return JsonResponse({'data':data_dict,"products" : product_list})
+            return JsonResponse({'data':data_dict,"products" : product_list,"po_status":purchase.status})
         
         
         

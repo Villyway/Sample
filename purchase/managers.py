@@ -43,3 +43,9 @@ class PurchaseOrderManager(models.Manager):
         except:
             return None
         
+    def check_po_open(self, po_no):
+        try:
+            return self.active().get(po_no=po_no).status
+        except:
+            return None
+        
