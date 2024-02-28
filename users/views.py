@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-def get(self):
-    pass
+
+class Animal:
+    def get(self):
+        pass
